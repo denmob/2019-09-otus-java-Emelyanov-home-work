@@ -1,98 +1,56 @@
 package ru.otus.hw02;
 
-
 import java.util.*;
-
-import static java.util.Objects.isNull;
 
 public class DIYarrayList<T> implements List<T> {
 
-
-    private static final int DEFAULT_CAPACITY = 30;
-    private static final Object[] EMPTY_ELEMENTDATA = {};
-    private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
-    transient Object[] elementData; // non-private to simplify nested class access
+    private Object[] elementData;
     private int size = 0;
-    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+    private static final int DEFAULT_CAPACITY = 100;
+
+    public DIYarrayList(int initialCapacity, boolean setNull) {
+        if (initialCapacity > 0) {
+            this.elementData = new Object[initialCapacity];
+            // init array
+            if (setNull) {
+                for (int i = 0; i < initialCapacity - 1; i++)
+                    elementData[i] = null;
+                size = initialCapacity;
+            }
+        } else if (initialCapacity == 0) {
+            this.elementData = new Object[DEFAULT_CAPACITY];
+        } else {
+            throw new IllegalArgumentException("Illegal Capacity: "+ initialCapacity);
+        }
+    }
 
     public DIYarrayList(int initialCapacity) {
         if (initialCapacity > 0) {
             this.elementData = new Object[initialCapacity];
         } else if (initialCapacity == 0) {
-            this.elementData = EMPTY_ELEMENTDATA;
+            this.elementData = new Object[DEFAULT_CAPACITY];
         } else {
             throw new IllegalArgumentException("Illegal Capacity: "+ initialCapacity);
         }
     }
 
     public DIYarrayList() {
-        this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
-    }
-
-
-    public DIYarrayList(Collection<? extends T> c) {
-        elementData = c.toArray();
-        if ((size = elementData.length) != 0) {
-            if (elementData.getClass() != Object[].class)
-                elementData = Arrays.copyOf(elementData, size, Object[].class);
-        } else {
-            this.elementData = EMPTY_ELEMENTDATA;
-        }
+        this.elementData = new Object[DEFAULT_CAPACITY];
     }
 
     @Override
-    public int size() {
-        return size;
-    }
+    public int size() { return size; }
 
     @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
+    public boolean isEmpty() { return size == 0; }
 
     @Override
     public boolean contains(Object o) {
         return indexOf(o) >= 0;
     }
-    @Override
-    public int indexOf(Object o) {
-        return indexOfRange(o, 0, size);
-    }
-
-    int indexOfRange(Object o, int start, int end) {
-        Object[] es = elementData;
-        if (o == null) {
-            for (int i = start; i < end; i++) {
-                if (es[i] == null) {
-                    return i;
-                }
-            }
-        } else {
-            for (int i = start; i < end; i++) {
-                if (o.equals(es[i])) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
 
     @Override
-    public Iterator<T> iterator() {
-        return new MyIterator();
-    }
-
-    public class MyIterator<T> implements Iterator<T> {
-        private int index;
-        MyIterator() { index = 0; }
-
-        @Override
-        public boolean hasNext() { return index < size(); }
-
-        @Override
-        public T next() { return (T) get(index++); }
-    }
+    public int indexOf(Object o) { throw new UnsupportedOperationException(""); }
 
     @Override
     public Object[] toArray() {
@@ -100,157 +58,176 @@ public class DIYarrayList<T> implements List<T> {
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
-        if (a.length < size)
-            return (T[]) Arrays.copyOf(elementData, size, a.getClass());
-        System.arraycopy(elementData, 0, a, 0, size);
-        if (a.length > size)
-            a[size] = null;
-        return a;
-    }
-
-    private int newCapacity(int minCapacity) {
-        // overflow-conscious code
-        int oldCapacity = elementData.length;
-        int newCapacity = oldCapacity + (oldCapacity >> 1);
-        if (newCapacity - minCapacity <= 0) {
-            if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA)
-                return Math.max(DEFAULT_CAPACITY, minCapacity);
-            if (minCapacity < 0) // overflow
-                throw new OutOfMemoryError();
-            return minCapacity;
-        }
-        return (newCapacity - MAX_ARRAY_SIZE <= 0)
-                ? newCapacity
-                : hugeCapacity(minCapacity);
-    }
-
-    private static int hugeCapacity(int minCapacity) {
-        if (minCapacity < 0) // overflow
-            throw new OutOfMemoryError();
-        return (minCapacity > MAX_ARRAY_SIZE)
-                ? Integer.MAX_VALUE
-                : MAX_ARRAY_SIZE;
-    }
-
-    private Object[] grow(int minCapacity) {
-        return elementData = Arrays.copyOf(elementData,
-                newCapacity(minCapacity));
-    }
-
-    private Object[] grow() {
-        return grow(size + 1);
-    }
-
-    private void add(T e, Object[] elementData, int s) {
-        if (s == elementData.length)
-            elementData = grow();
-        elementData[s] = e;
-        size = s + 1;
-    }
+    public <T> T[] toArray(T[] a) { throw new UnsupportedOperationException(""); }
 
     @Override
     public boolean add(T t) {
-        add(t, elementData, size);
+        elementData[size] = t;
+        size++;
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
-        throw new UnsupportedOperationException("remove(Object o)");
+        throw new UnsupportedOperationException("");
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        throw new UnsupportedOperationException("containsAll(Collection<?> c)");
+        throw new UnsupportedOperationException("");
     }
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        throw new UnsupportedOperationException("addAll(Collection<? extends T> c)");
+        return addAll(this.size, c);
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
-        throw new UnsupportedOperationException("addAll(int index, Collection<? extends T> c)");
+        throw new UnsupportedOperationException("");
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException("removeAll(Collection<?> c)");
+        throw new UnsupportedOperationException("");
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException("retainAll(Collection<?> c)");
+        throw new UnsupportedOperationException("");
     }
+
 
     @Override
     public void clear() {
-
-    }
-
-    T elementData(int index) {
-        return (T) elementData[index];
+        for (int i =0;  i <= size; i++)
+            elementData[i] = null;
     }
 
     @Override
     public T get(int index) {
         Objects.checkIndex(index, size);
-        return elementData(index);
+        return (T) elementData[index];
     }
 
     @Override
     public T set(int index, T element) {
-        return null;
+        Objects.checkIndex(index, size);
+        T oldValue = (T) elementData[index];
+        elementData[index] = element;
+        return oldValue;
     }
 
     @Override
     public void add(int index, T element) {
+        elementData[index] = element;
+        size++;
+    }
 
+    private void fastRemove(Object[] es, int i) {
+        final int newSize;
+        if ((newSize = size - 1) > i)
+            System.arraycopy(es, i + 1, es, i, newSize - i);
+        es[size = newSize] = null;
     }
 
     @Override
     public T remove(int index) {
-        return null;
+        Objects.checkIndex(index, size);
+        final Object[] es = elementData;
+        T oldValue = (T) es[index];
+        fastRemove(es, index);
+        return oldValue;
     }
 
-
+    @Override
     public int lastIndexOf(Object o) {
-        return lastIndexOfRange(o, 0, size);
+        throw new UnsupportedOperationException("");
     }
 
-    int lastIndexOfRange(Object o, int start, int end) {
-        Object[] es = elementData;
-        if (o == null) {
-            for (int i = end - 1; i >= start; i--) {
-                if (es[i] == null) {
-                    return i;
-                }
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private int index = 0;
+            public boolean hasNext() { return  index != size; }
+            public T next() {
+                return (T) get(index++);
             }
-        } else {
-            for (int i = end - 1; i >= start; i--) {
-                if (o.equals(es[i])) {
-                    return i;
-                }
-            }
-        }
-        return -1;
+        };
     }
 
     @Override
     public ListIterator<T> listIterator() {
-        throw new UnsupportedOperationException(" listIterator()");
+        return new ListIterator<T>() {
+            int index;
+            int lastRet = -1;
+
+            public boolean hasNext() { return index != size; }
+
+            public T next() {
+                int i = index;
+                if (i >= size)
+                    throw new NoSuchElementException();
+                try {
+                    T next = get(i);
+                    lastRet = i;
+                    index = i + 1;
+                    return next;
+                } catch (IndexOutOfBoundsException e) {
+                    throw new NoSuchElementException();
+                }
+            }
+
+            public boolean hasPrevious() { return index != 0; }
+
+            public T previous() {
+                int i = index - 1;
+                if (i < 0)
+                    throw new NoSuchElementException();
+                Object[] elementData = DIYarrayList.this.elementData;
+                if (i >= elementData.length)
+                    throw new ConcurrentModificationException();
+                index = i;
+                return (T) elementData[lastRet = i];
+            }
+
+            public int nextIndex() { return index; }
+
+            public int previousIndex() { return index - 1; }
+
+            public void remove() {
+                throw new UnsupportedOperationException("");
+            }
+
+            public void set(T t) {
+                if (lastRet < 0)
+                    throw new IllegalStateException();
+                try {
+                    DIYarrayList.this.set(lastRet, t);
+                } catch (IndexOutOfBoundsException ex) {
+                    throw new ConcurrentModificationException();
+                }
+            }
+
+            public void add(T t) {
+                throw new UnsupportedOperationException("");
+            }
+        };
     }
+
 
     @Override
     public ListIterator<T> listIterator(int index) {
-        throw new UnsupportedOperationException("listIterator(int index)");
+        throw new UnsupportedOperationException("");
     }
-
 
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
-        throw new UnsupportedOperationException("subList(int fromIndex, int toIndex)");
+        throw new UnsupportedOperationException("");
+    }
+
+    @Override
+    public void sort(Comparator<? super T> c) {
+        Arrays.sort((T[]) elementData, 0, size, c);
     }
 }
