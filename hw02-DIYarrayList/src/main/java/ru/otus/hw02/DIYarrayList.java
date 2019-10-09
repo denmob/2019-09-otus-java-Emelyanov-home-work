@@ -122,8 +122,18 @@ public class DIYarrayList<T> implements List<T> {
         return elementData = Arrays.copyOf(elementData, newCapacity());
     }
 
+    private String outOfBoundsMsg(int index) {
+        return "Index: "+index+", Size: "+size;
+    }
+
+    private void rangeCheckForAdd(int index) {
+        if (index > size || index < 0)
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+    }
+
     @Override
     public void add(int index, T element) {
+        rangeCheckForAdd(index);
         final int s;
         Object[] elementData;
         if ((s = size) == (elementData = this.elementData).length) elementData = grow();

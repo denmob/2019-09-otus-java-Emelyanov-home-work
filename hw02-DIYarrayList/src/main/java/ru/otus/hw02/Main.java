@@ -96,6 +96,13 @@ public class Main {
         diyArrayList.add(3, 123);
         System.out.println(Arrays.toString(diyArrayList.toArray()));
 
+//        Еще по поводу void add(int index, E element) посмотрите в javadoc у List:
+//* @throws IndexOutOfBoundsException if the index is out of range
+//*         ({@code index < 0 || index > size()})
+//        То есть, если переданный index больше количества элементов (size()), то должно быть исключение, а не авторасширение. Это ожидаемое поведение от реализаций List.
+        diyArrayList.add(10,10);
+
+
     }
 
 
