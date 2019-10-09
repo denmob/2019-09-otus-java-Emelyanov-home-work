@@ -6,37 +6,38 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Integer [] integers = new Integer[30];
-        System.out.println("Array Integer");
+        Integer [] arrayInt = new Integer[30];
+        System.out.println("Array Integers (source)");
         for(int i=0; i<30; i++) {
             int i1 = new Random().nextInt(100);
-            integers[i] = i1;
-            System.out.print(i1);
+            arrayInt[i] = i1;
+            System.out.print(i1 + " ");
         }
         System.out.println("");
 
         //1. Collections.addAll(Collection<? super T> c, T... elements)
-        DIYarrayList<Integer> diYarrayList = new DIYarrayList<>(30);
-        Collections.addAll(diYarrayList,integers);
+        DIYarrayList<Integer> diYarrayListInt = new DIYarrayList<>(30);
+        Collections.addAll(diYarrayListInt,arrayInt);
         System.out.println("Array Integers to diYarrayList (addAll)");
-        diYarrayList.forEach(System.out::print);
+        diYarrayListInt.forEach(result -> System.out.print(result + " "));
         System.out.println("");
 
         //2. Collections.static <T> void copy(List<? super T> dest, List<? extends T> src)
-        DIYarrayList<Integer> diYarrayListNew = new DIYarrayList<>(30,true);
-        Collections.copy(diYarrayListNew,diYarrayList);
+        DIYarrayList<Integer> diYarrayListIntNew = new DIYarrayList<>(30,true);
+        Collections.copy(diYarrayListIntNew,diYarrayListInt);
         System.out.println("diYarrayList to diYarrayListNew (copy)");
-        diYarrayListNew.forEach(System.out::print);
+        diYarrayListIntNew.forEach(result -> System.out.print(result + " "));
         System.out.println("");
 
         //3. Collections.static <T> void sort(List<T> list, Comparator<? super T> c)
-        Collections.sort(diYarrayListNew);
+        Collections.sort(diYarrayListIntNew,new GenericComparator());
         System.out.println("diYarrayListNew (sort)");
-        diYarrayListNew.forEach(System.out::println);
+        diYarrayListIntNew.forEach(result -> System.out.print(result + " "));
 
+        System.out.println();  System.out.println();  System.out.println();
 
         String [] strings = new String[5];
-        System.out.println("Array Strings");
+        System.out.println("Array Strings (source)");
         strings[0] = "L";
         strings[1] = "W";
         strings[2] = "T";
@@ -48,20 +49,26 @@ public class Main {
         DIYarrayList<String> diYarrayListStr = new DIYarrayList<>(5);
         Collections.addAll(diYarrayListStr,strings);
         System.out.println("Array Strings to diYarrayListStr (addAll)");
-        diYarrayListStr.forEach(System.out::print);
-        System.out.println("");
+        diYarrayListStr.forEach(result -> System.out.print(result + " "));
+        System.out.println();
 
         //2. Collections.static <T> void copy(List<? super T> dest, List<? extends T> src)
         DIYarrayList<String> diYarrayListStrNew = new DIYarrayList<>(5,true);
         Collections.copy(diYarrayListStrNew,diYarrayListStr);
         System.out.println("diYarrayListStr to diYarrayListStrNew (copy)");
-        diYarrayListStrNew.forEach(System.out::print);
-        System.out.println("");
+        diYarrayListStrNew.forEach(result -> System.out.print(result + " "));
+        System.out.println();
 
         //3. Collections.static <T> void sort(List<T> list, Comparator<? super T> c)
-        Collections.sort(diYarrayListStrNew);
+        Collections.sort(diYarrayListStrNew,new GenericComparator());
         System.out.println("diYarrayListStrNew (sort)");
-        diYarrayListStrNew.forEach(System.out::print);
+        diYarrayListStrNew.forEach(result -> System.out.print(result + " "));
 
+    }
+
+    static class GenericComparator<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T a, T b) {
+            return a.compareTo(b);
+        }
     }
 }
