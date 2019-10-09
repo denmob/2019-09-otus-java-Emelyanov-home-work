@@ -23,7 +23,8 @@ public class Main {
         System.out.println("");
 
         //2. Collections.static <T> void copy(List<? super T> dest, List<? extends T> src)
-        DIYarrayList<Integer> diYarrayListIntNew = new DIYarrayList<>(30,true);
+        DIYarrayList<Integer> diYarrayListIntNew = new DIYarrayList<>(30);
+        for (int i=0;i<30;i++) diYarrayListIntNew.add(i,null);
         Collections.copy(diYarrayListIntNew,diYarrayListInt);
         System.out.println("diYarrayList to diYarrayListNew (copy)");
         diYarrayListIntNew.forEach(result -> System.out.print(result + " "));
@@ -53,7 +54,8 @@ public class Main {
         System.out.println();
 
         //2. Collections.static <T> void copy(List<? super T> dest, List<? extends T> src)
-        DIYarrayList<String> diYarrayListStrNew = new DIYarrayList<>(5,true);
+        DIYarrayList<String> diYarrayListStrNew = new DIYarrayList<>(5);
+        for (int i=0;i<5;i++) diYarrayListStrNew.add(i,null);
         Collections.copy(diYarrayListStrNew,diYarrayListStr);
         System.out.println("diYarrayListStr to diYarrayListStrNew (copy)");
         diYarrayListStrNew.forEach(result -> System.out.print(result + " "));
@@ -64,7 +66,39 @@ public class Main {
         System.out.println("diYarrayListStrNew (sort)");
         diYarrayListStrNew.forEach(result -> System.out.print(result + " "));
 
+        List<Integer> list = new DIYarrayList<>();
+        list.add(1);
+        list.add(2);
+        System.out.println("Размер списка - " + list.size());
+        list.clear();
+        System.out.println("Размер списка после clear(), должно быть ноль - " + list.size());
+        System.out.println("isEmpty(), должно быть true - " + list.isEmpty());
+
+        List<Integer> list1 = new DIYarrayList<>();
+        for(int i = 1; i <= 200; i++){
+            list1.add(i);
+        }
+        list1.forEach(result -> System.out.print(result + " "));
+
+        List<Integer> arrayList = new ArrayList<Integer>(5);
+        arrayList.add(1);
+        arrayList.add(2);
+        arrayList.add(3);
+        arrayList.add(4);
+        arrayList.add(3, 123);
+        System.out.println(Arrays.toString(arrayList.toArray()));
+
+        List<Integer> diyArrayList = new DIYarrayList<Integer>(3);
+        diyArrayList.add(1);
+        diyArrayList.add(2);
+        diyArrayList.add(3);
+        diyArrayList.add(4);
+        diyArrayList.add(3, 123);
+        System.out.println(Arrays.toString(diyArrayList.toArray()));
+
     }
+
+
 
     static class GenericComparator<T extends Comparable<T>> implements Comparator<T> {
         public int compare(T a, T b) {

@@ -7,22 +7,8 @@ public class DIYarrayList<T> implements List<T> {
     private Object[] elementData;
     private int size = 0;
     private static final int DEFAULT_CAPACITY = 100;
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
-    public DIYarrayList(int initialCapacity, boolean setNull) {
-        if (initialCapacity > 0) {
-            this.elementData = new Object[initialCapacity];
-            // init array
-            if (setNull) {
-                for (int i = 0; i < initialCapacity - 1; i++)
-                    elementData[i] = null;
-                size = initialCapacity;
-            }
-        } else if (initialCapacity == 0) {
-            this.elementData = new Object[DEFAULT_CAPACITY];
-        } else {
-            throw new IllegalArgumentException("Illegal Capacity: "+ initialCapacity);
-        }
-    }
 
     public DIYarrayList(int initialCapacity) {
         if (initialCapacity > 0) {
@@ -33,9 +19,8 @@ public class DIYarrayList<T> implements List<T> {
             throw new IllegalArgumentException("Illegal Capacity: "+ initialCapacity);
         }
     }
-
     public DIYarrayList() {
-        this.elementData = new Object[DEFAULT_CAPACITY];
+       this(0);
     }
 
     @Override
@@ -60,10 +45,16 @@ public class DIYarrayList<T> implements List<T> {
     @Override
     public <T> T[] toArray(T[] a) { throw new UnsupportedOperationException(""); }
 
+    private void add(T t, Object[] elementData, int s) {
+        if (s == elementData.length)
+            elementData = grow();
+        elementData[s] = t;
+        size = s + 1;
+    }
+
     @Override
     public boolean add(T t) {
-        elementData[size] = t;
-        size++;
+        add(t, elementData, size);
         return true;
     }
 
@@ -97,11 +88,11 @@ public class DIYarrayList<T> implements List<T> {
         throw new UnsupportedOperationException("");
     }
 
-
     @Override
     public void clear() {
         for (int i =0;  i <= size; i++)
             elementData[i] = null;
+        size = 0;
     }
 
     @Override
@@ -118,10 +109,27 @@ public class DIYarrayList<T> implements List<T> {
         return oldValue;
     }
 
+    private int newCapacity(){
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + (oldCapacity >> 1);
+        if (newCapacity - MAX_ARRAY_SIZE <= 0)
+            return newCapacity;
+        else
+            throw new OutOfMemoryError();
+    }
+
+    private Object[] grow() {
+        return elementData = Arrays.copyOf(elementData, newCapacity());
+    }
+
     @Override
     public void add(int index, T element) {
-        elementData[index] = element;
-        size++;
+        final int s;
+        Object[] elementData;
+        if ((s = size) == (elementData = this.elementData).length) elementData = grow();
+        System.arraycopy(elementData, index, this.elementData, index + 1, s - index);
+        this.elementData[index] = element;
+        size = s + 1;
     }
 
     private void fastRemove(Object[] es, int i) {
