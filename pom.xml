@@ -19,6 +19,7 @@
     <modules>
         <module>hw01-maven</module>
         <module>hw02-DIYarrayList</module>
+        <module>hw03-gc</module>
     </modules>
 
     <dependencyManagement>
@@ -32,7 +33,7 @@
     </dependencyManagement>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>13</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
