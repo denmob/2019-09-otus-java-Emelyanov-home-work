@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.InvalidParameterException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,11 +38,6 @@ public class GarbageThread extends Thread {
 
         for (int idx = 0; idx < this.loopCounter; idx++) {
             list.add(this.hugeString+idx);
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-            }
             if (idx % 2>0) {
                 list.remove(list.size()-1);
             }
@@ -49,6 +45,12 @@ public class GarbageThread extends Thread {
                 System.out.println(this.garbageThreadName + " "+percentage+"%");
             }
             percentage = 100L*idx / this.loopCounter;
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }
