@@ -11,17 +11,11 @@ import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.security.ProtectionDomain;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Handle;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
+
+import org.objectweb.asm.*;
 
 
 public class Agent {
-
 
         public static void premain(String agentArgs, Instrumentation inst) {
             inst.addTransformer(new ClassFileTransformer() {
@@ -36,8 +30,20 @@ public class Agent {
                     return classfileBuffer;
                 }
             });
-
         }
+
+
+    static class MethodAnnotationScanner extends MethodVisitor {
+        public MethodAnnotationScanner() {
+            super(Opcodes.ASM5);
+        }
+
+        @Override
+        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+            System.out.println("visitAnnotation: desc="+desc+" visible="+visible);
+            return super.visitAnnotation(desc, visible);
+        }
+    }
 
         private static byte[] addProxyMethod(byte[] originalClass) {
             ClassReader cr = new ClassReader(originalClass);
@@ -46,11 +52,23 @@ public class Agent {
                 @Override
                 public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
                     if (name.equals("calculation")) {
+
                         return super.visitMethod(access, "calculationProxied", descriptor, signature, exceptions);
                     } else {
                         return super.visitMethod(access, name, descriptor, signature, exceptions);
+//                      return  new MethodAnnotationScanner();
                     }
                 }
+                @Override
+                public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+                    System.out.println("visitAnnotation: desc="+desc+" visible="+visible);
+                    return super.visitAnnotation(desc, visible);
+                }
+//                @Override
+//                public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions){
+//                    System.out.println("visitMethod: access="+access+" name="+name+" desc="+desc+" signature="+signature+" exceptions="+exceptions);
+//                    return new MethodAnnotationScanner();
+//                }
             };
             cr.accept(cv, Opcodes.ASM5);
 
