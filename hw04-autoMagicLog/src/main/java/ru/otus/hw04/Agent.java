@@ -18,6 +18,8 @@ import org.objectweb.asm.*;
 public class Agent {
 
         public static void premain(String agentArgs, Instrumentation inst) {
+
+
             inst.addTransformer(new ClassFileTransformer() {
                 @Override
                 public byte[] transform(ClassLoader loader, String className,
@@ -25,25 +27,14 @@ public class Agent {
                                         ProtectionDomain protectionDomain,
                                         byte[] classfileBuffer) {
                     if (className.equals("ru/otus/hw04/TestLogging")) {
-                        return addProxyMethod(classfileBuffer);
+                        findAnnotation(classfileBuffer);
+                    //    return addProxyMethod(classfileBuffer);
                     }
                     return classfileBuffer;
                 }
             });
         }
 
-
-    static class MethodAnnotationScanner extends MethodVisitor {
-        public MethodAnnotationScanner() {
-            super(Opcodes.ASM5);
-        }
-
-        @Override
-        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-            System.out.println("visitAnnotation: desc="+desc+" visible="+visible);
-            return super.visitAnnotation(desc, visible);
-        }
-    }
 
         private static byte[] addProxyMethod(byte[] originalClass) {
             ClassReader cr = new ClassReader(originalClass);
@@ -52,14 +43,10 @@ public class Agent {
                 @Override
                 public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
                     if (name.equals("calculation")) {
-                        new MethodAnnotationScanner();
-
                         return super.visitMethod(access, "calculationProxied", descriptor, signature, exceptions);
                     } else {
                         return super.visitMethod(access, name, descriptor, signature, exceptions);
                     }
-                  //  return  new MethodAnnotationScanner();
-                //    return super.visitMethod(access, name, descriptor, signature, exceptions);
                 }
             };
             cr.accept(cv, Opcodes.ASM5);
@@ -102,7 +89,11 @@ public class Agent {
         }
 
 
+    private  static boolean findAnnotation(byte[] originalClass1) {
+        ClassReader cr1 = new ClassReader(originalClass1);
+        cr1.accept(new AnnotationScanner(Opcodes.ASM5),0);
 
-
+        return true;
     }
+}
 
