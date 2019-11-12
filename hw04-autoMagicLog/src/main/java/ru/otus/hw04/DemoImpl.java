@@ -6,7 +6,7 @@ public class DemoImpl implements DemoInterface{
     }
 
     public void action() {
-        new TestLogging().calculation(6);
+        new TestLogging().calculation(777);
     }
 }
 

@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-public class IoC {
+class IoC {
 
         static DemoInterface createMyClass() {
             InvocationHandler handler = new DemoInvocationHandler(new DemoImpl());

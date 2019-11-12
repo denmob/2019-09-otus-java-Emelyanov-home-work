@@ -5,8 +5,8 @@ public class TestLogging {
     public TestLogging() {
     }
 
-    @LogMethodCall
-    public void calculation(Integer param) {
+    @LogMethodParam
+    void calculation(Integer param) {
         System.out.println("class TestLogging.calculation() " +param);
     }
 }
