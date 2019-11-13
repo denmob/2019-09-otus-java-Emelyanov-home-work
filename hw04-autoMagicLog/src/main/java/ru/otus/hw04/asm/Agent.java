@@ -1,4 +1,4 @@
-package ru.otus.hw04;
+package ru.otus.hw04.asm;
 
 
 import java.lang.instrument.ClassFileTransformer;

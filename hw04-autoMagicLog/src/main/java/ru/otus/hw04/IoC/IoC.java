@@ -1,4 +1,4 @@
-package ru.otus.hw04;
+package ru.otus.hw04.IoC;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

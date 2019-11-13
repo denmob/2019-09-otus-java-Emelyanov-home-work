@@ -52,8 +52,8 @@
                                 <transformers>
                                     <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                         <manifestEntries>
-                                            <Main-Class>ru.otus.hw04.Main</Main-Class>
-                                            <Premain-Class>ru.otus.hw04.Agent</Premain-Class>
+                                            <Main-Class>ru.otus.hw04.asm.asmDemo</Main-Class>
+                                            <Premain-Class>ru.otus.hw04.asm.Agent</Premain-Class>
                                         </manifestEntries>
                                     </transformer>
                                 </transformers>

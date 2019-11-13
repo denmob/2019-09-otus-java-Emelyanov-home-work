@@ -1,4 +1,4 @@
-package ru.otus.hw04;
+package ru.otus.hw04.asm;
 
 import org.objectweb.asm.*;
 import java.lang.invoke.CallSite;
@@ -22,7 +22,7 @@ public class ClassLoggerVisitor extends ClassVisitor{
 
         @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible){
-            if (desc.equals("Lru/otus/hw04/LogMethodParam;")) doLogging = true;
+            if (desc.equals("Lru/otus/hw04/LogAnnotation/LogMethodParam;")) doLogging = true;
             return mv.visitAnnotation(desc, visible);
         }
 

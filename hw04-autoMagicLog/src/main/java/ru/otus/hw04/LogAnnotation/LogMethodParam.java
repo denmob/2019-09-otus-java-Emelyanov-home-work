@@ -1,10 +1,10 @@
-package ru.otus.hw04;
+package ru.otus.hw04.LogAnnotation;
 
 import java.lang.annotation.*;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@interface LogMethodParam {
+public @interface LogMethodParam {
 
 }
