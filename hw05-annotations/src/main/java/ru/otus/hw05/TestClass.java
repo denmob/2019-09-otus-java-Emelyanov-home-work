@@ -23,13 +23,13 @@ public class TestClass {
 
 
     @Test
-    public void test_failed() throws Exception {
+    public void test_failed() throws RuntimeException {
         System.out.println("test_failed");
-        throw new Exception("Что-то пошло не так!");
+        throw new RuntimeException("test_failed Exception");
     }
 
     @Test
-    public void test_success() throws Exception {
+    public void test_success()  {
         System.out.println("test_success");
     }
 
