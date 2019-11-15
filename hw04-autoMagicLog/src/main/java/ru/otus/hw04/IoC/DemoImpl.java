@@ -8,7 +8,7 @@ public class DemoImpl implements DemoInterface{
     }
 
     public void action() {
-        new TestLogAnnotation1().calculation(777);
+        new TestLogAnnotation1().calculation(777,"test");
     }
 }
 

@@ -8,12 +8,12 @@ public class TestLogAnnotation1 {
     }
 
     @LogMethodParam
-    public void calculation(Integer integer) {
-        System.out.println("invoking method: calculation");
+    public void calculation(Integer integer, String s) {
+        System.out.println("invoking method calculation");
     }
 
 
     void LogMethodParam(String s) {
-        System.out.println("invoking method: LogMethodParam");
+        System.out.println("invoking method LogMethodParam");
     }
 }
