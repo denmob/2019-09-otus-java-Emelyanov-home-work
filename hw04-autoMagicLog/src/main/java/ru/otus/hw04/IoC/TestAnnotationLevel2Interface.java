@@ -1,5 +1,5 @@
 package ru.otus.hw04.IoC;
 
-public interface DemoInterface {
+public interface TestAnnotationLevel2Interface {
     void action ();
 }
