@@ -9,6 +9,10 @@ public class TestAnnotationLevel1Imp implements TestAnnotationLevel1Interface {
 
     }
 
+    public void calculation(String s) {
+
+    }
+
     public void logMethodParam(String s) {
 
     }

@@ -8,6 +8,7 @@ public class IocDemo1 {
         TestAnnotationLevel1Interface testLogAnnotationInterface = IoCLevel1.createMyClass();
         testLogAnnotationInterface.calculation("123","222");
         testLogAnnotationInterface.logMethodParam("777");
+        testLogAnnotationInterface.calculation("test");
 
     }
 }

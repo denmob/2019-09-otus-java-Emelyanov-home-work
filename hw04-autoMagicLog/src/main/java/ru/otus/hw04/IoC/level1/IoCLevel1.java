@@ -26,22 +26,27 @@ class IoCLevel1 {
 
             DemoInvocationHandler(TestAnnotationLevel1Imp myClass) {
                 this.myClass = myClass;
-                getMethodsForLogging();
-            }
 
-            private void getMethodsForLogging(){
                 Method[] methods = this.myClass.getClass().getDeclaredMethods();
                 for (Method m : methods) {
                     if (m.getAnnotation(LogMethodParam.class) != null) {
-                        this.methodsForLogging.add(m.getName());
+                        methodsForLogging.add(getMethodsForLogging(m));
                     }
                 }
+            }
+
+            private String getMethodsForLogging(Method m) {
+                String methodNameDesc = m.getName();
+                if (m.getParameters().length > 0) {
+                    methodNameDesc = methodNameDesc + Arrays.asList(m.getParameters());
+                }
+                return methodNameDesc;
             }
 
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-                if (methodsForLogging.contains(method.getName())) {
+                if (methodsForLogging.contains(getMethodsForLogging(method))) {
                     String[] sArgs =  Arrays.asList(args).toArray(new String[args.length]);
                     System.out.println("invoke method, " +method.getName()+ ", params: "+ Arrays.toString(sArgs));
                 }
