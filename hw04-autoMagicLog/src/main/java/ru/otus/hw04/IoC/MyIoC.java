@@ -49,30 +49,9 @@ class MyIoC {
                 return methodNameDesc;
             }
 
-            private String viewMethodArgs1(Object[] args, Parameter[] parameters) {
-                StringBuilder result = new StringBuilder();
-                for(int i = 0; i < parameters.length; i++) {
-                    Class<?> classes = parameters[i].getType();
-                    switch (classes.getName()) {
-                        case ("java.lang.String"):
-                            result.append(" String: ").append(args[i]);
-                            break;
-                        case ("java.lang.Integer"):
-                            result.append(" Integer: ").append(args[i]);
-                            break;
-                        case ("java.lang.Double"):
-                            result.append(" Double: ").append(args[i]);
-                            break;
-                        case ("java.lang.Long"):
-                            result.append(" Long: ").append(args[i]);
-                            break;
-                    }
-                    if (i< parameters.length-1) result.append(", ");
-                }
-                return result.toString();
-            }
 
-            private String viewMethodArgs2(Object[] args, Parameter[] parameters) {
+
+            private String viewMethodArgs(Object[] args, Parameter[] parameters) {
                 StringBuilder result = new StringBuilder();
                 for(int i = 0; i < parameters.length; i++) {
                     result.append(args[i]);
@@ -87,8 +66,7 @@ class MyIoC {
                 Parameter[] parameters = methodsForLogging.get(getMethodDescription(method));
                 if (parameters != null) {
                     System.out.println("invoke method " +method.getName());
-                    System.out.println("View params with type: "+   viewMethodArgs1(args, parameters));
-                    System.out.println("View params: "+   viewMethodArgs2(args, parameters));
+                    System.out.println("View params: "+   viewMethodArgs(args, parameters));
                 }
                 return method.invoke(myClass, args);
             }
