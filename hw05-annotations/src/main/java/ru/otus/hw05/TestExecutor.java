@@ -42,14 +42,14 @@ class TestExecutor {
                 for (Method method : classForTest.getTestMethods()) {
 
                     Object testObj = aClass.getDeclaredConstructor().newInstance();
-                    testResult.setCountTest(1);
+                    testResult.increaseCountTest();
 
                     executeMethods(classForTest.getBeforeMethods(), testObj, testResult);
 
                     if (executeMethod(method, testObj, testResult))
-                        testResult.setSucceedTest(1);
+                        testResult.increaseSucceededTests();
                     else
-                        testResult.setFailedTest(1);
+                        testResult.increaseFailedTest();
 
                     executeMethods(classForTest.getAfterMethods(), testObj, testResult);
                 }
@@ -62,7 +62,7 @@ class TestExecutor {
             try {
                 method.invoke(testObj);
             } catch (Exception e) {
-                testResult.setExceptionDescription("MethodName: "+method.getName() +
+                testResult.addExceptionDescription("MethodName: "+method.getName() +
                         "  ExceptionMessage: " + e.getCause().getMessage()  +"\n");
             }
         }
@@ -73,7 +73,7 @@ class TestExecutor {
              method.invoke(testObj);
              return true;
         } catch (Exception e) {
-            testResult.setExceptionDescription("MethodName: "+method.getName() +
+            testResult.addExceptionDescription("MethodName: "+method.getName() +
                     "  ExceptionMessage: " + e.getCause().getMessage()  +"\n");
             return false;
         }

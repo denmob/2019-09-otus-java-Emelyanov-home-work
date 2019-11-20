@@ -12,34 +12,27 @@ class TestResult {
     int getFailedTest() {
         return failedTest;
     }
-
-    void setFailedTest(int failedTest) {
-        this.failedTest = this.failedTest + failedTest;
+    int getSucceedTest() {
+        return succeedTest;
     }
-
     int getCountTest() {
         return countTest;
-    }
-
-    void setCountTest(int countTest) {
-        this.countTest = this.countTest + countTest;
     }
 
     StringBuilder getExceptionDescription() {
         return exceptionDesc;
     }
 
-    void setExceptionDescription(String exceptionDescription) {
+    void addExceptionDescription(String exceptionDescription) {
         this.exceptionDesc.append(exceptionDescription);
     }
 
-    int getSucceedTest() {
-        return succeedTest;
+    void increaseFailedTest() {
+        this.failedTest++;
     }
-
-    void setSucceedTest(int succeedTest) {
-        this.succeedTest = this.succeedTest + succeedTest;
+    void increaseCountTest() {
+        this.countTest++;
     }
-
+    void increaseSucceededTests() { this.succeedTest++; }
 
 }
