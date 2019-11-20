@@ -20,6 +20,7 @@
         <module>hw01-maven</module>
         <module>hw02-DIYarrayList</module>
         <module>hw03-gc</module>
+        <module>hw04-autoMagicLog</module>
     </modules>
 
     <dependencyManagement>
@@ -38,7 +39,7 @@
     </dependencyManagement>
 
     <properties>
-        <java.version>13</java.version>
+        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -46,6 +47,7 @@
         <maven.assembly.plugin.version>3.1.1</maven.assembly.plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <commons-io.version>2.6</commons-io.version>
+        <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
     </properties>
 
     <build>
