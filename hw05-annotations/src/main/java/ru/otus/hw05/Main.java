@@ -7,8 +7,20 @@ public class Main {
         System.out.println("hw05-annotations");
 
             TestExecutor testExecutor = new TestExecutor("ru.otus.hw05.TestClass");
-            testExecutor.runTest();
+            TestResult testResult = testExecutor.runTest();
 
+
+            System.out.println("Всего тестов: " + testResult.getCountTest());
+            System.out.println("Пройдено тестов: " + testResult.getSucceedTest());
+            System.out.println("Упало тестов: " +testResult.getFailedTest());
+            System.out.println("Описание причин падения: " +testResult.getExceptionDescription());
+
+            testResult = testExecutor.runTest();
+
+            System.out.println("Всего тестов: " + testResult.getCountTest());
+            System.out.println("Пройдено тестов: " + testResult.getSucceedTest());
+            System.out.println("Упало тестов: " +testResult.getFailedTest());
+            System.out.println("Описание причин падения: " +testResult.getExceptionDescription());
 
     }
 

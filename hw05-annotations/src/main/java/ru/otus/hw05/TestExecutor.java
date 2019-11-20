@@ -4,82 +4,77 @@ package ru.otus.hw05;
 import ru.otus.hw05.annotations.After;
 import ru.otus.hw05.annotations.Before;
 import ru.otus.hw05.annotations.Test;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
 class TestExecutor {
 
-    private List<ClassForTest> classForTests = new ArrayList<>();
+    private ClassForTest classForTest;
 
     TestExecutor(String testClassName) throws Exception {
 
         Class<?> clazz = Class.forName(testClassName);
-        ClassForTest classForTest = new ClassForTest(clazz);
+        prepareClassForTest(clazz);
+    }
+
+    private void prepareClassForTest(Class<?> clazz) {
+
+        this.classForTest = new ClassForTest(clazz);
         for (Method method : clazz.getMethods()) {
 
             if (method.isAnnotationPresent(Before.class))
-                classForTest.setBeforeMethod(method);
+                this.classForTest.setBeforeMethod(method);
 
             if (method.isAnnotationPresent(Test.class))
-                classForTest.setTestMethod(method);
+                this.classForTest.setTestMethod(method);
 
             if (method.isAnnotationPresent(After.class))
-                classForTest.setAfterMethod(method);
+                this.classForTest.setAfterMethod(method);
         }
-        classForTests.add(classForTest);
     }
 
-    void runTest() throws Exception {
+    TestResult runTest() throws Exception {
 
-        HashMap <String, Integer>  hashMapTest = new HashMap<>();
-        for (ClassForTest classForTest : classForTests) {
-
-            hashMapTest.put("failedTest",0);
-            hashMapTest.put("succeedTest",0);
-            hashMapTest.put("countTest",0);
-
+        TestResult testResult = new TestResult();
             Class<?> aClass = classForTest.getClazz();
-            Object testObj = aClass.getDeclaredConstructor().newInstance();
+                for (Method method : classForTest.getTestMethods()) {
 
-                while (!classForTest.getTestMethods().isEmpty()) {
+                    Object testObj = aClass.getDeclaredConstructor().newInstance();
+                    testResult.setCountTest(1);
 
-                    hashMapTest.put("countTest",hashMapTest.get("countTest")+1);
+                    executeMethods(classForTest.getBeforeMethods(), testObj, testResult);
 
-                    executeMethods(classForTest.getBeforeMethods(), testObj);
+                    if (executeMethod(method, testObj, testResult))
+                        testResult.setSucceedTest(1);
+                    else
+                        testResult.setFailedTest(1);
 
-                    if (executeMethod(classForTest.getTestMethods().get(0), testObj))
-                        hashMapTest.put("succeedTest",hashMapTest.get("succeedTest")+1);
-                     else
-                        hashMapTest.put("failedTest",hashMapTest.get("failedTest")+1);
-
-                    executeMethods(classForTest.getAfterMethods(), testObj);
-
-                    classForTest.removeTestMethod(classForTest.getTestMethods().get(0));
-            }
-            System.out.println("Всего тестов: " + hashMapTest.get("countTest"));
-            System.out.println("Пройдено тестов: " + hashMapTest.get("succeedTest"));
-            System.out.println("Упало тестов: " + hashMapTest.get("failedTest"));
-        }
+                    executeMethods(classForTest.getAfterMethods(), testObj, testResult);
+                }
+            return testResult;
     }
 
 
-    private void executeMethods(List<Method> methods, Object testObj)  {
+    private void executeMethods(List<Method> methods, Object testObj, TestResult testResult )  {
         for (Method method : methods) {
             try {
                 method.invoke(testObj);
-            } catch (Exception ignored) { }
+            } catch (Exception e) {
+                testResult.setExceptionDescription("MethodName: "+method.getName() +
+                        "  ExceptionMessage: " + e.getCause().getMessage()  +"\n");
+            }
         }
     }
 
-    private boolean executeMethod(Method method, Object testObj) {
+    private boolean executeMethod(Method method, Object testObj,  TestResult testResult) {
         try {
              method.invoke(testObj);
              return true;
         } catch (Exception e) {
+            testResult.setExceptionDescription("MethodName: "+method.getName() +
+                    "  ExceptionMessage: " + e.getCause().getMessage()  +"\n");
             return false;
         }
     }
@@ -92,27 +87,19 @@ class TestExecutor {
         Class<?> getClazz() {
             return clazz;
         }
-
         private Class<?> clazz;
 
         private List<Method> beforeMethods = new ArrayList<>();
         private List<Method> afterMethods = new ArrayList<>();
 
-
         List<Method> getBeforeMethods() {
             return beforeMethods;
         }
-
         List<Method> getAfterMethods() {
             return afterMethods;
         }
-
         List<Method> getTestMethods() {
             return testMethods;
-        }
-
-        void removeTestMethod(Method method) {
-            testMethods.remove(method);
         }
 
         private List<Method> testMethods = new ArrayList<>();
