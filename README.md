@@ -8,5 +8,8 @@
 * hw01-maven/
 * hw02-DIYarrayList/
 * hw03-gc/
-* hw05-autoMagicLog/
+* hw04-autoMagicLog/
 * hw05-annotations/
+
+
+

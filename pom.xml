@@ -20,6 +20,7 @@
         <module>hw01-maven</module>
         <module>hw02-DIYarrayList</module>
         <module>hw03-gc</module>
+        <module>hw04-autoMagicLog</module>
         <module>hw05-annotations</module>
     </modules>
 
@@ -47,6 +48,7 @@
         <maven.assembly.plugin.version>3.1.1</maven.assembly.plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <commons-io.version>2.6</commons-io.version>
+        <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
     </properties>
 
     <build>
