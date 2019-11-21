@@ -9,3 +9,7 @@
 * hw02-DIYarrayList/
 * hw03-gc/
 * hw04-autoMagicLog/
+* hw05-annotations/
+
+
+
