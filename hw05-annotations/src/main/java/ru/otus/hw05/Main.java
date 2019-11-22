@@ -1,12 +1,12 @@
-package ru.otus.hw06;
+package ru.otus.hw05;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println("hw06-annotations");
+        System.out.println("hw05-annotations");
 
-            TestExecutor testExecutor = new TestExecutor("ru.otus.hw06.TestClass");
+            TestExecutor testExecutor = new TestExecutor("ru.otus.hw05.TestClass");
             TestResult testResult = testExecutor.runTest();
 
 

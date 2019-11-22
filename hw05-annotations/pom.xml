@@ -24,7 +24,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.otus.hw06.Main</mainClass>
+                            <mainClass>ru.otus.hw05.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
