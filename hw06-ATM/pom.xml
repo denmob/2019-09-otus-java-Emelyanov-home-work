@@ -10,8 +10,8 @@
         <version>2019-09-SNAPSHOT</version>
     </parent>
 
-    <artifactId>hw05-annotations</artifactId>
-    <name>hw05-annotations</name>
+    <artifactId>hw06-ATM</artifactId>
+    <name>hw06-ATM</name>
 
     <packaging>jar</packaging>
 

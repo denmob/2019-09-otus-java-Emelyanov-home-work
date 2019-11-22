@@ -10,6 +10,7 @@
 * hw03-gc/
 * hw04-autoMagicLog/
 * hw05-annotations/
+* hw06-ATM/
 
 
 

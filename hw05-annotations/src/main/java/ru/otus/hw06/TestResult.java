@@ -1,4 +1,4 @@
-package ru.otus.hw05;
+package ru.otus.hw06;
 
 class TestResult {
 

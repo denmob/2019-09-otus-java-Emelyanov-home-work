@@ -1,9 +1,9 @@
-package ru.otus.hw05;
+package ru.otus.hw06;
 
 
-import ru.otus.hw05.annotations.After;
-import ru.otus.hw05.annotations.Before;
-import ru.otus.hw05.annotations.Test;
+import ru.otus.hw06.annotations.After;
+import ru.otus.hw06.annotations.Before;
+import ru.otus.hw06.annotations.Test;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
