@@ -4,65 +4,27 @@ package ru.otus.hw06.ATM;
 import ru.otus.hw06.ATM.MoneyCell.MoneyCellImp;
 import ru.otus.hw06.ATM.MoneyWithdraw.MoneyWithdrawImp;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ATMImp implements ATMInterface {
 
-    public enum MoneyValue {
-        unit20,
-        unit50,
-        unit100,
-        unit200
+    private final MoneyCellImp moneyCellImp;
+
+    private ATMImp(Builder moneyBuilder) {
+        this.moneyCellImp = new MoneyCellImp(moneyBuilder.getMapMoney());
     }
-
-    private MoneyCellImp moneyCellImp = new MoneyCellImp();
-
-    private MoneyWithdrawImp moneyWithdraw = new MoneyWithdrawImp();
 
     @Override
     public void withdrawMoney(int value) {
+        System.out.println("Необходимо выдать сумму: "+value);
+        MoneyWithdrawImp moneyWithdraw = new MoneyWithdrawImp(value,moneyCellImp.clone());
 
-        if (validateMoneyToWithdraw(value)) {
-            moneyCellImp.getMoney(MoneyValue.unit20,moneyWithdraw.getUnit(MoneyValue.unit20));
-            moneyCellImp.getMoney(MoneyValue.unit50,moneyWithdraw.getUnit(MoneyValue.unit50));
-            moneyCellImp.getMoney(MoneyValue.unit100,moneyWithdraw.getUnit(MoneyValue.unit100));
-            moneyCellImp.getMoney(MoneyValue.unit200,moneyWithdraw.getUnit(MoneyValue.unit200));
-        }
-
-    }
-
-    private boolean validateMoneyToWithdraw(Integer withdrawingValue) {
-
-        System.out.println("Необходимо выдать сумму: "+withdrawingValue);
-
-        if (withdrawingValue >= 200) withdrawingValue = createMoneyWithdraw(withdrawingValue,200);
-        if (withdrawingValue >= 100) withdrawingValue = createMoneyWithdraw(withdrawingValue,100);
-        if (withdrawingValue >= 50) withdrawingValue = createMoneyWithdraw(withdrawingValue,50);
-        if (withdrawingValue >= 20) withdrawingValue = createMoneyWithdraw(withdrawingValue,20);
-
-        if (withdrawingValue >0) {
-            System.out.println("Не хватает купюр для выдачи суммы: " + withdrawingValue);
-            return false;
-        }
-        else {
-            moneyWithdraw.printMoneyUnitForWithdraw();
-            return true;
+        if (moneyWithdraw.validateMoneyToWithdraw()) {
+            for  (MoneyValue moneyValue: MoneyValue.values())
+                moneyCellImp.getMoney(moneyValue, moneyWithdraw.getMoneyValueCount(moneyValue));
         }
     }
-
-
-    private Integer createMoneyWithdraw(Integer withdrawing, Integer moneyValueUnit){
-
-        int moneyCellCount;
-        int unitCount = withdrawing / moneyValueUnit;
-        if (unitCount > 0) {
-            moneyCellCount = moneyCellImp.getMoneyValueCount(moneyValueUnit);
-            if (unitCount <= moneyCellCount) {
-                moneyWithdraw.setUnit(moneyValueUnit,unitCount);
-                withdrawing = withdrawing - unitCount * moneyValueUnit;
-            }
-        }
-        return withdrawing;
-    }
-
 
     @Override
     public String depositMoney(MoneyValue moneyValue, Integer count) {
@@ -75,23 +37,64 @@ public class ATMImp implements ATMInterface {
     @Override
     public void printATMValues() {
         int sum = 0;
-        sum = sum + printMoneyUnitStateAndCalculateSum(20);
-        sum = sum + printMoneyUnitStateAndCalculateSum(50);
-        sum = sum + printMoneyUnitStateAndCalculateSum(100);
-        sum = sum + printMoneyUnitStateAndCalculateSum(200);
+        for  (MoneyValue moneyValue: MoneyValue.values()){
+            int moneyValueCount =  moneyCellImp.getMoneyValueCount(moneyValue);
+            sum = sum + moneyValueCount* Integer.parseInt(moneyValue.toString());
+            System.out.println(String.format("Количество купюр номиналом %s - " + moneyValueCount,moneyValue.toString()));
+        }
         if (sum > 0) {
             System.out.println("Общая сумма денежных стредств в ATM = " + sum);
         }
     }
 
-    private int printMoneyUnitStateAndCalculateSum(Integer unitMoneyValue){
 
-        int moneyValueCount =  moneyCellImp.getMoneyValueCount(unitMoneyValue);
-        if (moneyValueCount != 0) {
-            System.out.println(String.format("Количество купюр номиналом %d - " + moneyValueCount,unitMoneyValue));
-            return  moneyValueCount * unitMoneyValue;
+    public static class Builder {
+
+        public Builder() { }
+
+        private Map<MoneyValue, Integer> getMapMoney() {
+            return mapMoney;
         }
-        return 0;
+
+        Map<MoneyValue,Integer> mapMoney = new HashMap<>();
+
+        public Builder addMoneyValue10 (int amount) {
+            mapMoney.put(MoneyValue.unit10,amount);
+            return this;
+        }
+
+        public Builder addMoneyValue20 (int amount) {
+            mapMoney.put(MoneyValue.unit20,amount);
+            return this;
+        }
+
+        public Builder addMoneyValue50 (int amount) {
+            mapMoney.put(MoneyValue.unit50,amount);
+            return this;
+        }
+
+        public Builder addMoneyValue100 (int amount) {
+            mapMoney.put(MoneyValue.unit100,amount);
+            return this;
+        }
+
+        public Builder addMoneyValue200 (int amount) {
+            mapMoney.put(MoneyValue.unit200,amount);
+            return this;
+        }
+
+        public Builder addMoneyValue500 (int amount) {
+            mapMoney.put(MoneyValue.unit500,amount);
+            return this;
+        }
+
+        public ATMImp build() {
+            for  (MoneyValue moneyValue: MoneyValue.values()){
+                mapMoney.putIfAbsent(moneyValue, 0);
+            }
+
+            return new ATMImp(this);
+        }
     }
 }
 

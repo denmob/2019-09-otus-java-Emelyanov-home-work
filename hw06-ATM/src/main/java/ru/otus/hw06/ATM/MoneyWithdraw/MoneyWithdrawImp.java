@@ -1,72 +1,83 @@
 package ru.otus.hw06.ATM.MoneyWithdraw;
 
+import ru.otus.hw06.ATM.MoneyCell.MoneyCellImp;
+import ru.otus.hw06.ATM.MoneyValue;
 
-import ru.otus.hw06.ATM.ATMImp;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class MoneyWithdrawImp implements  MoneyWithdrawInterface{
 
-    private int unit20 = 0;
-    private int unit50 = 0;
-    private int unit100 = 0;
-    private int unit200 = 0;
 
-    public void setUnit(Integer unitMoneyValue, Integer unitMoneyCount) {
-        switch (unitMoneyValue) {
-            case 20:
-                 unit20 = unit20 + unitMoneyCount;
-                 break;
-            case 50:
-                unit50 = unit50 + unitMoneyCount;
-                break;
-            case 100:
-                unit100 = unit100 + unitMoneyCount;
-                break;
-            case 200:
-                unit200 = unit200 + unitMoneyCount;
-                break;
+    private final Map<MoneyValue,Integer> mapMoney = new HashMap<>();
+    private final Integer withdrawingValue;
+    private final MoneyCellImp moneyCellImp;
+
+
+    public MoneyWithdrawImp(Integer withdrawingValue, MoneyCellImp moneyCellImp) {
+        this.withdrawingValue = withdrawingValue;
+        this.moneyCellImp = moneyCellImp;
+
+        for  (MoneyValue moneyValue: MoneyValue.values()){
+            mapMoney.putIfAbsent(moneyValue, 0);
         }
     }
 
-    public Integer getUnit(ATMImp.MoneyValue moneyValue) {
-        switch (moneyValue) {
-            case unit20:
-                return unit20;
-            case unit50:
-                return unit50;
-            case unit100:
-                return unit100;
-            case unit200:
-                return unit200;
-            default:
-                return 0;
-        }
+    public int getMoneyValueCount(MoneyValue unitMoneyValue){
+        return mapMoney.get(unitMoneyValue);
     }
 
-    public void printMoneyUnitForWithdraw() {
+    private void printMoneyUnitForWithdraw() {
 
         int sum = 0;
-
-        if (unit20 != 0) {
-            System.out.println("Будет выдано количество купюр номиналом 20 - " + unit20);
-            sum = sum + unit20 * 20;
+        for  (MoneyValue moneyValue: MoneyValue.values()){
+            int moneyValueCount =  moneyCellImp.getMoneyValueCount(moneyValue);
+            sum = sum + moneyValueCount* Integer.parseInt(moneyValue.toString());
+            System.out.println(String.format("Будет выдано количество купюр номиналом %s - " + moneyValueCount,moneyValue.toString()));
         }
-        if (unit50 != 0) {
-            System.out.println("Будет выдано количество купюр номиналом 50 - " + unit50);
-            sum = sum + unit50 * 50;
-        }
-        if (unit100 != 0) {
-            System.out.println("Будет выдано количество купюр номиналом 100 - " + unit100);
-            sum = sum +  unit100 * 100;
-        }
-        if (unit200 != 0) {
-            System.out.println("Будет выдано количество купюр номиналом 200 - " + unit200);
-            sum = sum + unit200 * 200;
-        }
-
         if (sum > 0) {
             System.out.println("Общая сумма денежных стредств для выдачи = " + sum);
         }
     }
+
+    @Override
+    public boolean validateMoneyToWithdraw() {
+
+        Integer iwithdrawingValue = withdrawingValue;
+        for  (MoneyValue moneyValue: MoneyValue.values() ) {
+
+        }
+//        if (iwithdrawingValue >= 200) iwithdrawingValue = createMoneyWithdraw(iwithdrawingValue,200);
+//        if (iwithdrawingValue >= 100) iwithdrawingValue = createMoneyWithdraw(iwithdrawingValue,100);
+//        if (iwithdrawingValue >= 50) iwithdrawingValue = createMoneyWithdraw(iwithdrawingValue,50);
+//        if (iwithdrawingValue >= 20) iwithdrawingValue = createMoneyWithdraw(iwithdrawingValue,20);
+
+        if (iwithdrawingValue >0) {
+            System.out.println("Не хватает купюр для выдачи суммы: " + iwithdrawingValue);
+            return false;
+        }
+        else {
+            printMoneyUnitForWithdraw();
+            return true;
+        }
+
+    }
+
+//
+//    private Integer createMoneyWithdraw(Integer withdrawing, MoneyValue moneyValueUnit){
+//
+//        int moneyCellCount;
+//        int unitCount = withdrawing / moneyValueUnit;
+//        if (unitCount > 0) {
+//            moneyCellCount = moneyCellImp.getMoneyValueCount(moneyValueUnit);
+//            if (unitCount <= moneyCellCount) {
+//                setUnit(moneyValueUnit,unitCount);
+//                withdrawing = withdrawing - unitCount * moneyValueUnit;
+//            }
+//        }
+//        return withdrawing;
+//    }
 
 
 }

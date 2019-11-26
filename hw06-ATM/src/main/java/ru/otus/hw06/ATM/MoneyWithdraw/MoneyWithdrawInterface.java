@@ -1,13 +1,11 @@
 package ru.otus.hw06.ATM.MoneyWithdraw;
 
-import ru.otus.hw06.ATM.ATMImp;
+import ru.otus.hw06.ATM.MoneyValue;
 
 public interface MoneyWithdrawInterface {
 
-    void setUnit(Integer unitMoneyValue, Integer unitMoneyCount);
+    boolean validateMoneyToWithdraw();
 
-    Integer getUnit(ATMImp.MoneyValue moneyValue);
-
-    void printMoneyUnitForWithdraw();
+    int getMoneyValueCount(MoneyValue unitMoneyValue);
 
 }

@@ -1,13 +1,14 @@
 package ru.otus.hw06.ATM.MoneyCell;
 
-import ru.otus.hw06.ATM.ATMImp;
+
+import ru.otus.hw06.ATM.MoneyValue;
 
 public interface MoneyCellInterface {
 
-    void putMoney(ATMImp.MoneyValue moneyValue, Integer count);
+    void putMoney(MoneyValue moneyValue, Integer count);
 
-    void getMoney(ATMImp.MoneyValue moneyValue, Integer count);
+    void getMoney(MoneyValue moneyValue, Integer count);
 
-    int getMoneyValueCount(Integer unitMoneyValue);
+    int getMoneyValueCount(MoneyValue unitMoneyValue);
 
 }
