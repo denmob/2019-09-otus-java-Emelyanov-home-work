@@ -1,9 +1,7 @@
 package ru.otus.hw06.ATM;
 
-
 import ru.otus.hw06.ATM.MoneyCell.MoneyCellImp;
 import ru.otus.hw06.ATM.MoneyWithdraw.MoneyWithdrawImp;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,53 +45,20 @@ public class ATMImp implements ATMInterface {
         }
     }
 
-
     public static class Builder {
-
-        public Builder() { }
-
-        private Map<MoneyValue, Integer> getMapMoney() {
-            return mapMoney;
-        }
-
         Map<MoneyValue,Integer> mapMoney = new HashMap<>();
-
-        public Builder addMoneyValue10 (int amount) {
-            mapMoney.put(MoneyValue.unit10,amount);
-            return this;
-        }
-
-        public Builder addMoneyValue20 (int amount) {
-            mapMoney.put(MoneyValue.unit20,amount);
-            return this;
-        }
-
-        public Builder addMoneyValue50 (int amount) {
-            mapMoney.put(MoneyValue.unit50,amount);
-            return this;
-        }
-
-        public Builder addMoneyValue100 (int amount) {
-            mapMoney.put(MoneyValue.unit100,amount);
-            return this;
-        }
-
-        public Builder addMoneyValue200 (int amount) {
-            mapMoney.put(MoneyValue.unit200,amount);
-            return this;
-        }
-
-        public Builder addMoneyValue500 (int amount) {
-            mapMoney.put(MoneyValue.unit500,amount);
-            return this;
-        }
-
+        public Builder() { }
+        private Map<MoneyValue, Integer> getMapMoney() { return mapMoney; }
+        public Builder addMoneyValue10 (int amount) { mapMoney.put(MoneyValue.unit10,amount); return this; }
+        public Builder addMoneyValue20 (int amount) { mapMoney.put(MoneyValue.unit20,amount); return this; }
+        public Builder addMoneyValue50 (int amount) { mapMoney.put(MoneyValue.unit50,amount); return this; }
+        public Builder addMoneyValue100 (int amount) { mapMoney.put(MoneyValue.unit100,amount); return this; }
+        public Builder addMoneyValue200 (int amount) { mapMoney.put(MoneyValue.unit200,amount); return this; }
+        public Builder addMoneyValue500 (int amount) { mapMoney.put(MoneyValue.unit500,amount); return this; }
         public ATMImp build() {
             for  (MoneyValue moneyValue: MoneyValue.values()){
                 mapMoney.putIfAbsent(moneyValue, 0);
-            }
-
-            return new ATMImp(this);
+            } return new ATMImp(this);
         }
     }
 }

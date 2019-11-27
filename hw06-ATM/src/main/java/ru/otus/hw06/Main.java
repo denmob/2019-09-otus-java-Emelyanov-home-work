@@ -15,7 +15,6 @@ public class Main {
                 .addMoneyValue200(5)
                 .build();
 
-        System.out.println("Вывод состояния АТМ");
         atm.printATMValues();
 
         System.out.println("Добавление банкнот АТМ");
@@ -25,14 +24,11 @@ public class Main {
         atm.depositMoney(MoneyValue.unit200,5);
         atm.depositMoney(MoneyValue.unit20,5);
 
-        System.out.println("Вывод состояния АТМ");
         atm.printATMValues();
 
         System.out.println("Снятие суммы из АТМ");
-        atm.withdrawMoney(5400);
+        atm.withdrawMoney(540);
 
-        System.out.println("Вывод состояния АТМ");
         atm.printATMValues();
-
     }
 }
