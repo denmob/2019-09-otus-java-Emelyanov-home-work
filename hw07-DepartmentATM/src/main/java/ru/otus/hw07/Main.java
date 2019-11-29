@@ -9,7 +9,8 @@ public class Main {
 
     public static void main(String[] args)  {
 
-        ATMImp atm1 = new ATMImp.Builder()
+        System.out.println("Инициализация АТМ1");
+        ATMImp atm1 = new ATMImp.Builder("АТМ1")
                 .addMoneyValue20(15)
                 .addMoneyValue50(5)
                 .addMoneyValue100(2)
@@ -17,7 +18,8 @@ public class Main {
                 .addMoneyValue500(3)
                 .build();
 
-        ATMImp atm2 = new ATMImp.Builder()
+        System.out.println("Инициализация АТМ2");
+        ATMImp atm2 = new ATMImp.Builder("АТМ2")
                 .addMoneyValue10(100)
                 .addMoneyValue20(10)
                 .addMoneyValue50(50)
@@ -25,34 +27,34 @@ public class Main {
                 .addMoneyValue200(5)
                 .build();
 
+
+        System.out.println("Инициализация АТМ3");
+        ATMImp atm3 = new ATMImp.Builder("АТМ3")
+                .addMoneyValue10(10)
+                .addMoneyValue20(20)
+                .addMoneyValue100(10)
+                .addMoneyValue200(5)
+                .build();
+
+        System.out.println("Инициализация департамента с АТМ");
         DepartmentATM departmentATM = new DepartmentATM();
         departmentATM.addATM(atm1);
         departmentATM.addATM(atm2);
+        departmentATM.addATM(atm3);
 
+        System.out.println("Вывод состояния каждого АТМ");
         departmentATM.printATMValues();
 
-        Integer iAllMoney = departmentATM.getMoneyATM();
-        System.out.println("getMoneyATM first "+iAllMoney);
+        System.out.println("\n"+"Сбор денег со всех ATM");
+        departmentATM.getMoneyATM();
 
+        System.out.println("\n"+"Вывод состояния каждого АТМ после сбора денег ");
         departmentATM.printATMValues();
 
-        iAllMoney = departmentATM.getMoneyATM();
-        System.out.println("getMoneyATM second "+iAllMoney);
+        System.out.println("\n"+"Восстановить состояние всех  ATM до начального");
+        departmentATM.resetStateToInitATM();
 
-//        atm.printATMValues();
-//
-//        System.out.println("Добавление банкнот АТМ");
-//        atm.depositMoney(MoneyValue.unit20,3);
-//        atm.depositMoney(MoneyValue.unit50,5);
-//        atm.depositMoney(MoneyValue.unit100,2);
-//        atm.depositMoney(MoneyValue.unit200,5);
-//        atm.depositMoney(MoneyValue.unit20,5);
-//
-//        atm.printATMValues();
-//
-//        System.out.println("Снятие суммы из АТМ");
-//        atm.withdrawMoney(540);
-//
-//        atm.printATMValues();
+        System.out.println("Вывод состояния каждого АТМ");
+        departmentATM.printATMValues();
     }
 }

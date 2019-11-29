@@ -10,17 +10,20 @@ import java.util.Map;
 
 public class ATMImp implements ATMInterface, ATMGroupInterface {
 
-    private final MoneyCellImp moneyCellImp;
+    private MoneyCellImp moneyCellImp;
+    private final String name;
+    private final StateMoneyCell stateMoneyCell;
 
     private ATMImp(Builder moneyBuilder) {
-        this.moneyCellImp = new MoneyCellImp(moneyBuilder.getMapMoney());
+        stateMoneyCell = new StateMoneyCell(new MoneyCellImp(moneyBuilder.getMapMoney()));
+        this.moneyCellImp = stateMoneyCell.getMoneyCellInit();
+        this.name = moneyBuilder.name;
     }
 
     @Override
     public void withdrawMoney(int value) {
         System.out.println("Необходимо выдать сумму: "+value);
         MoneyWithdrawImp moneyWithdraw = new MoneyWithdrawImp(value,moneyCellImp.clone());
-
         if (moneyWithdraw.validateMoneyToWithdraw()) {
             for  (MoneyValue moneyValue: MoneyValue.values())
                 moneyCellImp.getMoney(moneyValue, moneyWithdraw.getMoneyValueCount(moneyValue));
@@ -37,6 +40,7 @@ public class ATMImp implements ATMInterface, ATMGroupInterface {
 
     @Override
     public void printATMValues() {
+        System.out.println("ATM name " + this.name);
         int sum = 0;
         for  (MoneyValue moneyValue: MoneyValue.values()){
             int moneyValueCount =  moneyCellImp.getMoneyValueCount(moneyValue);
@@ -49,13 +53,21 @@ public class ATMImp implements ATMInterface, ATMGroupInterface {
     }
 
     @Override
-    public Integer getMoneyATM() {
-        return moneyCellImp.getAllMoney();
+    public void resetStateToInitATM() {
+        this.moneyCellImp = stateMoneyCell.getMoneyCellInit();
+    }
+
+    @Override
+    public Map<MoneyValue,Integer> getMoneyATM() {
+        Map<MoneyValue,Integer> moneyValueIntegerMap = moneyCellImp.getAllMoney();
+        moneyCellImp = stateMoneyCell.getMoneyCellEmpty();
+        return moneyValueIntegerMap;
     }
 
     public static class Builder {
         Map<MoneyValue,Integer> mapMoney = new HashMap<>();
-        public Builder() { }
+        private final String name;
+        public Builder(String name) { this.name = name; }
         private Map<MoneyValue, Integer> getMapMoney() { return mapMoney; }
         public Builder addMoneyValue10 (int amount) { mapMoney.put(MoneyValue.unit10,amount); return this; }
         public Builder addMoneyValue20 (int amount) { mapMoney.put(MoneyValue.unit20,amount); return this; }

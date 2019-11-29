@@ -2,6 +2,8 @@ package ru.otus.hw07.ATM.MoneyCell;
 
 import ru.otus.hw07.ATM.MoneyValue;
 
+import java.util.Map;
+
 public interface MoneyCellInterface {
 
     void putMoney(MoneyValue moneyValue, Integer count);
@@ -10,6 +12,6 @@ public interface MoneyCellInterface {
 
     int getMoneyValueCount(MoneyValue unitMoneyValue);
 
-    Integer getAllMoney();
+    Map<MoneyValue,Integer> getAllMoney();
 
 }

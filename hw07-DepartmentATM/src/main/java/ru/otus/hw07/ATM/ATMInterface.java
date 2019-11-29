@@ -1,8 +1,6 @@
 package ru.otus.hw07.ATM;
 
 
-import ru.otus.hw07.ATM.MoneyCell.MoneyCellImp;
-
 public interface ATMInterface {
 
    void withdrawMoney(int value);
@@ -10,5 +8,7 @@ public interface ATMInterface {
    String depositMoney(MoneyValue moneyValue, Integer count);
 
    void printATMValues();
+
+   void resetStateToInitATM();
 
 }
