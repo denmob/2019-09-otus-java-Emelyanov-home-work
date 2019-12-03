@@ -11,6 +11,7 @@
 * hw04-autoMagicLog/
 * hw05-annotations/
 * hw06-ATM/
+* hw08-json/
 
 
 
