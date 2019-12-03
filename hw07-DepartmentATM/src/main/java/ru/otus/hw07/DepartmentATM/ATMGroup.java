@@ -1,12 +1,12 @@
 package ru.otus.hw07.DepartmentATM;
 
-import ru.otus.hw07.ATM.MoneyValue;
+import ru.otus.hw07.ATM.MoneyValueV2;
 
 import java.util.Map;
 
-public interface ATMGroupInterface {
+public interface ATMGroup {
 
-    Map<MoneyValue,Integer> getMoneyATM();
+    Map<MoneyValueV2,Integer> getMoneyATM();
 
     void printATMValues();
 

@@ -1,9 +1,7 @@
 package ru.otus.hw07.DepartmentATM;
 
 import ru.otus.hw07.ATM.ATMImp;
-import ru.otus.hw07.ATM.MoneyValue;
-
-
+import ru.otus.hw07.ATM.MoneyValueV2;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DepartmentATM implements ATMGroupInterface{
+public class DepartmentATM implements ATMGroup {
 
         private final List<ATMImp> atms = new ArrayList<>();
 
@@ -20,9 +18,9 @@ public class DepartmentATM implements ATMGroupInterface{
         }
 
         @Override
-        public Map<MoneyValue,Integer> getMoneyATM() {
+        public Map<MoneyValueV2,Integer> getMoneyATM() {
 
-            Map<MoneyValue,Integer> moneyValueIntegerMap = new HashMap<>();
+            Map<MoneyValueV2,Integer> moneyValueIntegerMap = new HashMap<>();
 
             for (ATMImp atm : atms) {
                  moneyValueIntegerMap = Stream.concat(moneyValueIntegerMap.entrySet().stream(), atm.getMoneyATM().entrySet().stream())
@@ -32,14 +30,14 @@ public class DepartmentATM implements ATMGroupInterface{
             return moneyValueIntegerMap;
         }
 
-        private void printAllATMValues(Map<MoneyValue, Integer> moneyValueIntegerMap) {
+        private void printAllATMValues(Map<MoneyValueV2, Integer> moneyValueIntegerMap) {
 
             System.out.println("Вывод средств собранных со всех АТМ департамента");
 
             int sum = 0;
-            for  (MoneyValue moneyValue: MoneyValue.values()) {
+            for  (MoneyValueV2 moneyValue: MoneyValueV2.values()) {
                 int moneyValueCount =  moneyValueIntegerMap.get(moneyValue);
-                sum = sum + moneyValueCount* Integer.parseInt(moneyValue.toString());
+                sum = sum + moneyValueCount* moneyValue.getMoneyValue();
                 System.out.println(String.format("Количество купюр номиналом %s - " + moneyValueCount,moneyValue.toString()));
             }
             if (sum > 0) {

@@ -1,20 +1,20 @@
 package ru.otus.hw07.ATM;
 
-public enum MoneyValue {
-        unit10{ public String toString() { return "10"; }},
-        unit20{ public String toString() {
+public enum MoneyValueV1 {
+        UNIT_10 { public String toString() { return "10"; }},
+        UNIT_20 { public String toString() {
                         return "20";
                 }},
-        unit50{ public String toString() {
+        UNIT_50 { public String toString() {
                         return "50";
                 }},
-        unit100{ public String toString() {
+        UNIT_100 { public String toString() {
                         return "100";
                 }},
-        unit200{ public String toString() {
+        UNIT_200 { public String toString() {
                         return "200";
                 }},
-        unit500{ public String toString() {
+        UNIT_500 { public String toString() {
                         return "500";
                 }}
 }

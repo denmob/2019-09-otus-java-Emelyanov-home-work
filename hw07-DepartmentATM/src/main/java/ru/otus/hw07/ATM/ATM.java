@@ -1,11 +1,11 @@
 package ru.otus.hw07.ATM;
 
 
-public interface ATMInterface {
+public interface ATM {
 
    void withdrawMoney(int value);
 
-   String depositMoney(MoneyValue moneyValue, Integer count);
+   String depositMoney(MoneyValueV2 moneyValue, Integer count);
 
    void printATMValues();
 

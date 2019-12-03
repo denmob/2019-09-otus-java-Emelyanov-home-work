@@ -2,7 +2,6 @@ package ru.otus.hw07;
 
 
 import ru.otus.hw07.ATM.ATMImp;
-import ru.otus.hw07.ATM.MoneyValue;
 import ru.otus.hw07.DepartmentATM.DepartmentATM;
 
 public class Main {

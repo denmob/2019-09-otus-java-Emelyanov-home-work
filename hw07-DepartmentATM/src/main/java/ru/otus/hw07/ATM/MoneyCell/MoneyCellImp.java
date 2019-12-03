@@ -1,29 +1,29 @@
 package ru.otus.hw07.ATM.MoneyCell;
-import ru.otus.hw07.ATM.MoneyValue;
+import ru.otus.hw07.ATM.MoneyValueV2;
 import java.util.Map;
 
-public class MoneyCellImp implements  MoneyCellInterface,Cloneable {
+public class MoneyCellImp implements MoneyCell,Cloneable {
 
-    private final Map<MoneyValue,Integer> mapMoney;
+    private final Map<MoneyValueV2,Integer> mapMoney;
 
-    public MoneyCellImp(Map<MoneyValue,Integer> mapMoney) {
+    public MoneyCellImp(Map<MoneyValueV2,Integer> mapMoney) {
         this.mapMoney = mapMoney;
     }
 
-    public void putMoney(MoneyValue moneyValue, Integer count) {
+    public void putMoney(MoneyValueV2 moneyValue, Integer count) {
          mapMoney.put(moneyValue,mapMoney.get(moneyValue)+count);
      }
 
-    public void getMoney(MoneyValue moneyValue, Integer count) {
+    public void getMoney(MoneyValueV2 moneyValue, Integer count) {
         mapMoney.put(moneyValue,mapMoney.get(moneyValue)-count);
     }
 
-    public Map<MoneyValue,Integer> getAllMoney() {
+    public Map<MoneyValueV2,Integer> getAllMoney() {
         return mapMoney;
     }
 
-    public int getMoneyValueCount(MoneyValue unitMoneyValue){
-               return mapMoney.get(unitMoneyValue);
+    public int getMoneyValueCount(MoneyValueV2 unitMoneyValue){
+        return  mapMoney.get(unitMoneyValue) == null ?  0 :  mapMoney.get(unitMoneyValue);
     }
 
     @Override
