@@ -10,26 +10,10 @@
         <version>2019-09-SNAPSHOT</version>
     </parent>
 
-    <artifactId>hw08-json</artifactId>
-    <name>hw08-json</name>
+    <artifactId>hw07-DepartmentATM</artifactId>
+    <name>hw07-DepartmentATM</name>
 
     <packaging>jar</packaging>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-        </dependency>
-    </dependencies>
 
     <build>
         <finalName>${project.name}</finalName>

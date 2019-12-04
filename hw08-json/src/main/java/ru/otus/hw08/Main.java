@@ -9,16 +9,18 @@ public class Main {
 
         System.out.println("hw08-json");
 
+        BagOfPrimitives bagOfPrimitives1 = new BagOfPrimitives(22, "test", 10);
+
+        System.out.println(bagOfPrimitives1);
+        OtuSon otuSon = new OtuSon();
+        String json = otuSon.toJson(bagOfPrimitives1);
+        System.out.println("otuSon.toJson() "+json);
+
         Gson gson = new Gson();
-        BagOfPrimitives obj = new BagOfPrimitives(22, "test", 10);
-        System.out.println(obj);
+        BagOfPrimitives bagOfPrimitives2 = gson.fromJson(json, BagOfPrimitives.class);
+        System.out.println(bagOfPrimitives2);
 
-        String json = gson.toJson(obj);
-        System.out.println(json);
-
-        BagOfPrimitives obj2 = gson.fromJson(json, BagOfPrimitives.class);
-        System.out.println(obj.equals(obj2));
-        System.out.println(obj2);
+        System.out.println(bagOfPrimitives1.equals(bagOfPrimitives2));
 
     }
 }

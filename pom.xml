@@ -23,6 +23,7 @@
         <module>hw04-autoMagicLog</module>
         <module>hw05-annotations</module>
         <module>hw06-ATM</module>
+        <module>hw07-DepartmentATM</module>
         <module>hw08-json</module>
     </modules>
 
@@ -43,6 +44,16 @@
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>javax.json</groupId>
+                <artifactId>javax.json-api</artifactId>
+                <version>${javax.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.json</artifactId>
+                <version>${javax.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -57,6 +68,7 @@
         <commons-io.version>2.6</commons-io.version>
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
         <gson.version>2.8.6</gson.version>
+        <javax.version>1.1.4</javax.version>
     </properties>
 
     <build>
