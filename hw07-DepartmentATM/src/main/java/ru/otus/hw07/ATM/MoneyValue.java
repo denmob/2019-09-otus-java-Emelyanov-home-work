@@ -1,6 +1,6 @@
 package ru.otus.hw07.ATM;
 
-public enum MoneyValueV2 {
+public enum MoneyValue {
 
     UNIT_10 (10),
     UNIT_20 (20),
@@ -11,7 +11,7 @@ public enum MoneyValueV2 {
 
     private final int moneyValue;
 
-    MoneyValueV2(int moneyValue) {
+    MoneyValue(int moneyValue) {
         this.moneyValue = moneyValue;
     }
 

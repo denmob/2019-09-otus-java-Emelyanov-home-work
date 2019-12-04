@@ -5,7 +5,7 @@ public interface ATM {
 
    void withdrawMoney(int value);
 
-   String depositMoney(MoneyValueV2 moneyValue, Integer count);
+   String depositMoney(MoneyValue moneyValue, Integer count);
 
    void printATMValues();
 

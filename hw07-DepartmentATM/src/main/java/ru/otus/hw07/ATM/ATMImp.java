@@ -25,13 +25,13 @@ public class ATMImp implements ATM, ATMGroup {
         System.out.println("Необходимо выдать сумму: "+value);
         MoneyWithdrawImp moneyWithdraw = new MoneyWithdrawImp(value,moneyCellImp.clone());
         if (moneyWithdraw.validateMoneyToWithdraw()) {
-            for  (MoneyValueV2 moneyValue: MoneyValueV2.values())
+            for  (MoneyValue moneyValue: MoneyValue.values())
                 moneyCellImp.getMoney(moneyValue, moneyWithdraw.getMoneyValueCount(moneyValue));
         }
     }
 
     @Override
-    public String depositMoney(MoneyValueV2 moneyValue, Integer count) {
+    public String depositMoney(MoneyValue moneyValue, Integer count) {
         if (count>0) {
             moneyCellImp.putMoney(moneyValue, count);
             return "Средства успешно внесены.";
@@ -42,7 +42,7 @@ public class ATMImp implements ATM, ATMGroup {
     public void printATMValues() {
         System.out.println("ATM name " + this.name);
         int sum = 0;
-        for  (MoneyValueV2 moneyValue: MoneyValueV2.values()){
+        for  (MoneyValue moneyValue: MoneyValue.values()){
             int moneyValueCount =  moneyCellImp.getMoneyValueCount(moneyValue);
             sum = sum + moneyValueCount* moneyValue.getMoneyValue();
             System.out.println(String.format("Количество купюр номиналом %s - " + moneyValueCount,moneyValue.toString()));
@@ -58,23 +58,23 @@ public class ATMImp implements ATM, ATMGroup {
     }
 
     @Override
-    public Map<MoneyValueV2,Integer> getMoneyATM() {
-        Map<MoneyValueV2,Integer> moneyValueIntegerMap = moneyCellImp.getAllMoney();
+    public Map<MoneyValue,Integer> getMoneyATM() {
+        Map<MoneyValue,Integer> moneyValueIntegerMap = moneyCellImp.getAllMoney();
         moneyCellImp = stateMoneyCell.getMoneyCellEmpty();
         return moneyValueIntegerMap;
     }
 
     public static class Builder {
-        Map<MoneyValueV2,Integer> mapMoney = new HashMap<>();
+        Map<MoneyValue,Integer> mapMoney = new HashMap<>();
         private final String name;
         public Builder(String name) { this.name = name; }
-        private Map<MoneyValueV2, Integer> getMapMoney() { return mapMoney; }
-        public Builder addMoneyValue10 (int amount) { mapMoney.put(MoneyValueV2.UNIT_10,amount); return this; }
-        public Builder addMoneyValue20 (int amount) { mapMoney.put(MoneyValueV2.UNIT_20,amount); return this; }
-        public Builder addMoneyValue50 (int amount) { mapMoney.put(MoneyValueV2.UNIT_50,amount); return this; }
-        public Builder addMoneyValue100 (int amount) { mapMoney.put(MoneyValueV2.UNIT_100,amount); return this; }
-        public Builder addMoneyValue200 (int amount) { mapMoney.put(MoneyValueV2.UNIT_200,amount); return this; }
-        public Builder addMoneyValue500 (int amount) { mapMoney.put(MoneyValueV2.UNIT_500,amount); return this; }
+        private Map<MoneyValue, Integer> getMapMoney() { return mapMoney; }
+        public Builder addMoneyValue10 (int amount) { mapMoney.put(MoneyValue.UNIT_10,amount); return this; }
+        public Builder addMoneyValue20 (int amount) { mapMoney.put(MoneyValue.UNIT_20,amount); return this; }
+        public Builder addMoneyValue50 (int amount) { mapMoney.put(MoneyValue.UNIT_50,amount); return this; }
+        public Builder addMoneyValue100 (int amount) { mapMoney.put(MoneyValue.UNIT_100,amount); return this; }
+        public Builder addMoneyValue200 (int amount) { mapMoney.put(MoneyValue.UNIT_200,amount); return this; }
+        public Builder addMoneyValue500 (int amount) { mapMoney.put(MoneyValue.UNIT_500,amount); return this; }
         public ATMImp build() {
             return new ATMImp(this);
         }

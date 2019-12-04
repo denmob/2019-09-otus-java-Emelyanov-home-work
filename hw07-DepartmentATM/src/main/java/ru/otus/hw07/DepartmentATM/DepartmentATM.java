@@ -1,7 +1,7 @@
 package ru.otus.hw07.DepartmentATM;
 
 import ru.otus.hw07.ATM.ATMImp;
-import ru.otus.hw07.ATM.MoneyValueV2;
+import ru.otus.hw07.ATM.MoneyValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +18,9 @@ public class DepartmentATM implements ATMGroup {
         }
 
         @Override
-        public Map<MoneyValueV2,Integer> getMoneyATM() {
+        public Map<MoneyValue,Integer> getMoneyATM() {
 
-            Map<MoneyValueV2,Integer> moneyValueIntegerMap = new HashMap<>();
+            Map<MoneyValue,Integer> moneyValueIntegerMap = new HashMap<>();
 
             for (ATMImp atm : atms) {
                  moneyValueIntegerMap = Stream.concat(moneyValueIntegerMap.entrySet().stream(), atm.getMoneyATM().entrySet().stream())
@@ -30,12 +30,12 @@ public class DepartmentATM implements ATMGroup {
             return moneyValueIntegerMap;
         }
 
-        private void printAllATMValues(Map<MoneyValueV2, Integer> moneyValueIntegerMap) {
+        private void printAllATMValues(Map<MoneyValue, Integer> moneyValueIntegerMap) {
 
             System.out.println("Вывод средств собранных со всех АТМ департамента");
 
             int sum = 0;
-            for  (MoneyValueV2 moneyValue: MoneyValueV2.values()) {
+            for  (MoneyValue moneyValue: MoneyValue.values()) {
                 int moneyValueCount =  moneyValueIntegerMap.get(moneyValue);
                 sum = sum + moneyValueCount* moneyValue.getMoneyValue();
                 System.out.println(String.format("Количество купюр номиналом %s - " + moneyValueCount,moneyValue.toString()));

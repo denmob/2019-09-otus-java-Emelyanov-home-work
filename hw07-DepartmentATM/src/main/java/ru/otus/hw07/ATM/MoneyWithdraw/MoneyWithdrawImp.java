@@ -2,7 +2,7 @@ package ru.otus.hw07.ATM.MoneyWithdraw;
 
 
 import ru.otus.hw07.ATM.MoneyCell.MoneyCellImp;
-import ru.otus.hw07.ATM.MoneyValueV2;
+import ru.otus.hw07.ATM.MoneyValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class MoneyWithdrawImp implements MoneyWithdraw {
 
-    private final Map<MoneyValueV2,Integer> mapMoney = new HashMap<>();
+    private final Map<MoneyValue,Integer> mapMoney = new HashMap<>();
     private final Integer withdrawingValue;
     private final MoneyCellImp moneyCellImp;
 
@@ -21,18 +21,18 @@ public class MoneyWithdrawImp implements MoneyWithdraw {
     }
 
     private void initializationEmptyMoneyCells(){
-        for  (MoneyValueV2 moneyValue: MoneyValueV2.values()){
+        for  (MoneyValue moneyValue: MoneyValue.values()){
             mapMoney.putIfAbsent(moneyValue, 0);
         }
     }
 
-    public int getMoneyValueCount(MoneyValueV2 unitMoneyValue){
+    public int getMoneyValueCount(MoneyValue unitMoneyValue){
         return mapMoney.get(unitMoneyValue);
     }
 
     private void printMoneyUnitForWithdraw() {
         int sum = 0;
-        for  (MoneyValueV2 moneyValue: MoneyValueV2.values()){
+        for  (MoneyValue moneyValue: MoneyValue.values()){
             int moneyValueCount =  moneyCellImp.getMoneyValueCount(moneyValue);
             sum = sum + moneyValueCount* moneyValue.getMoneyValue();
             System.out.println(String.format("Будет выдано количество купюр номиналом %s - " + moneyValueCount,moneyValue.toString()));
@@ -44,7 +44,7 @@ public class MoneyWithdrawImp implements MoneyWithdraw {
 
     @Override
     public boolean validateMoneyToWithdraw() {
-        MoneyValueV2[] moneyValue = MoneyValueV2.values();
+        MoneyValue[] moneyValue = MoneyValue.values();
         Integer iwithdrawingValue = withdrawingValue;
         for (int i=moneyValue.length-1;i>=0;i--) {
             iwithdrawingValue = createMoneyWithdraw(iwithdrawingValue,  moneyValue[i]);
@@ -58,11 +58,11 @@ public class MoneyWithdrawImp implements MoneyWithdraw {
         }
     }
 
-    private void setMoney(MoneyValueV2 moneyValue, Integer unitCount){
+    private void setMoney(MoneyValue moneyValue, Integer unitCount){
         mapMoney.put(moneyValue,mapMoney.get(moneyValue)+unitCount);
     }
 
-    private Integer createMoneyWithdraw(Integer withdrawing, MoneyValueV2 moneyValueUnit){
+    private Integer createMoneyWithdraw(Integer withdrawing, MoneyValue moneyValueUnit){
         int moneyCellCount;
         int unitCount = withdrawing / moneyValueUnit.getMoneyValue();
         if (unitCount > 0) {

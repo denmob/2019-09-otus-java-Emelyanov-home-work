@@ -24,7 +24,7 @@ class StateMoneyCell {
     }
 
     private void createMoneyCellEmpty() {
-        Map<MoneyValueV2,Integer> mapMoney = new HashMap<>();
+        Map<MoneyValue,Integer> mapMoney = new HashMap<>();
         this.moneyCellEmpty = new MoneyCellImp(mapMoney);
     }
 

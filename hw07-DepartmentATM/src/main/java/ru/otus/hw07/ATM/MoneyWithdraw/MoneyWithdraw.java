@@ -1,11 +1,11 @@
 package ru.otus.hw07.ATM.MoneyWithdraw;
 
-import ru.otus.hw07.ATM.MoneyValueV2;
+import ru.otus.hw07.ATM.MoneyValue;
 
 public interface MoneyWithdraw {
 
     boolean validateMoneyToWithdraw();
 
-    int getMoneyValueCount(MoneyValueV2 unitMoneyValue);
+    int getMoneyValueCount(MoneyValue unitMoneyValue);
 
 }
