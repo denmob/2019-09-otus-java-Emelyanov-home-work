@@ -38,6 +38,8 @@ class OtuSon {
                 return Json.createValue(object.toString());
             }
             // to do
+//            - массивы объектов и примитивных типов
+//            - коллекции из стандартный библиотеки.
             return null;
         }
 

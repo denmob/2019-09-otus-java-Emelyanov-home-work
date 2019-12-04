@@ -14,7 +14,7 @@ public class Main {
         System.out.println(bagOfPrimitives1);
         OtuSon otuSon = new OtuSon();
         String json = otuSon.toJson(bagOfPrimitives1);
-        System.out.println("otuSon.toJson() "+json);
+        System.out.println("toJson "+json);
 
         Gson gson = new Gson();
         BagOfPrimitives bagOfPrimitives2 = gson.fromJson(json, BagOfPrimitives.class);
