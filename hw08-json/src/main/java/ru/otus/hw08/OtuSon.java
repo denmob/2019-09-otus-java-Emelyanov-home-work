@@ -1,18 +1,19 @@
 package ru.otus.hw08;
 
+import org.slf4j.LoggerFactory;
 import java.lang.reflect.*;
 import javax.json.*;
 
 class OtuSon {
 
-    private String sResult = null;
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(OtuSon.class);
 
         String toJson(Object object) {
-            if (object == null)
-                System.err.println("Object is null!");
-            else
-                sResult= objectToJson(object);
-            return sResult;
+            if (object == null) {
+                logger.error("Object is null!");
+                return null;
+            }
+            return toJsonValue(object).toString();
         }
 
         private JsonValue toJsonValue(Object object) {
@@ -36,28 +37,65 @@ class OtuSon {
                 return Json.createValue(object.toString());
             } else if (Character.class.equals(clazz)) {
                 return Json.createValue(object.toString());
-            }
-            // to do
-//            - массивы объектов и примитивных типов
-//            - коллекции из стандартный библиотеки.
-            return null;
+            } else if (clazz.isArray()) {
+                return arrayToJsonValue(object);
+            } else
+               return objectToJson(object);
+            //to do
+            //  коллекции из стандартный библиотеки.
         }
 
-        private String objectToJson(Object object) {
+    private JsonValue arrayToJsonValue(Object arrayObj) {
+
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        if (Array.getLength(arrayObj) == 0) { return arrayBuilder.build(); }
+
+        Class<?> componentType = arrayObj.getClass().getComponentType();
+
+        if (componentType.isPrimitive()) {
+            if (byte.class.equals(componentType))
+                for (byte i :(byte[]) arrayObj) arrayBuilder.add(i);
+
+            if (short.class.equals(componentType))
+                for (short i :(short[]) arrayObj) arrayBuilder.add(i);
+
+            if (int.class.equals(componentType))
+                for (int i :(int[]) arrayObj) arrayBuilder.add(i);
+
+            if (long.class.equals(componentType))
+                for (long i :(long[]) arrayObj) arrayBuilder.add(i);
+
+            if (float.class.equals(componentType))
+                for (float i :(float[]) arrayObj) arrayBuilder.add(i);
+
+            if (double.class.equals(componentType))
+                for (double i :(double[]) arrayObj) arrayBuilder.add(i);
+
+            if (boolean.class.equals(componentType))
+                arrayBuilder.add((Boolean) arrayObj ? JsonValue.TRUE : JsonValue.FALSE);
+
+            if (char.class.equals(componentType))
+                for (char i :(char[]) arrayObj) arrayBuilder.add(String.valueOf(i));
+        } else
+            for (Object el : (Object[])arrayObj) arrayBuilder.add(toJsonValue(el));
+
+            return arrayBuilder.build();
+    }
+
+        private JsonValue objectToJson(Object object) {
             JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
 
             Field[] fields = object.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                 field.setAccessible(true);
-                try {
-                    JsonValue jsonValue = toJsonValue(field.get(object));
-                    jsonObjectBuilder.add(field.getName(), jsonValue);
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    try {
+                        JsonValue jsonValue = toJsonValue(field.get(object));
+                        jsonObjectBuilder.add(field.getName(), jsonValue);
+                    } catch (Exception e) {
+                       logger.error("Exception with convert field name: {} "
+                                + " to JsonValue. Exception message: {} ", field.getName(),  e.getMessage());
+                    }
                 }
-                catch (Exception e) {
-                    System.err.println("Exception with convert field name: "+ field.getName()
-                            +" to JsonValue. Exception message: "+e.getMessage());
-                }
-            }
-            return jsonObjectBuilder.build().toString();
+            return jsonObjectBuilder.build();
         }
 }

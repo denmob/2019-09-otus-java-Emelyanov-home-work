@@ -1,26 +1,30 @@
 package ru.otus.hw08;
 
-
 import com.google.gson.Gson;
+import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
 
 public class Main {
 
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class);
+
     public static void main(String[] args)  {
 
-        System.out.println("hw08-json");
+        logger.info("hw08-json");
 
-        BagOfPrimitives bagOfPrimitives1 = new BagOfPrimitives(22, "test", 10);
+        Object[] objects1 = {new BagOfPrimitives(22, "test", 10), new BagOfPrimitives(11, "test1", 20)};
+        for (Object objects: objects1) logger.debug("objects1 {}", objects);
 
-        System.out.println(bagOfPrimitives1);
         OtuSon otuSon = new OtuSon();
-        String json = otuSon.toJson(bagOfPrimitives1);
-        System.out.println("toJson "+json);
+        String json1 = otuSon.toJson(objects1);
+        logger.debug("otuSon.toJson {}",json1);
 
         Gson gson = new Gson();
-        BagOfPrimitives bagOfPrimitives2 = gson.fromJson(json, BagOfPrimitives.class);
-        System.out.println(bagOfPrimitives2);
+        Object[] objects2  = gson.fromJson(json1, BagOfPrimitives[].class);
+        for (Object objects: objects2) logger.debug("objects2 {}", objects);
 
-        System.out.println(bagOfPrimitives1.equals(bagOfPrimitives2));
+        logger.info("objects1.equals(objects2) {} ", Arrays.equals(objects1, objects2));
 
     }
 }
