@@ -2,6 +2,8 @@ package ru.otus.hw08;
 
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.*;
+import java.util.Arrays;
+import java.util.Collection;
 import javax.json.*;
 
 class OtuSon {
@@ -38,16 +40,34 @@ class OtuSon {
             } else if (Character.class.equals(clazz)) {
                 return Json.createValue(object.toString());
             } else if (clazz.isArray()) {
-                return arrayToJsonValue(object);
+                return arrayObjToJsonValue(object); }
+            else if (isCollection(clazz)) {
+                return collectionToJsonValue((Collection)object);
             } else
                return objectToJson(object);
-            //to do
-            //  коллекции из стандартный библиотеки.
         }
 
-    private JsonValue arrayToJsonValue(Object arrayObj) {
+    private JsonValue objectToJson(Object object) {
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+
+        Field[] fields = object.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                try {
+                    JsonValue jsonValue = toJsonValue(field.get(object));
+                    jsonObjectBuilder.add(field.getName(), jsonValue);
+                } catch (Exception e) {
+                   logger.error("Exception with convert field name: {} "
+                            + " to JsonValue. Exception message: {} ", field.getName(),  e.getMessage());
+                }
+            }
+        return jsonObjectBuilder.build();
+    }
+
+    private JsonValue arrayObjToJsonValue(Object arrayObj) {
 
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+
         if (Array.getLength(arrayObj) == 0) { return arrayBuilder.build(); }
 
         Class<?> componentType = arrayObj.getClass().getComponentType();
@@ -79,23 +99,45 @@ class OtuSon {
         } else
             for (Object el : (Object[])arrayObj) arrayBuilder.add(toJsonValue(el));
 
-            return arrayBuilder.build();
+        return arrayBuilder.build();
     }
 
-        private JsonValue objectToJson(Object object) {
-            JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+    private boolean isCollection(Class<?> type) {
+        boolean result = false;
+        Class<?>[] interfaces = type.getInterfaces();
 
-            Field[] fields = object.getClass().getDeclaredFields();
-                for (Field field : fields) {
-                    field.setAccessible(true);
-                    try {
-                        JsonValue jsonValue = toJsonValue(field.get(object));
-                        jsonObjectBuilder.add(field.getName(), jsonValue);
-                    } catch (Exception e) {
-                       logger.error("Exception with convert field name: {} "
-                                + " to JsonValue. Exception message: {} ", field.getName(),  e.getMessage());
-                    }
-                }
-            return jsonObjectBuilder.build();
+        if (Arrays.asList(interfaces).contains(Collection.class)) { return true; }
+
+        for (Class<?> clazz : interfaces) {
+            result = (isCollection(clazz));
+            if (result) break;
         }
+
+        if (!result) {
+            Class<?> superClass = type.getSuperclass();
+            if (superClass != null) {
+                result = isCollection(superClass);
+            }
+        }
+        return result;
+    }
+
+    private JsonValue collectionToJsonValue(Collection collection) {
+
+        if (collection.isEmpty()) { return Json.createArrayBuilder().build(); }
+
+        Class<?> componentType = collection.stream().findFirst().get().getClass();
+
+        if (componentType.isPrimitive()  || componentType.equals(String.class)) {
+            return Json.createArrayBuilder(collection).build();
+        }
+        else {
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+            for (Object el : collection) {
+                arrayBuilder.add(toJsonValue(el));
+            }
+            return arrayBuilder.build();
+        }
+
+    }
 }
