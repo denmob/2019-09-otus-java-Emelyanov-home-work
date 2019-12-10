@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.IntStream;
 import javax.json.*;
 
 class OtuSon {
@@ -13,7 +14,7 @@ class OtuSon {
         String toJson(Object object) {
             if (object == null) {
                 logger.error("Object is null!");
-                return null;
+                return JsonValue.NULL.toString();
             }
             return toJsonValue(object).toString();
         }
@@ -54,8 +55,12 @@ class OtuSon {
             for (Field field : fields) {
                 field.setAccessible(true);
                 try {
-                    JsonValue jsonValue = toJsonValue(field.get(object));
-                    jsonObjectBuilder.add(field.getName(), jsonValue);
+                    int modifiers = field.getModifiers();
+                    logger.debug(" fieldName {} modifier {}",field.getName(), modifiers);
+                    if (isNotStaticOrTransient(modifiers)) {
+                        JsonValue jsonValue = toJsonValue(field.get(object));
+                        jsonObjectBuilder.add(field.getName(), jsonValue);
+                    }
                 } catch (Exception e) {
                    logger.error("Exception with convert field name: {} "
                             + " to JsonValue. Exception message: {} ", field.getName(),  e.getMessage());
@@ -64,38 +69,19 @@ class OtuSon {
         return jsonObjectBuilder.build();
     }
 
+    private boolean isNotStaticOrTransient(int modifiers) {
+        return !(Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers));
+    }
+
     private JsonValue arrayObjToJsonValue(Object arrayObj) {
 
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-
         if (Array.getLength(arrayObj) == 0) { return arrayBuilder.build(); }
-
         Class<?> componentType = arrayObj.getClass().getComponentType();
-
         if (componentType.isPrimitive()) {
-            if (byte.class.equals(componentType))
-                for (byte i :(byte[]) arrayObj) arrayBuilder.add(i);
-
-            if (short.class.equals(componentType))
-                for (short i :(short[]) arrayObj) arrayBuilder.add(i);
-
-            if (int.class.equals(componentType))
-                for (int i :(int[]) arrayObj) arrayBuilder.add(i);
-
-            if (long.class.equals(componentType))
-                for (long i :(long[]) arrayObj) arrayBuilder.add(i);
-
-            if (float.class.equals(componentType))
-                for (float i :(float[]) arrayObj) arrayBuilder.add(i);
-
-            if (double.class.equals(componentType))
-                for (double i :(double[]) arrayObj) arrayBuilder.add(i);
-
-            if (boolean.class.equals(componentType))
-                arrayBuilder.add((Boolean) arrayObj ? JsonValue.TRUE : JsonValue.FALSE);
-
-            if (char.class.equals(componentType))
-                for (char i :(char[]) arrayObj) arrayBuilder.add(String.valueOf(i));
+            IntStream.rangeClosed(0, Array.getLength(arrayObj) - 1)
+                    .mapToObj(i -> toJsonValue(Array.get(arrayObj, i)))
+                    .forEach(arrayBuilder::add);
         } else
             for (Object el : (Object[])arrayObj) arrayBuilder.add(toJsonValue(el));
 
@@ -103,23 +89,7 @@ class OtuSon {
     }
 
     private boolean isCollection(Class<?> type) {
-        boolean result = false;
-        Class<?>[] interfaces = type.getInterfaces();
-
-        if (Arrays.asList(interfaces).contains(Collection.class)) { return true; }
-
-        for (Class<?> clazz : interfaces) {
-            result = (isCollection(clazz));
-            if (result) break;
-        }
-
-        if (!result) {
-            Class<?> superClass = type.getSuperclass();
-            if (superClass != null) {
-                result = isCollection(superClass);
-            }
-        }
-        return result;
+        return  Collection.class.isAssignableFrom(type);
     }
 
     private JsonValue collectionToJsonValue(Collection collection) {

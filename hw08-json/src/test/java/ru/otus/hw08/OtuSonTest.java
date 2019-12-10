@@ -21,8 +21,14 @@ public class OtuSonTest {
     @Test
     public void serializeNull()  {
         OtuSon otuSon = new OtuSon();
-        String json = otuSon.toJson(null);
-        assertNull(json);
+        String json1 = otuSon.toJson(null);
+        logger.info("otuSon.toJson {}",json1);
+
+        Gson gson = new Gson();
+        String json2 = gson.toJson(null);
+        logger.info("gson.toJson {}",json2);
+
+        assertEquals(json2,json1);
     }
 
     @Test
@@ -38,7 +44,7 @@ public class OtuSonTest {
         BagOfPrimitives bagOfPrimitives2 = gson.fromJson(json, BagOfPrimitives.class);
         logger.info("gson.fromJson {}",bagOfPrimitives2);
 
-        assertEquals(bagOfPrimitives1,bagOfPrimitives2);
+        assertEquals(bagOfPrimitives2,bagOfPrimitives1);
     }
 
     @Test
@@ -52,7 +58,7 @@ public class OtuSonTest {
         String json2 = gson.toJson(bagOfPrimitives1);
         logger.info("gson.toJson {}",json2);
 
-        assertEquals(json1,json2);
+        assertEquals(json2,json1);
     }
 
 
@@ -66,9 +72,9 @@ public class OtuSonTest {
 
         Gson gson = new Gson();
         String[] strings2 = gson.fromJson(json, String[].class);
-        logger.info("gson.fromJson {}",strings2);
+        logger.info("gson.fromJson {}", Arrays.toString(strings2));
 
-        assertEquals(strings1,strings2);
+        assertEquals(strings2,strings1);
     }
 
 
@@ -82,7 +88,7 @@ public class OtuSonTest {
 
         Gson gson = new Gson();
         int[] integers2 = gson.fromJson(json, int[].class);
-        assertEquals(integers1[2],integers2[2]);
+        assertEquals(integers2[2],integers1[2]);
     }
 
     @Test
@@ -96,8 +102,24 @@ public class OtuSonTest {
         Gson gson = new Gson();
         char[] chars2 = gson.fromJson(json, char[].class);
 
-        assertEquals(chars1[2],chars2[2]);
+        assertEquals(chars2[2],chars1[2]);
     }
+
+    @Test
+    public void serializeArrayPrimitives4()  {
+        boolean[] booleans = {true,false,true};
+
+        OtuSon otuSon = new OtuSon();
+        String json1 = otuSon.toJson(booleans);
+        logger.info("otuSon.json {}",json1);
+
+        Gson gson = new Gson();
+        String json2 = gson.toJson(booleans);
+        logger.info("otuSon.json {}",json1);
+
+        assertEquals(json2,json1);
+    }
+
 
     @Test
     public void serializeArrayObject1()  {
@@ -111,7 +133,7 @@ public class OtuSonTest {
         String json2  = gson.toJson(objects1);
         logger.info("gson.toJson {}",json2);
 
-        assertEquals(json1,json2);
+        assertEquals(json2,json1);
     }
 
     @Test
@@ -126,7 +148,7 @@ public class OtuSonTest {
         String json2  = gson.toJson(objects1);
         logger.info("gson.toJson {}",json2);
 
-        assertEquals(json1,json2);
+        assertEquals(json2,json1);
     }
 
     @Test
@@ -143,7 +165,7 @@ public class OtuSonTest {
         logger.debug("objects2 {}",objects2);
 
         logger.info("objects1.equals(objects2) {} ", Arrays.equals(objects1, objects2));
-        assertEquals(objects1[1],objects2[1]);
+        assertEquals(objects2[1],objects1[1]);
     }
 
 
@@ -163,7 +185,7 @@ public class OtuSonTest {
         String json2  = gson.toJson(strings);
         logger.debug("gson.toJson {}",json2);
 
-        assertEquals(json1,json2);
+        assertEquals(json2,json1);
     }
 
     @Test
@@ -179,7 +201,7 @@ public class OtuSonTest {
         String json2  = gson.toJson(strings);
         logger.debug("gson.toJson {}",json2);
 
-        assertEquals(json1,json2);
+        assertEquals(json2,json1);
     }
 
     @Test
@@ -198,7 +220,7 @@ public class OtuSonTest {
         String json2  = gson.toJson(bagOfPrimitives);
         logger.debug("gson.toJson {}",json2);
 
-        assertEquals(json1,json2);
+        assertEquals(json2,json1);
     }
 
     @Test
@@ -212,7 +234,7 @@ public class OtuSonTest {
         String json2  = gson.toJson(Collections.singletonList(10));
         logger.debug("gson.toJson {}",json2);
 
-        assertEquals(json1,json2);
+        assertEquals(json2,json1);
     }
 
 

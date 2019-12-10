@@ -7,6 +7,10 @@ public class BagOfPrimitives {
     private final String value2;
     private final int value3;
 
+    private static final String aaa = "aaaaaaaaaaaaaa";
+    private final String bbb = "bbbbbb";
+    private String ccc = "ccccccc";
+
     BagOfPrimitives(int value1, String value2, int value3) {
         this.value1 = value1;
         this.value2 = value2;
