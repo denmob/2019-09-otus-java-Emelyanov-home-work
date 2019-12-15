@@ -1,14 +1,13 @@
 package ru.otus.hw09.jdbc;
 
 import org.slf4j.LoggerFactory;
-import ru.otus.hw09.Main;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
-public class JDBCTemplateImp<T> implements  JDBCTemplate {
+public class JDBCTemplateImp<T> implements  JDBCTemplate<T> {
 
     private final Connection connection;
     private static final String sSavepoint = "JDBCTemplate";
@@ -19,7 +18,7 @@ public class JDBCTemplateImp<T> implements  JDBCTemplate {
     }
 
     @Override
-    public void create(Object objectData) {
+    public void create(T objectData) {
 
         try (PreparedStatement pst = connection.prepareStatement(String.valueOf(objectData))) {
             Savepoint savePoint = this.connection.setSavepoint(sSavepoint);
@@ -47,4 +46,5 @@ public class JDBCTemplateImp<T> implements  JDBCTemplate {
     public Object load(long id, Class clazz) {
         return null;
     }
+
 }

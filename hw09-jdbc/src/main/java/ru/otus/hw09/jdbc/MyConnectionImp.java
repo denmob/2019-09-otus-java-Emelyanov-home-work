@@ -36,16 +36,14 @@ public class MyConnectionImp implements  MyConnection{
     }
 
     private boolean initConnection() {
-        boolean result;
         try {
            this.connection = DriverManager.getConnection(this.sURL);
             this.connection.setAutoCommit(this.bAutoCommit);
-            result = true;
         } catch (Exception e) {
            logger.error("initDriverManager Exception",e);
-           throw new IllegalArgumentException(e.getMessage());
+           return false;
         }
-        return result;
+        return true;
     }
 
 

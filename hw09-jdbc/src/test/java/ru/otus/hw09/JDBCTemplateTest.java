@@ -5,9 +5,6 @@ import org.slf4j.LoggerFactory;
 import ru.otus.hw09.jdbc.JDBCTemplateImp;
 import ru.otus.hw09.jdbc.MyConnectionImp;
 
-import java.sql.Connection;
-
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 
 public class JDBCTemplateTest {
