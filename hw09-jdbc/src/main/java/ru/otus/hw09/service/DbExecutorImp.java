@@ -23,20 +23,39 @@ public class DbExecutorImp implements DbExecutor {
         this.jdbcTemplateImp = new JDBCTemplateImp<>(myConnectionImp1.getConnection());
     }
 
+    @Override
     public boolean saveObject(Object object) {
-
-        jdbcTemplateImp.create(object);
-        return true;
+        try {
+            jdbcTemplateImp.create(object);
+            return true;
+        }catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
-    public boolean loadObject(Object object) {
-        return false;
+    public Object loadObject(long id, Class<?> clazz) {
+        return this.jdbcTemplateImp.load(id,clazz);
     }
 
     @Override
     public boolean updateObject(Object object) {
-        return false;
+        try {
+            jdbcTemplateImp.update(object);
+            return true;
+        }catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean createOrUpdate(Object object) {
+        try {
+            jdbcTemplateImp.createOrUpdate(object);
+            return true;
+        }catch (Exception e) {
+            return false;
+        }
     }
 
 

@@ -11,21 +11,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ParseObject {
+public class ParseObjectOrClassImp implements ParseObjectOrClass {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ParseObject.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ParseObjectOrClassImp.class);
 
     private Object object;
     private Class<?> clazz;
-
-
-    public String getTableName() {
-        return tableName;
-    }
-
     private String tableName;
     private Field[] fields;
     private String fieldsList;
+
+    public Field getFieldId() {
+        return fieldId;
+    }
+
     private Field fieldId;
     private Field[] fieldsWithOutID;
 
@@ -35,9 +34,8 @@ public class ParseObject {
 
     private Map<Integer,Object> insertValues;
     private Map<Integer,Object> updateValues;
-    private Map<Integer,Object> selectValues;
 
-    public ParseObject(Object object) {
+    public ParseObjectOrClassImp(Object object) {
 
         if (object != null) {
             this.object = object;
@@ -49,6 +47,19 @@ public class ParseObject {
         } else {
             logger.error("Object is null!");
             throw new IllegalArgumentException("Object is null!");
+        }
+    }
+
+    public ParseObjectOrClassImp(Class<?> clazz) {
+
+        if (clazz != null) {
+            this.clazz = clazz;
+            if (initParse()) {
+                createSqlForObject();
+            }
+        } else {
+            logger.error("Class is null!");
+            throw new IllegalArgumentException("Class is null!");
         }
     }
 
@@ -77,7 +88,6 @@ public class ParseObject {
     private void createValuesForObject() {
         createInsertValues();
         createUpdateValues();
-        createSelectValues();
     }
 
 
@@ -132,14 +142,17 @@ public class ParseObject {
 
 
     public String getInsertCommand() {
+        logger.debug("getInsertCommand {}",insertCommand);
         return insertCommand;
     }
 
     public String getUpdateCommand() {
+        logger.debug("getUpdateCommand {}",updateCommand);
         return updateCommand;
     }
 
     public String getSelectCommand() {
+        logger.debug("getSelectCommand {}",selectCommand);
         return selectCommand;
     }
 
@@ -150,11 +163,6 @@ public class ParseObject {
     private void createUpdateValues() {
         this.updateValues = getListValues(fieldsWithOutID);
     }
-
-    private void createSelectValues() {
-        this.selectValues = getListValues(new Field[]{fieldId});
-    }
-
 
     private Map<Integer,Object>  getListValues(Field[] fields) {
         Map<Integer,Object>  integerStringHashMap= new HashMap<>();
@@ -179,13 +187,12 @@ public class ParseObject {
         return updateValues;
     }
 
-    public Map<Integer, Object> getSelectValues() {
-        return selectValues;
-    }
 
     public String getCreateCommand()   {
-        return String.format("create table IF NOT EXISTS  %s (%s)",
+        String sCreateCommand = String.format("create table IF NOT EXISTS %s (%s)",
                 tableName, createDeclarationForCreateTableCommand(fields));
+        logger.debug("getInsertCommand {}",sCreateCommand);
+        return sCreateCommand;
     }
 
     private String createDeclarationForCreateTableCommand(Field[] fields) throws RuntimeException {

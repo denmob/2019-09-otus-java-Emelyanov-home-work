@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.otus.hw09.jdbc.JDBCTemplateImp;
 import ru.otus.hw09.jdbc.MyConnectionImp;
 import ru.otus.hw09.model.User;
-import ru.otus.hw09.service.ParseObject;
+import ru.otus.hw09.service.ParseObjectOrClassImp;
 
 import static org.junit.Assert.assertThrows;
 
@@ -45,8 +45,8 @@ public class JDBCTemplateTest {
     public void JDBCTemplate4(){
         assertThrows(Exception.class, () -> {
             MyConnectionImp myConnectionImp = new MyConnectionImp();
-            JDBCTemplateImp<ParseObject> jdbcTemplateImp = new JDBCTemplateImp<>(myConnectionImp.getConnection());
-            ParseObject parseObject = new ParseObject(new User(1,"test",2));
+            JDBCTemplateImp<ParseObjectOrClassImp> jdbcTemplateImp = new JDBCTemplateImp<>(myConnectionImp.getConnection());
+            ParseObjectOrClassImp parseObject = new ParseObjectOrClassImp(new User(1,"test",2));
             jdbcTemplateImp.create(parseObject);
         });
     }
