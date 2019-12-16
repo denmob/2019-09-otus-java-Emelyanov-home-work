@@ -23,11 +23,13 @@ public class MyConnectionImpTest {
 
     @Test
     public void getConnection2(){
+        try {
+            new MyConnectionImp("",true);
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
 
-        assertThrows(IllegalArgumentException.class, () -> {
-             new MyConnectionImp("",true);
-        });
-
+        assertThrows(IllegalArgumentException.class, () -> new MyConnectionImp("",true));
     }
 
     @Test
@@ -36,5 +38,16 @@ public class MyConnectionImpTest {
         MyConnectionImp connectionImp = new MyConnectionImp("jdbc:h2:mem:",true);
         Connection connection = connectionImp.getConnection();
         assertNotNull(connection);
+    }
+
+    @Test
+    public void getConnection4(){
+        try {
+            new MyConnectionImp("123",true);
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+
+        assertThrows(IllegalArgumentException.class, () -> new MyConnectionImp("",true));
     }
 }

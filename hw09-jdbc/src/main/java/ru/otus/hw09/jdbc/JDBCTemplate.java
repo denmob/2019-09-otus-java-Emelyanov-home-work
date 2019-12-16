@@ -7,4 +7,6 @@ public interface JDBCTemplate<T> {
     void update(T objectData);
 
     T load(long id, Class<T> clazz);
+
+
 }

@@ -1,4 +1,4 @@
-package ru.otus.hw09;
+package ru.otus.hw09.model;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

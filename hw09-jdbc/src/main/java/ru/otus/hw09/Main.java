@@ -2,8 +2,11 @@ package ru.otus.hw09;
 
 
 import org.slf4j.LoggerFactory;
-import ru.otus.hw09.jdbc.JDBCTemplateImp;
-import ru.otus.hw09.jdbc.MyConnectionImp;
+import ru.otus.hw09.model.Account;
+import ru.otus.hw09.model.User;
+import ru.otus.hw09.service.DbExecutorImp;
+
+import java.math.BigDecimal;
 
 public class Main {
 
@@ -11,14 +14,16 @@ public class Main {
 
     public static void main(String[] args)  {
 
-        logger.info(" hw09 {}", (Object[]) args);
+        User user1 = new User(1,"Bill",2);
+        User user2 = new User(2,"Max",20);
+        Account account1 = new Account(1,"type1", BigDecimal.valueOf(77));
+        Account account2 = new Account(2,"type2", BigDecimal.valueOf(55));
 
-        MyConnectionImp myConnectionImp = new MyConnectionImp();
-        JDBCTemplateImp jdbcTemplateImp = new JDBCTemplateImp(myConnectionImp.getConnection());
-        String sSql = "1";// "create table User(id bigint(20) NOT NULL auto_increment, name varchar(255),age int(3))";
-        jdbcTemplateImp.create(sSql);
+        DbExecutorImp dbExecutorImp = new DbExecutorImp();
+        dbExecutorImp.saveObject(user1);
+        dbExecutorImp.saveObject(user2);
+        dbExecutorImp.saveObject(account1);
+        dbExecutorImp.saveObject(account2);
 
-
-//
     }
 }

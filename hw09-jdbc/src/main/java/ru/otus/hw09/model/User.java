@@ -1,7 +1,5 @@
 package ru.otus.hw09.model;
 
-import ru.otus.hw09.Id;
-
 import java.util.Objects;
 
 public class User {

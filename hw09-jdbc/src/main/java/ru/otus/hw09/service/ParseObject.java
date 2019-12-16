@@ -1,7 +1,7 @@
 package ru.otus.hw09.service;
 
 import org.slf4j.LoggerFactory;
-import ru.otus.hw09.Id;
+import ru.otus.hw09.model.Id;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -18,6 +18,10 @@ public class ParseObject {
     private Object object;
     private Class<?> clazz;
 
+
+    public String getTableName() {
+        return tableName;
+    }
 
     private String tableName;
     private Field[] fields;
@@ -180,22 +184,28 @@ public class ParseObject {
     }
 
     public String getCreateCommand()   {
-        return String.format("create table %s (%s)",
+        return String.format("create table IF NOT EXISTS  %s (%s)",
                 tableName, createDeclarationForCreateTableCommand(fields));
     }
 
-    private String createDeclarationForCreateTableCommand(Field[] fields) {
+    private String createDeclarationForCreateTableCommand(Field[] fields) throws RuntimeException {
         StringBuilder sResult = new StringBuilder();
         for (int i = 0; i <= fields.length -1 ; i++) {
             fields[i].setAccessible(true);
-                 if (int.class.equals(fields[i].getType())) {
+                 if (((int.class.equals(fields[i].getType())) ||  (Integer.class.equals(fields[i].getType()))
+                     || (short.class.equals(fields[i].getType())) || (Short.class.equals(fields[i].getType()))
+                     || (byte.class.equals(fields[i].getType())) || (Byte.class.equals(fields[i].getType()) )))  {
                      sResult.append(fields[i].getName()).append(" int (3) ");
-                } else if (long.class.equals(fields[i].getType())) {
+                } else if ((long.class.equals(fields[i].getType())) || (Long.class.equals(fields[i].getType()))) {
                      sResult.append(fields[i].getName()).append(" bigint (20) NOT NULL auto_increment ");
-                 }else if (String.class.equals(fields[i].getType())) {
+                 }else if ((String.class.equals(fields[i].getType())) || (Character.class.equals(fields[i].getType()))) {
                      sResult.append(fields[i].getName()).append(" varchar(255) ");
                  } else if (BigDecimal.class.equals(fields[i].getType())) {
                      sResult.append(fields[i].getName()).append(" number ");
+                 } else {
+                     logger.error("Is not implemented. Type not supported! fieldName = {}, filedType={}",
+                             fields[i].getName(), fields[i].getType().toString());
+                     throw new RuntimeException("Is not implemented. Type not supported!");
                  }
                  if  (fields.length -1 != i)
                      sResult.append(",");
