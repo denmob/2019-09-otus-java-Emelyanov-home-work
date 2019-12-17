@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.Map;
 
-public class DbExecutorImp implements DbExecutor {
+public class DbExecutorImp<T> implements DbExecutor<T> {
 
     private ParseObjectOrClass parseObjectOrClass;
     private String savePointName = "savePointName";
@@ -19,8 +19,9 @@ public class DbExecutorImp implements DbExecutor {
     public boolean create(Connection connection, Class<?> clazz) {
         try{
             parseObjectOrClass = new ParseObjectOrClassImp(clazz);
-            PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getCreateCommand());
-            pst.execute();
+            try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getCreateCommand())) {
+                pst.execute();
+            }
             connection.commit();
             return true;
         }catch (SQLException e) {
@@ -29,7 +30,7 @@ public class DbExecutorImp implements DbExecutor {
     }
 
     @Override
-    public boolean insert(Connection connection, Object object) throws SQLException {
+    public boolean insert(Connection connection, T object) throws SQLException {
         Savepoint savePoint = connection.setSavepoint(savePointName);
         try{
             parseObjectOrClass = new ParseObjectOrClassImp(object);
@@ -45,44 +46,46 @@ public class DbExecutorImp implements DbExecutor {
     }
 
     @Override
-    public Object select(Connection connection, long id, Class<?> clazz) throws SQLException {
+    public T select(Connection connection, long id, Class<?> clazz) throws SQLException {
         Savepoint savePoint = connection.setSavepoint(savePointName);
         Object obj = null;
         try{
             parseObjectOrClass = new ParseObjectOrClassImp(clazz);
-            PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getSelectCommand());
+            try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getSelectCommand())) {
 
-            pst.setObject(1, id);
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    obj = clazz.getDeclaredConstructor().newInstance();
+                pst.setObject(1, id);
+                try (ResultSet rs = pst.executeQuery()) {
+                    if (rs.next()) {
+                        obj = clazz.getDeclaredConstructor().newInstance();
 
-                    Field[] fields = clazz.getDeclaredFields();
-                    for (Field field : fields) {
-                        field.setAccessible(true);
-                        String fieldName = field.getName();
-                        Object value = rs.getObject(fieldName);
-                        field.set(obj, value);
+                        Field[] fields = clazz.getDeclaredFields();
+                        for (Field field : fields) {
+                            field.setAccessible(true);
+                            String fieldName = field.getName();
+                            Object value = rs.getObject(fieldName);
+                            field.set(obj, value);
+                        }
                     }
                 }
             }
-            }catch (Exception e) {
+        }catch (Exception e) {
                 connection.rollback(savePoint);
                 throw new MyException(e.getMessage(), e.getCause());
             }
-        return obj;
+        return (T) obj;
     }
 
     @Override
-    public boolean update(Connection connection, Object object) throws SQLException {
+    public boolean update(Connection connection, T object) throws SQLException {
         Savepoint savePoint = connection.setSavepoint(savePointName);
 
         try{
             parseObjectOrClass = new ParseObjectOrClassImp(object);
-            PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getUpdateCommand());
-            int count = insertMapValuesToPrepareStatement(pst,parseObjectOrClass.getUpdateValues());
-            pst.setObject(++count, parseObjectOrClass.getFieldId().get(object));
-            pst.execute();
+            try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getUpdateCommand())) {
+                int count = insertMapValuesToPrepareStatement(pst, parseObjectOrClass.getUpdateValues());
+                pst.setObject(++count, parseObjectOrClass.getFieldId().get(object));
+                pst.execute();
+            }
             connection.commit();
             return true;
         }catch (Exception e) {
@@ -93,7 +96,7 @@ public class DbExecutorImp implements DbExecutor {
     }
 
     @Override
-    public boolean createOrUpdate(Connection connection, Object object) {
+    public boolean createOrUpdate(Connection connection, T object) {
         ParseObjectOrClassImp parseObject = new ParseObjectOrClassImp(object);
         try{
             if (select(connection,(Long) parseObject.getFieldId().get(object),object.getClass()) == null) {

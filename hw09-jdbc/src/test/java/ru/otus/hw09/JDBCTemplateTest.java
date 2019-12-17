@@ -19,12 +19,12 @@ public class JDBCTemplateTest {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(JDBCTemplateTest.class);
 
     private SessionManager sessionManager = new SessionManagerImp();
-    private DbExecutor dbExecutor = new DbExecutorImp();
+
 
 
     @Test
     public void JDBCTemplate1(){
-
+        DbExecutor<Account> dbExecutor = new DbExecutorImp<>();
         JDBCTemplate<Account> jdbcTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
 
         jdbcTemplate.createTable(Account.class);
@@ -46,7 +46,7 @@ public class JDBCTemplateTest {
 
     @Test
     public void JDBCTemplate2(){
-
+        DbExecutor<User> dbExecutor = new DbExecutorImp<>();
         JDBCTemplate<User> userJDBCTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
 
         userJDBCTemplate.createTable(User.class);
@@ -67,7 +67,7 @@ public class JDBCTemplateTest {
 
     @Test
     public void JDBCTemplate3(){
-
+        DbExecutor<Account> dbExecutor = new DbExecutorImp<>();
         JDBCTemplate<Account>  accountJDBCTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
 
         accountJDBCTemplate.createTable(Account.class);
