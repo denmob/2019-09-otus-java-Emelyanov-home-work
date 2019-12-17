@@ -5,7 +5,7 @@ import java.util.Objects;
 public class User {
 
 	@Id
-	private long id;
+	private Long id;
 	
 	private String name;
 	
@@ -13,12 +13,11 @@ public class User {
 	
 	public User() {}
 	
-	public User(long id, String name, int age) {
-		this.id = id;
+	public User(String name, int age) {
 		this.name = name;
 		this.age = age;
 	}
-	
+
 	public long getId() {
 		return id;
 	}

@@ -5,10 +5,7 @@ import ru.otus.hw09.model.Id;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ParseObjectOrClassImp implements ParseObjectOrClass {
@@ -67,10 +64,11 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
         try {
             tableName = clazz.getSimpleName();
             fields = getFields(clazz);
+            fieldsWithOutID = getNotIdFields(clazz);
             fieldsList = getFieldsNames(clazz);
             fieldId = getIdField(clazz);
             if (fieldId == null)  throw new IllegalArgumentException("Annotation Id not found!");
-            fieldsWithOutID = getNotIdFields(clazz);
+
 
             return true;
         }catch (Exception e) {
@@ -96,9 +94,13 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
     }
 
     private String getFieldsNames(Class<?> clazz) {
-        return Arrays.stream(getFields(clazz))
-                .map(Field::getName)
-                .collect(Collectors.joining(", "));
+        StringJoiner joiner = new StringJoiner(", ");
+        for (Field field : getFields(clazz)) {
+            String name = field.getName();
+            if (!field.equals(getIdField(clazz)))
+            joiner.add(name);
+        }
+        return joiner.toString();
     }
 
     private Field getIdField(Class<?> clazz) {
@@ -114,16 +116,20 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
     }
 
     private Field[] getNotIdFields(Class<?> clazz) {
-        return Arrays.stream(clazz.getDeclaredFields())
-                .filter(x -> !x.equals(getIdField(clazz)))
-                .toArray(Field[]::new);
+        List<Field> list = new ArrayList<>();
+        for (Field x : clazz.getDeclaredFields()) {
+            if (!x.equals(getIdField(clazz))) {
+                list.add(x);
+            }
+        }
+        return list.toArray(new Field[0]);
     }
 
     private void createInsertCommand() {
         insertCommand =  String.format("insert into %s (%s) values (%s)",
                 tableName,
                 fieldsList,
-                String.join(", ", Collections.nCopies(fields.length, "?")));
+                String.join(", ", Collections.nCopies(fieldsWithOutID.length, "?")));
     }
 
     private void createUpdateCommand() {
@@ -157,7 +163,7 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
     }
 
     private void createInsertValues() {
-        this.insertValues = getListValues(fields);
+        this.insertValues = getListValues(fieldsWithOutID);
     }
 
     private void createUpdateValues() {

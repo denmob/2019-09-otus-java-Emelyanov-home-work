@@ -27,7 +27,7 @@ public class Main {
 
         jdbcTemplate.createTable(Account.class);
 
-        Account account1 = new Account(1,"type1", BigDecimal.valueOf(77));
+        Account account1 = new Account("type1", BigDecimal.valueOf(77));
         jdbcTemplate.create(account1);
 
         Account account2  = jdbcTemplate.load(account1.getNo(), Account.class);
@@ -48,8 +48,8 @@ public class Main {
 
         userJDBCTemplate.createTable(User.class);
 
-        User user1 = new User(1, "Bill", 2);
-        userJDBCTemplate.create(user1);
+        User user1 = new User( "Bill", 2);
+        user1 = (User) userJDBCTemplate.create(user1);
 
         User user2 =  userJDBCTemplate.load(user1.getId(), User.class);
 
@@ -68,15 +68,17 @@ public class Main {
 
         jdbcTemplate.createTable(Account.class);
 
-        Account account4 = new Account(1,"type1", BigDecimal.valueOf(77));
-        accountJDBCTemplate.createOrUpdate(account4);
-        Account account5 = new Account(1,"type89", BigDecimal.valueOf(12));
-        accountJDBCTemplate.createOrUpdate(account5);
-        Account account6  = accountJDBCTemplate.load(account1.getNo(), Account.class);
+        Account account4 = new Account("type1", BigDecimal.valueOf(77));
+        account4 = (Account) accountJDBCTemplate.createOrUpdate(account4);
+        logger.debug("createOrUpdate insert {}",account4);
 
-        logger.debug("createOrUpdate first {}",account4);
-        logger.debug("createOrUpdate second {}",account5);
-        logger.debug("createOrUpdate result {}",account6);
+        account4.setType("type89");
+
+        account4 = (Account) accountJDBCTemplate.createOrUpdate(account4);
+        logger.debug("createOrUpdate update {}",account4);
+
+        Account account6  = accountJDBCTemplate.load(account4.getNo(), Account.class);
+        logger.debug("createOrUpdate select {}",account6);
 
     }
 }

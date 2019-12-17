@@ -26,7 +26,7 @@ public class UserTest {
 
     @Test
     public void createUser2()  {
-        User user = new User(1,"Test",2);
+        User user = new User("Test",2);
         logger.info("user.toString {}", user);
         String sUser = "User: id = 1, name = Test, age = 2";
         assertEquals(sUser,user.toString());
@@ -43,7 +43,7 @@ public class UserTest {
     @Test
     public void createAccount2()  {
         BigDecimal bigDecimal = new BigDecimal(2);
-        Account account = new Account(1,"Test",bigDecimal);
+        Account account = new Account("Test",bigDecimal);
         logger.info("account.toString {}", account);
         String sAccount= "Account: no = 1, type = Test, rest = 2";
         assertEquals(sAccount,account.toString());

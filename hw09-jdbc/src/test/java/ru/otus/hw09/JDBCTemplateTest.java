@@ -29,10 +29,11 @@ public class JDBCTemplateTest {
 
         jdbcTemplate.createTable(Account.class);
 
-        Account account1 = new Account(1,"type1", BigDecimal.valueOf(77));
-        jdbcTemplate.create(account1);
+        Account account1 = new Account("type1", BigDecimal.valueOf(77));
+        account1 = (Account) jdbcTemplate.create(account1);
+        Long  aLong =account1.getNo();
 
-        Account account2  = jdbcTemplate.load(account1.getNo(), Account.class);
+        Account account2  = jdbcTemplate.load(aLong, Account.class);
 
         account2.setType("type33");
         account2.setRest(BigDecimal.valueOf(99));
@@ -51,7 +52,7 @@ public class JDBCTemplateTest {
 
         userJDBCTemplate.createTable(User.class);
 
-        User user1 = new User(1, "Bill", 2);
+        User user1 = new User( "Bill", 2);
         userJDBCTemplate.create(user1);
 
         User user2 =  userJDBCTemplate.load(user1.getId(), User.class);
@@ -72,13 +73,19 @@ public class JDBCTemplateTest {
 
         accountJDBCTemplate.createTable(Account.class);
 
-        Account account4 = new Account(1,"type1", BigDecimal.valueOf(77));
-        accountJDBCTemplate.createOrUpdate(account4);
-        Account account5 = new Account(1,"type89", BigDecimal.valueOf(12));
-        accountJDBCTemplate.createOrUpdate(account5);
-        Account account6  = accountJDBCTemplate.load(account5.getNo(), Account.class);
+        Account account1 = new Account("type1", BigDecimal.valueOf(77));
 
-        assertEquals(account5,account6);
+        Account account2 = (Account) accountJDBCTemplate.createOrUpdate(account1);
+
+        assertEquals(account1,account2);
+
+        account2.setType("type89");
+
+        accountJDBCTemplate.createOrUpdate(account2);
+
+        Account account3  = accountJDBCTemplate.load(account2.getNo(), Account.class);
+
+        assertEquals(account2,account3);
     }
 
 }

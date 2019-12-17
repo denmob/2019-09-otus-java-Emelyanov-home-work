@@ -21,28 +21,39 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
             parseObjectOrClass = new ParseObjectOrClassImp(clazz);
             try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getCreateCommand())) {
                 pst.execute();
+                connection.commit();
+                return true;
             }
-            connection.commit();
-            return true;
         }catch (SQLException e) {
             throw new MyException(e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public boolean insert(Connection connection, T object) throws SQLException {
+    public T insert(Connection connection, T object) throws SQLException {
         Savepoint savePoint = connection.setSavepoint(savePointName);
         try{
             parseObjectOrClass = new ParseObjectOrClassImp(object);
-            PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getInsertCommand());
-            insertMapValuesToPrepareStatement(pst,parseObjectOrClass.getInsertValues());
-            pst.execute();
-            connection.commit();
-        return true;
-        }catch (SQLException e) {
+            try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getInsertCommand(), Statement.RETURN_GENERATED_KEYS)) {
+                insertMapValuesToPrepareStatement(pst, parseObjectOrClass.getInsertValues());
+                pst.executeUpdate();
+
+                try (ResultSet rs = pst.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        Object id = rs.getObject(1);
+                        Field idField = parseObjectOrClass.getFieldId();
+                        logger.debug("{}: {}", idField == null ? "null" : idField.getName(), id);
+                        if (idField != null && id != null) {
+                            idField.set(object, id);
+                        }
+                    }
+                }
+            }
+        }catch (Exception e) {
             connection.rollback(savePoint);
             throw new MyException(e.getMessage(), e.getCause());
         }
+        return object;
     }
 
     @Override
@@ -62,8 +73,13 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
                         for (Field field : fields) {
                             field.setAccessible(true);
                             String fieldName = field.getName();
-                            Object value = rs.getObject(fieldName);
-                            field.set(obj, value);
+                            String fieldName1 = parseObjectOrClass.getFieldId().getName();
+                            if  (!fieldName.equals(fieldName1)) {
+                                Object value = rs.getObject(fieldName);
+                                field.set(obj, value);
+                            } else {
+                                field.set(obj, id);
+                            }
                         }
                     }
                 }
@@ -76,7 +92,7 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
     }
 
     @Override
-    public boolean update(Connection connection, T object) throws SQLException {
+    public T update(Connection connection, T object) throws SQLException {
         Savepoint savePoint = connection.setSavepoint(savePointName);
 
         try{
@@ -87,7 +103,7 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
                 pst.execute();
             }
             connection.commit();
-            return true;
+            return object;
         }catch (Exception e) {
             connection.rollback(savePoint);
             throw new MyException(e.getMessage(), e.getCause());
@@ -96,15 +112,14 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
     }
 
     @Override
-    public boolean createOrUpdate(Connection connection, T object) {
+    public T insertOrUpdate(Connection connection, T object) {
         ParseObjectOrClassImp parseObject = new ParseObjectOrClassImp(object);
         try{
-            if (select(connection,(Long) parseObject.getFieldId().get(object),object.getClass()) == null) {
-                insert(connection, object);
+            if (parseObject.getFieldId().get(object) == null) {
+                return insert(connection, object);
             } else {
-                update(connection, object);
+               return update(connection, object);
             }
-            return true;
         }catch (Exception e) {
             throw new MyException(e.getMessage(), e.getCause());
         }

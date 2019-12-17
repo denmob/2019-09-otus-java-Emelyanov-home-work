@@ -7,20 +7,19 @@ import java.util.Objects;
 public class Account {
 
 	@Id
-	private long no;
+	private Long no;
 	
 	private String type;
 	
 	private BigDecimal rest;
 	
 	public Account() {}
-	
-	public Account(long no, String type, BigDecimal rest) {
-		this.no = no;
+
+	public Account(String type, BigDecimal rest) {
 		this.type = type;
 		this.rest = rest;
 	}
-	
+
 	public long getNo() {
 		return no;
 	}

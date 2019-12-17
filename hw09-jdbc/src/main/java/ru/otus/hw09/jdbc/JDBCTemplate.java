@@ -6,7 +6,7 @@ public interface JDBCTemplate<T> {
     void createTable(Class<T> clazz);
 
     // insert object
-    void create(T objectData);
+    Object create(T objectData);
 
     // update object
     void update(T objectData);
@@ -15,6 +15,6 @@ public interface JDBCTemplate<T> {
     T load(long id, Class<T> clazz);
 
     // insert or update object
-    void createOrUpdate(T objectData);
+    Object createOrUpdate(T objectData);
 
 }

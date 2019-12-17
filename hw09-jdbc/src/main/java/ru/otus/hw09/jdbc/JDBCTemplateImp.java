@@ -1,5 +1,6 @@
 package ru.otus.hw09.jdbc;
 
+import org.slf4j.LoggerFactory;
 import ru.otus.hw09.MyException;
 import ru.otus.hw09.service.DbExecutor;
 import ru.otus.hw09.sessionmanager.SessionManager;
@@ -22,9 +23,9 @@ public class JDBCTemplateImp<T> implements JDBCTemplate<T> {
     }
 
     @Override
-    public void create(T objectData)  {
+    public Object create(T objectData)  {
         try {
-            dbExecutor.insert(connectionManager.getConnection(),objectData);
+            return dbExecutor.insert(connectionManager.getConnection(),objectData);
         }catch (SQLException e) {
             throw new MyException(e.getMessage(), e.getCause());
         }
@@ -49,9 +50,8 @@ public class JDBCTemplateImp<T> implements JDBCTemplate<T> {
     }
 
     @Override
-    public void createOrUpdate(T objectData) {
-        dbExecutor.createOrUpdate(connectionManager.getConnection(),objectData);
-
+    public Object createOrUpdate(T objectData) {
+          return dbExecutor.insertOrUpdate(connectionManager.getConnection(),objectData);
     }
 
 
