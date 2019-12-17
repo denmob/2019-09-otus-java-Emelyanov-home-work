@@ -1,12 +1,17 @@
 package ru.otus.hw09.service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public interface DbExecutor {
 
-     boolean saveObject(Object object);
+     boolean create(Connection connection, Class<?> clazz);
 
-     Object loadObject(long id, Class<?> clazz);
+     boolean insert(Connection connection, Object object) throws SQLException;
 
-     boolean updateObject(Object object);
+     Object select(Connection connection, long id, Class<?> clazz) throws SQLException;
 
-     boolean createOrUpdate(Object object);
+     boolean update(Connection connection, Object object) throws SQLException;
+
+     boolean createOrUpdate(Connection connection, Object object);
 }

@@ -1,5 +1,6 @@
 package ru.otus.hw09.service;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 public interface ParseObjectOrClass {
@@ -15,5 +16,7 @@ public interface ParseObjectOrClass {
      Map<Integer, Object> getInsertValues();
 
      Map<Integer, Object> getUpdateValues();
+
+     Field getFieldId();
 
 }
