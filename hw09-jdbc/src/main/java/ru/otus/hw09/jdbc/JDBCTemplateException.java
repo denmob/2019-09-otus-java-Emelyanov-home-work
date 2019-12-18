@@ -12,5 +12,12 @@ public class JDBCTemplateException extends RuntimeException {
         logger.error("JDBCTemplateException ()",e);
     }
 
+    JDBCTemplateException(String message) {
+        super(message);
+        org.slf4j.Logger logger = LoggerFactory.getLogger(JDBCTemplateException.class);
+        logger.error("JDBCTemplateException message={}",message);
+    }
+
 
 }
+

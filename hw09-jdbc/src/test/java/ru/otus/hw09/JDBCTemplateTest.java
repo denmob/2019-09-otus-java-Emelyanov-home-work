@@ -3,16 +3,19 @@ package ru.otus.hw09;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw09.jdbc.JDBCTemplate;
+import ru.otus.hw09.jdbc.JDBCTemplateImp;
+import ru.otus.hw09.jdbc.JDBCTemplateNotFoundObjectException;
 import ru.otus.hw09.model.Account;
+import ru.otus.hw09.model.User;
 import ru.otus.hw09.service.DbExecutor;
 import ru.otus.hw09.service.DbExecutorImp;
 import ru.otus.hw09.sessionmanager.SessionManager;
 import ru.otus.hw09.sessionmanager.SessionManagerImp;
-import ru.otus.hw09.jdbc.JDBCTemplateImp;
-import ru.otus.hw09.model.User;
+
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 
 public class JDBCTemplateTest {
@@ -23,7 +26,7 @@ public class JDBCTemplateTest {
 
 
     @Test
-    public void jdbcTemplate1(){
+    public void accountCreateSaveSelectUpdate(){
         DbExecutor<Account> dbExecutor = new DbExecutorImp<>();
         JDBCTemplate<Account> jdbcTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
 
@@ -46,7 +49,7 @@ public class JDBCTemplateTest {
     }
 
     @Test
-    public void jdbcTemplate2(){
+    public void userCreateSaveSelectUpdate(){
         DbExecutor<User> dbExecutor = new DbExecutorImp<>();
         JDBCTemplate<User> userJDBCTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
 
@@ -67,7 +70,7 @@ public class JDBCTemplateTest {
     }
 
     @Test
-    public void jdbcTemplate3(){
+    public void accountCreateOrUpdate(){
         DbExecutor<Account> dbExecutor = new DbExecutorImp<>();
         JDBCTemplate<Account>  accountJDBCTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
 
@@ -86,6 +89,25 @@ public class JDBCTemplateTest {
         Account account3  = accountJDBCTemplate.load(account2.getNo(), Account.class);
 
         assertEquals(account2,account3);
+    }
+
+
+    @Test
+    public void accountSelectNotFound(){
+        DbExecutor<Account> dbExecutor = new DbExecutorImp<>();
+        JDBCTemplate<Account>  accountJDBCTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
+        accountJDBCTemplate.createTable(Account.class);
+
+        assertThrows(JDBCTemplateNotFoundObjectException.class, ()-> { accountJDBCTemplate.load(1, Account.class); });
+    }
+
+    @Test
+    public void userSelectNotFound(){
+        DbExecutor<User> dbExecutor = new DbExecutorImp<>();
+        JDBCTemplate<User>  accountJDBCTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
+        accountJDBCTemplate.createTable(User.class);
+
+        assertThrows(JDBCTemplateNotFoundObjectException.class, ()-> { accountJDBCTemplate.load(1, User.class); });
     }
 
 }

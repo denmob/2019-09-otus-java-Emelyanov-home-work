@@ -33,11 +33,14 @@ public class JDBCTemplateImp<T> implements JDBCTemplate<T> {
 
     @Override
     public T load(long id, Class clazz) {
-       try{
-           return (T) dbExecutor.select(connectionManager.getConnection(),id,clazz);
-        }catch (SQLException e) {
-           throw new JDBCTemplateException(e);
-        }
+        T object;
+           try{
+               object= (T) dbExecutor.select(connectionManager.getConnection(),id,clazz);
+            }catch (SQLException e) {
+               throw new JDBCTemplateException(e);
+            }
+        if (object == null) throw new JDBCTemplateNotFoundObjectException(String.format("Not found object %s with id %s",clazz.getName(), id));
+        return  object;
     }
 
     @Override
