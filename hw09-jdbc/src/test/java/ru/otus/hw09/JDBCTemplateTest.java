@@ -23,7 +23,7 @@ public class JDBCTemplateTest {
 
 
     @Test
-    public void JDBCTemplate1(){
+    public void jdbcTemplate1(){
         DbExecutor<Account> dbExecutor = new DbExecutorImp<>();
         JDBCTemplate<Account> jdbcTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
 
@@ -31,7 +31,7 @@ public class JDBCTemplateTest {
 
         Account account1 = new Account("type1", BigDecimal.valueOf(77));
         account1 = (Account) jdbcTemplate.create(account1);
-        Long  aLong =account1.getNo();
+        long aLong =account1.getNo();
 
         Account account2  = jdbcTemplate.load(aLong, Account.class);
 
@@ -46,7 +46,7 @@ public class JDBCTemplateTest {
     }
 
     @Test
-    public void JDBCTemplate2(){
+    public void jdbcTemplate2(){
         DbExecutor<User> dbExecutor = new DbExecutorImp<>();
         JDBCTemplate<User> userJDBCTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
 
@@ -67,7 +67,7 @@ public class JDBCTemplateTest {
     }
 
     @Test
-    public void JDBCTemplate3(){
+    public void jdbcTemplate3(){
         DbExecutor<Account> dbExecutor = new DbExecutorImp<>();
         JDBCTemplate<Account>  accountJDBCTemplate = new JDBCTemplateImp<>(sessionManager,dbExecutor);
 

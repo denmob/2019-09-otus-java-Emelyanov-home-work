@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 public interface DbExecutor<T> {
 
-     boolean create(Connection connection, Class<?> clazz);
+     boolean createTable(Connection connection, Class<?> clazz);
 
      T insert(Connection connection, T object) throws SQLException;
 

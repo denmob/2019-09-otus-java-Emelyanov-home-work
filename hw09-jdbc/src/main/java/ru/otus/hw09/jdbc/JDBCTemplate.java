@@ -2,7 +2,7 @@ package ru.otus.hw09.jdbc;
 
 public interface JDBCTemplate<T> {
 
-    // create table
+    // createTable table
     void createTable(Class<T> clazz);
 
     // insert object

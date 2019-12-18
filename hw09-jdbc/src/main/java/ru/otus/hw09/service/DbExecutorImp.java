@@ -2,7 +2,6 @@ package ru.otus.hw09.service;
 
 
 import org.slf4j.LoggerFactory;
-import ru.otus.hw09.MyException;
 
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -15,8 +14,12 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(DbExecutorImp.class);
 
 
+
     @Override
-    public boolean create(Connection connection, Class<?> clazz) {
+    public boolean createTable(Connection connection, Class<?> clazz) {
+        if (connection == null) throw new IllegalArgumentException("connection is null");
+        if (clazz == null) throw new IllegalArgumentException("clazz is null");
+
         try{
             parseObjectOrClass = new ParseObjectOrClassImp(clazz);
             try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getCreateCommand())) {
@@ -25,12 +28,14 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
                 return true;
             }
         }catch (SQLException e) {
-            throw new MyException(e.getMessage(), e.getCause());
+            throw new DbExecutorException(e);
         }
     }
 
     @Override
     public T insert(Connection connection, T object) throws SQLException {
+        if (connection == null) throw new IllegalArgumentException("connection is null");
+        if (object == null) throw new IllegalArgumentException("object is null");
         Savepoint savePoint = connection.setSavepoint(savePointName);
         try{
             parseObjectOrClass = new ParseObjectOrClassImp(object);
@@ -42,7 +47,8 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
                     if (rs.next()) {
                         Object id = rs.getObject(1);
                         Field idField = parseObjectOrClass.getFieldId();
-                        logger.debug("{}: {}", idField == null ? "null" : idField.getName(), id);
+                        if (idField == null) logger.debug("{}: {}", "null", id);
+                        else logger.debug("{}: {}", idField.getName(), id);
                         if (idField != null && id != null) {
                             idField.set(object, id);
                         }
@@ -51,15 +57,19 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
             }
         }catch (Exception e) {
             connection.rollback(savePoint);
-            throw new MyException(e.getMessage(), e.getCause());
+            throw new DbExecutorException(e);
         }
         return object;
     }
 
     @Override
     public T select(Connection connection, long id, Class<?> clazz) throws SQLException {
+        if (connection == null) throw new IllegalArgumentException("connection is null");
+        if (clazz == null) throw new IllegalArgumentException("clazz is null");
+        if (id<1) throw new IllegalArgumentException("id < 1 ");
+
         Savepoint savePoint = connection.setSavepoint(savePointName);
-        Object obj = null;
+        T obj = null;
         try{
             parseObjectOrClass = new ParseObjectOrClassImp(clazz);
             try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getSelectCommand())) {
@@ -67,7 +77,7 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
                 pst.setObject(1, id);
                 try (ResultSet rs = pst.executeQuery()) {
                     if (rs.next()) {
-                        obj = clazz.getDeclaredConstructor().newInstance();
+                        obj = (T) clazz.getDeclaredConstructor().newInstance();
 
                         Field[] fields = clazz.getDeclaredFields();
                         for (Field field : fields) {
@@ -86,13 +96,16 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
             }
         }catch (Exception e) {
                 connection.rollback(savePoint);
-                throw new MyException(e.getMessage(), e.getCause());
-            }
-        return (T) obj;
+                throw new DbExecutorException(e);
+        }
+        return obj;
     }
 
     @Override
     public T update(Connection connection, T object) throws SQLException {
+        if (connection == null) throw new IllegalArgumentException("connection is null");
+        if (object == null) throw new IllegalArgumentException("object is null");
+
         Savepoint savePoint = connection.setSavepoint(savePointName);
 
         try{
@@ -106,7 +119,7 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
             return object;
         }catch (Exception e) {
             connection.rollback(savePoint);
-            throw new MyException(e.getMessage(), e.getCause());
+            throw new DbExecutorException(e);
         }
 
     }
@@ -121,7 +134,7 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
                return update(connection, object);
             }
         }catch (Exception e) {
-            throw new MyException(e.getMessage(), e.getCause());
+            throw new DbExecutorException(e);
         }
     }
 

@@ -1,7 +1,7 @@
 package ru.otus.hw09.sessionmanager;
 
 
-import ru.otus.hw09.MyException;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,9 +13,11 @@ public class SessionManagerImp implements SessionManager {
     private  String url = "jdbc:h2:mem:";
     private  boolean autoCommit = false;
     private Connection connection;
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(SessionManagerImp.class);
 
     public SessionManagerImp(String url, boolean autoCommit) {
-        if (url == null) throw new MyException("Url is null");
+        if ((url == null) || url.isEmpty())
+            throw new IllegalArgumentException("Url is null");
 
         this.url = url;
         this.autoCommit = autoCommit;
@@ -31,42 +33,44 @@ public class SessionManagerImp implements SessionManager {
             connection = DriverManager.getConnection(this.url);
             connection.setAutoCommit(this.autoCommit);
         }catch (SQLException e) {
-            throw new MyException(e.getMessage(), e.getCause());
+            throw new SessionManagerException(e);
         }
 
     }
 
     @Override
     public Connection getConnection() {
-
-          return connection;
-
+        logger.debug("getConnection");
+        return connection;
     }
 
     @Override
     public void commitSession() {
         try {
+            logger.debug("commit");
             connection.commit();
         } catch (SQLException e) {
-            throw new MyException(e.getMessage(), e.getCause());
+            throw new SessionManagerException(e);
         }
     }
 
     @Override
     public void rollbackSession() {
         try {
+            logger.debug("rollback");
             connection.rollback();
         } catch (SQLException e) {
-            throw new MyException(e.getMessage(), e.getCause());
+            throw new SessionManagerException(e);
         }
     }
 
     @Override
     public void close() {
         try {
+            logger.debug("close");
             connection.close();
         } catch (SQLException e) {
-            throw new MyException(e.getMessage(), e.getCause());
+            throw new SessionManagerException(e);
         }
     }
 

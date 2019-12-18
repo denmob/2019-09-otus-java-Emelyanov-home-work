@@ -37,12 +37,11 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
         if (object != null) {
             this.object = object;
             this.clazz = object.getClass();
-            if (initParse()) {
+            if (initParser()) {
                 createSqlForObject();
                 createValuesForObject();
             }
         } else {
-            logger.error("Object is null!");
             throw new IllegalArgumentException("Object is null!");
         }
     }
@@ -51,29 +50,26 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
 
         if (clazz != null) {
             this.clazz = clazz;
-            if (initParse()) {
+            if (initParser()) {
                 createSqlForObject();
             }
         } else {
-            logger.error("Class is null!");
             throw new IllegalArgumentException("Class is null!");
         }
     }
 
-    private boolean initParse() {
+    private boolean initParser() {
         try {
             tableName = clazz.getSimpleName();
             fields = getFields(clazz);
             fieldsWithOutID = getNotIdFields(clazz);
             fieldsList = getFieldsNames(clazz);
             fieldId = getIdField(clazz);
-            if (fieldId == null)  throw new IllegalArgumentException("Annotation Id not found!");
-
+            if (fieldId == null)  throw new IllegalStateException("Annotation Id not found!");
 
             return true;
         }catch (Exception e) {
-           logger.error("initParse Exception",e);
-           return false;
+            throw new ParseObjectOrClassException(e);
         }
     }
 
@@ -97,8 +93,9 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
         StringJoiner joiner = new StringJoiner(", ");
         for (Field field : getFields(clazz)) {
             String name = field.getName();
-            if (!field.equals(getIdField(clazz)))
-            joiner.add(name);
+            if (!Objects.equals(field, getIdField(clazz))) {
+                joiner.add(name);
+            }
         }
         return joiner.toString();
     }
@@ -179,7 +176,7 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
                 integerStringHashMap.put(i+1, value);
             }
         } catch (Exception e) {
-            logger.error("getListValues Exception",e);
+            throw new ParseObjectOrClassException(e);
         }
         return integerStringHashMap;
     }
@@ -201,7 +198,7 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
         return sCreateCommand;
     }
 
-    private String createDeclarationForCreateTableCommand(Field[] fields) throws RuntimeException {
+    private String createDeclarationForCreateTableCommand(Field[] fields)  {
         StringBuilder sResult = new StringBuilder();
         for (int i = 0; i <= fields.length -1 ; i++) {
             fields[i].setAccessible(true);
@@ -217,8 +214,8 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
                      sResult.append(fields[i].getName()).append(" number ");
                  } else {
                      logger.error("Is not implemented. Type not supported! fieldName = {}, filedType={}",
-                             fields[i].getName(), fields[i].getType().toString());
-                     throw new RuntimeException("Is not implemented. Type not supported!");
+                             fields[i].getName(), fields[i].getType());
+                     throw new ParseObjectOrClassException("Is not implemented. Type not supported!");
                  }
                  if  (fields.length -1 != i)
                      sResult.append(",");
