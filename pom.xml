@@ -26,6 +26,7 @@
         <module>hw07-DepartmentATM</module>
         <module>hw08-json</module>
         <module>hw09-jdbc</module>
+        <module>hw10-hibernate</module>
     </modules>
 
     <dependencyManagement>
@@ -81,6 +82,11 @@
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -100,6 +106,7 @@
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.26</slf4j.version>
         <h2.version>1.4.197</h2.version>
+        <hibernate.version>5.4.1.Final</hibernate.version>
     </properties>
 
     <build>

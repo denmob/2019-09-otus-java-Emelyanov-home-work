@@ -14,5 +14,6 @@
 * hw07-DepartmentATM/
 * hw08-json/
 * hw09-jdbc/
+* hw010-hibernate/
 
 
