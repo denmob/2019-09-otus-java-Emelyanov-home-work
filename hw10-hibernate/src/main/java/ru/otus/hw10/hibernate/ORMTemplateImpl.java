@@ -13,23 +13,27 @@ public class ORMTemplateImpl<T> implements ORMTemplate<T> {
 	private SessionFactory sessionFactory;
 	
 	public ORMTemplateImpl(SessionFactory sessionFactory) {
+		if (sessionFactory == null) throw new IllegalArgumentException("SessionFactory is null!");
 		this.sessionFactory = sessionFactory;
 	}
 	
 	@Override
 	public T getEntity(Class<T> entityClass, long id) {
+		if (entityClass == null) throw new IllegalArgumentException("EntityClass is null!");
+		if (id <=0 ) throw new IllegalArgumentException("Incorrect id for get object!");
+
 		T selectedEntity;
-		
-		Transaction transaction = null;
+		Transaction transaction;
 		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
 			
 			selectedEntity = session.get(entityClass, id);
-			
+			if (selectedEntity == null)
+				throw new ORMTemplateException(String.format("Not found entity with id %s",id));
+
 			transaction.commit();
         }
 		catch (Exception ex) {
-			Objects.requireNonNull(transaction).rollback();
 			throw new ORMTemplateException(ex);
 		}
 		
@@ -37,7 +41,8 @@ public class ORMTemplateImpl<T> implements ORMTemplate<T> {
 	}
 
 	@Override
-	public boolean saveEntity(T entity) {
+	public long saveEntity(T entity) {
+		if (entity == null) throw new IllegalArgumentException("Entity is null!");
 
 		Transaction transaction = null;
 		try (Session session = sessionFactory.openSession()) {
@@ -46,7 +51,7 @@ public class ORMTemplateImpl<T> implements ORMTemplate<T> {
 			savedId = (long)session.save(entity);
 
 			transaction.commit();	
-			return  true;
+			return  savedId;
         }
 		catch (Exception ex) {
 			Objects.requireNonNull(transaction).rollback();
@@ -55,8 +60,6 @@ public class ORMTemplateImpl<T> implements ORMTemplate<T> {
 
 	}
 	
-	public long getSavedId() {
-		return savedId;
-	}
+
 
 }
