@@ -4,6 +4,6 @@ public interface ORMTemplate<T> {
 
 	T getEntity(Class<T> entityClass, long id);
 
-	long saveEntity(T entity);
+	void saveEntity(T entity);
 
 }

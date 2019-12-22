@@ -1,23 +1,21 @@
 package ru.otus.hw10.model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "tUser")
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
+	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	@Column(name = "id")
 	private long id;
 	
 	@Column(name = "user_name")
 	private String name;
-
 
 	@Column(name = "user_age")
 	private int age;
@@ -73,8 +71,7 @@ public class User {
 	public String toString() {
 		return "User: id = " + id
 				+ ", name = " + name
-				+ ", address = " + address.toString()
-				+ ", phone = " + phones.toString();
+				+ ", age = " + age;
 	}
 
 
@@ -85,14 +82,12 @@ public class User {
 		User that = (User) o;
 		return id == that.id &&
 				name.equals(that.name) &&
-				age == that.age &&
-				Objects.equals(address, that.address)&&
-				Objects.equals(phones, that.phones);
+				age == that.age;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name, age, address, phones);
+		return Objects.hash(id, name, age);
 	}
 	
 }

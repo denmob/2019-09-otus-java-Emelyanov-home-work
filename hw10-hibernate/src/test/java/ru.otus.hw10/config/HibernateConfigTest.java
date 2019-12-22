@@ -1,14 +1,16 @@
-package ru.otus.hw10;
+package ru.otus.hw10.config;
 
-import org.junit.Test;
-import ru.otus.hw10.config.Hibernate;
 
 import org.hibernate.cfg.Configuration;
+import org.junit.jupiter.api.Test;
+import ru.otus.hw10.model.Address;
+import ru.otus.hw10.model.Phone;
+import ru.otus.hw10.model.User;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class HibernateDemoTest {
+class HibernateConfigTest {
 
     private static final String URL = "jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1";
 
@@ -19,25 +21,28 @@ public class HibernateDemoTest {
             .setProperty("hibernate.show_sql", "true")
             .setProperty("hibernate.hbm2ddl.auto", "create")
             .setProperty("hibernate.generate_statistics", "true");
+
+    private Class[] classes = {User.class, Address.class, Phone.class};
+
     
     @Test
-    public void hibernateConfigWithNull() {
+    void hibernateConfigWithNull() {
         assertThrows(IllegalArgumentException.class, ()-> {
-            new Hibernate(null);
+            new HibernateConfigImpl(null);
         });
     }
 
     @Test
-    public void hibernateConfigWithEmptyConfig() {
+    void hibernateConfigWithEmptyConfig() {
 
         assertThrows(IllegalStateException.class, ()-> {
-            new Hibernate(new Configuration());
+            new HibernateConfigImpl(new Configuration());
         });
     }
 
     @Test
-    public void hibernateConfigWithEmptyConfig1() {
-        Hibernate hibernate =  new Hibernate(CONFIGURATION);
+    void hibernateConfig() {
+        HibernateConfigImpl hibernate =  new HibernateConfigImpl(CONFIGURATION,classes);
         assertNotNull(hibernate);
 
     }

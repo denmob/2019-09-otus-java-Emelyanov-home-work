@@ -1,15 +1,14 @@
 package ru.otus.hw10.hibernate;
 
-import org.hibernate.Transaction;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
-import java.util.Objects;
+import java.util.Optional;
 
 public class ORMTemplateImpl<T> implements ORMTemplate<T> {
 
-	private long savedId = 0;
-	
+
 	private SessionFactory sessionFactory;
 	
 	public ORMTemplateImpl(SessionFactory sessionFactory) {
@@ -26,36 +25,35 @@ public class ORMTemplateImpl<T> implements ORMTemplate<T> {
 		Transaction transaction;
 		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
-			
-			selectedEntity = session.get(entityClass, id);
-			if (selectedEntity == null)
-				throw new ORMTemplateException(String.format("Not found entity with id %s",id));
-
+			 selectedEntity = Optional.ofNullable(session.get(entityClass, id)).orElseThrow(ORMTemplateException::new);
 			transaction.commit();
         }
 		catch (Exception ex) {
 			throw new ORMTemplateException(ex);
 		}
-		
 		return selectedEntity;
 	}
 
 	@Override
-	public long saveEntity(T entity) {
+	public void saveEntity(T entity) {
 		if (entity == null) throw new IllegalArgumentException("Entity is null!");
 
 		Transaction transaction = null;
 		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
 
-			savedId = (long)session.save(entity);
+			session.persist(entity);
 
 			transaction.commit();	
-			return  savedId;
+
         }
 		catch (Exception ex) {
-			Objects.requireNonNull(transaction).rollback();
-			throw new ORMTemplateException(ex);
+			if (transaction == null)
+				throw new ORMTemplateException("Transaction is null! Rollback is missing! ",ex);
+			else if (transaction.isActive()) transaction.rollback();
+
+				throw new ORMTemplateException(ex);
+
 		}
 
 	}

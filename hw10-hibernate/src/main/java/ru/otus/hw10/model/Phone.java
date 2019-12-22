@@ -15,7 +15,6 @@ public class Phone {
     @Column(name = "phone_number")
     private String number;
 
-
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -56,8 +55,7 @@ public class Phone {
     @Override
     public String toString() {
         return "Phone: id = " + id
-                + ", number = " + number
-                + ", userId = " + user.getId();
+                + ", number = " + number;
     }
 
     @Override
@@ -66,12 +64,11 @@ public class Phone {
         if (o == null || getClass() != o.getClass()) return false;
         Phone that = (Phone) o;
         return id == that.id &&
-                number.equals(that.number) &&
-                Objects.equals(user, that.user);
+                number.equals(that.number);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, number, user.getId());
+        return Objects.hash(id, number);
     }
 }
