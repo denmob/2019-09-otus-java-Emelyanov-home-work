@@ -1,9 +1,13 @@
 package ru.otus.hw10.hibernate;
 
-public interface ORMTemplate<T> {
+import ru.otus.hw10.model.User;
 
-	T getEntity(Class<T> entityClass, long id);
+import java.util.Optional;
 
-	void saveEntity(T entity);
+public interface ORMTemplate {
+
+	Optional<User> getEntity(long id);
+
+	void saveEntity(User user);
 
 }

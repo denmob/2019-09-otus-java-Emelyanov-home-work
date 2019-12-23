@@ -21,29 +21,26 @@ class HibernateConfigTest {
             .setProperty("hibernate.show_sql", "true")
             .setProperty("hibernate.hbm2ddl.auto", "create")
             .setProperty("hibernate.generate_statistics", "true");
-
-    private Class[] classes = {User.class, Address.class, Phone.class};
-
     
     @Test
     void hibernateConfigWithNull() {
-        assertThrows(IllegalArgumentException.class, ()-> {
-            new HibernateConfigImpl(null);
-        });
+        assertThrows(IllegalArgumentException.class, ()-> { new HibernateConfigImpl(null); });
     }
 
     @Test
     void hibernateConfigWithEmptyConfig() {
-
-        assertThrows(IllegalStateException.class, ()-> {
-            new HibernateConfigImpl(new Configuration());
-        });
+        assertThrows(IllegalStateException.class, ()-> { new HibernateConfigImpl(new Configuration()); });
     }
 
     @Test
-    void hibernateConfig() {
-        HibernateConfigImpl hibernate =  new HibernateConfigImpl(CONFIGURATION,classes);
+    void hibernateConfig1() {
+        HibernateConfigImpl hibernate =  new HibernateConfigImpl(CONFIGURATION, User.class, Address.class, Phone.class);
         assertNotNull(hibernate);
+    }
 
+    @Test
+    void hibernateConfig2() {
+        HibernateConfigImpl hibernate =  new HibernateConfigImpl(CONFIGURATION, Address.class, Phone.class, User.class);
+        assertNotNull(hibernate);
     }
 }

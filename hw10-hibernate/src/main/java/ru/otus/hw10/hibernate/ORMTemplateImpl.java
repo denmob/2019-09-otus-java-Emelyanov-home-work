@@ -3,13 +3,20 @@ package ru.otus.hw10.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.otus.hw10.hibernate.dao.UserDao;
+import ru.otus.hw10.hibernate.dao.UserDaoImpl;
+import ru.otus.hw10.model.User;
 
 import java.util.Optional;
 
-public class ORMTemplateImpl<T> implements ORMTemplate<T> {
+public class ORMTemplateImpl implements ORMTemplate {
 
+	private static final Logger logger = LoggerFactory.getLogger(ORMTemplateImpl.class);
+	private final UserDao userDao = new UserDaoImpl();
 
-	private SessionFactory sessionFactory;
+	private final SessionFactory sessionFactory;
 	
 	public ORMTemplateImpl(SessionFactory sessionFactory) {
 		if (sessionFactory == null) throw new IllegalArgumentException("SessionFactory is null!");
@@ -17,47 +24,35 @@ public class ORMTemplateImpl<T> implements ORMTemplate<T> {
 	}
 	
 	@Override
-	public T getEntity(Class<T> entityClass, long id) {
-		if (entityClass == null) throw new IllegalArgumentException("EntityClass is null!");
+	public Optional<User> getEntity(long id) {
 		if (id <=0 ) throw new IllegalArgumentException("Incorrect id for get object!");
-
-		T selectedEntity;
-		Transaction transaction;
 		try (Session session = sessionFactory.openSession()) {
-			transaction = session.beginTransaction();
-			 selectedEntity = Optional.ofNullable(session.get(entityClass, id)).orElseThrow(ORMTemplateException::new);
-			transaction.commit();
+			Optional<User> userOptional = userDao.findById(id,session);
+			logger.debug("user: {}", userOptional.orElse(null));
+			return userOptional;
         }
 		catch (Exception ex) {
 			throw new ORMTemplateException(ex);
 		}
-		return selectedEntity;
 	}
 
 	@Override
-	public void saveEntity(T entity) {
-		if (entity == null) throw new IllegalArgumentException("Entity is null!");
+	public void saveEntity(User user) {
+		if (user == null) throw new IllegalArgumentException("Entity is null!");
 
 		Transaction transaction = null;
 		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
-
-			session.persist(entity);
-
-			transaction.commit();	
-
+			userDao.saveUser(user,session);
+			transaction.commit();
         }
 		catch (Exception ex) {
 			if (transaction == null)
 				throw new ORMTemplateException("Transaction is null! Rollback is missing! ",ex);
 			else if (transaction.isActive()) transaction.rollback();
-
 				throw new ORMTemplateException(ex);
-
 		}
-
 	}
-	
 
 
 }

@@ -21,7 +21,7 @@ public class HibernateConfigImpl implements HibernateConfig {
     private Class[] classes = {User.class, Address.class, Phone.class};
 
     public HibernateConfigImpl() {
-        createSessionFactory(this.classes);
+        sessionFactory = createSessionFactory(configuration,classes);
     }
 
     public HibernateConfigImpl(Configuration configuration, Class ...annotatedClasses) {
@@ -29,8 +29,9 @@ public class HibernateConfigImpl implements HibernateConfig {
         if (annotatedClasses.length ==0)  throw new IllegalArgumentException("AnnotatedClasses is empty!");
         this.configuration = configuration;
         this.classes = annotatedClasses;
-        createSessionFactory(annotatedClasses);
+        sessionFactory = createSessionFactory(configuration,annotatedClasses);
     }
+
 
     private void checkExternalConfig(Configuration configuration) {
         if (configuration == null)
@@ -45,7 +46,7 @@ public class HibernateConfigImpl implements HibernateConfig {
             throw new IllegalStateException("hibernate.connection.driver_class is null!");
     }
 
-    private void createSessionFactory(Class ...annotatedClasses) {
+    private static SessionFactory createSessionFactory(Configuration configuration, Class... annotatedClasses) {
 
         StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties()).build();
@@ -53,7 +54,7 @@ public class HibernateConfigImpl implements HibernateConfig {
         MetadataSources metadataSources = new MetadataSources(serviceRegistry);
         Arrays.stream(annotatedClasses).forEach(metadataSources::addAnnotatedClass);
         Metadata metadata = metadataSources.getMetadataBuilder().build();
-        sessionFactory = metadata.getSessionFactoryBuilder().build();
+        return  metadata.getSessionFactoryBuilder().build();
     }
 
     @Override

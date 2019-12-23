@@ -27,7 +27,6 @@ public class Phone {
         this.user = user;
     }
 
-
     public long getId() {
         return id;
     }

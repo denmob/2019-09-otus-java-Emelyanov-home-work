@@ -20,7 +20,7 @@ public class User {
 	@Column(name = "user_age")
 	private int age;
 
-	@OneToOne(targetEntity = Address.class, cascade = CascadeType.ALL)
+	@OneToOne(targetEntity = Address.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "address_id")
 	private Address address;
 
