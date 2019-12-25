@@ -1,7 +1,6 @@
-package ru.otus.hw10.hibernate;
+package ru.otus.hw10.service;
 
 
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,9 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw10.config.HibernateConfig;
 import ru.otus.hw10.config.HibernateConfigImpl;
+import ru.otus.hw10.dao.UserDao;
+import ru.otus.hw10.dao.UserDaoHibernate;
 import ru.otus.hw10.model.Address;
 import ru.otus.hw10.model.Phone;
 import ru.otus.hw10.model.User;
+import ru.otus.hw10.sessionmanager.SessionManager;
+import ru.otus.hw10.sessionmanager.SessionManagerHibernate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,57 +22,34 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ORMTemplateTest {
+class HibernateServiceUserTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(ORMTemplateTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateServiceUserTest.class);
+
     private final HibernateConfig hibernateConfig  = new HibernateConfigImpl();
-    private SessionFactory sessionFactory;
-    private ORMTemplate ormTemplate;
+
+    private SessionManager sessionManager;
+    private UserDao userDao;
+    private ORMServiceUser ormServiceUser;
 
     @BeforeEach
     void setUp() {
-        sessionFactory = hibernateConfig.getSessionFactory();
-        ormTemplate = new ORMTemplateImpl(sessionFactory);
+        sessionManager = new SessionManagerHibernate(hibernateConfig.getSessionFactory());
+        userDao  = new UserDaoHibernate(sessionManager);
+        ormServiceUser = new ORMServiceUserImpl(userDao);
     }
 
     @AfterEach
     void tearDown() {
-        sessionFactory.close();
-    }
-
-
-    @Test
-    void createWithNull() {
-        assertThrows(IllegalArgumentException.class, ()-> { new ORMTemplateImpl(null); });
-    }
-
-    @Test
-    void saveNullEntity() {
-        assertThrows(IllegalArgumentException.class, ()-> { ormTemplate.saveEntity(null); });
-    }
-
-
-    @Test
-    void getNullEntity() {
-        assertThrows(IllegalArgumentException.class, ()-> { ormTemplate.getEntity(0); });
-    }
-
-
-    @Test
-    void getEntityNoFound() {
-        long userId = 1;
-        Optional<User> user1 = ormTemplate.getEntity(userId);
-       // user1.orElseThrow(() -> new ORMTemplateException("User not found with userId " + userId));
-        assertFalse(user1.isPresent());
+        sessionManager.close();
     }
 
     @Test
     void saveEntity() {
         User user = new User();
         logger.info("user before save: {}",user);
-        ormTemplate.saveEntity(user);
+        ormServiceUser.saveEntity(user);
         logger.info("user after save: {}",user);
         assertTrue(user.getId()>0);
     }
@@ -78,10 +58,10 @@ class ORMTemplateTest {
     void getEntity() {
         User user = new User();
         logger.info("user before save: {}",user);
-        ormTemplate.saveEntity(user);
+        ormServiceUser.saveEntity(user);
         logger.info("user after save: {}",user);
         assertTrue(user.getId()>0);
-        Optional<User> user1 = ormTemplate.getEntity(user.getId());
+        Optional<User> user1 = ormServiceUser.getEntity(user.getId());
         logger.info("user selected: {}",user);
         assertNotNull(user1);
     }
@@ -100,11 +80,11 @@ class ORMTemplateTest {
         user.setPhoneDataSet(listPhone);
 
         logger.info("user before save: {}",user);
-        ormTemplate.saveEntity(user);
+        ormServiceUser.saveEntity(user);
         logger.info("user after save: {}",user);
 
         assertTrue(user.getId()>0);
-        Optional<User> optionalUser = ormTemplate.getEntity(user.getId());
+        Optional<User> optionalUser = ormServiceUser.getEntity(user.getId());
         assertTrue(optionalUser.isPresent());
 
         User selectedUser = optionalUser.get();
@@ -123,6 +103,5 @@ class ORMTemplateTest {
         logger.info("user PhoneDataSet: {}", Collections.singletonList(user.getPhoneDataSet()));
 
     }
-
 
 }

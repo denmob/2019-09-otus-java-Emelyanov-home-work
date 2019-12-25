@@ -10,8 +10,9 @@ public class HibernateDemo {
 
 	public static void main(String[] args) {
 
-		logger.info("hw10-hibernate");
-		// ORMTemplateTest.logicTest
+		logger.info("hw10-service");
+		// HibernateServiceUserTest.logicTest
+		// JdbcServiceUserTest.logicTest
 
 	}
 

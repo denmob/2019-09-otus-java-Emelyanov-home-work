@@ -27,6 +27,14 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Phone> phones = new ArrayList<>();
 
+	public User(String name, int age) {
+		this.name = name;
+		this.age = age;
+	}
+
+	public User() {
+	}
+
 	public long getId() {
 		return id;
 	}

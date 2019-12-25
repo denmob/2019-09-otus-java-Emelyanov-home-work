@@ -15,12 +15,12 @@ class HibernateConfigTest {
     private static final String URL = "jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1";
 
     private static final  Configuration CONFIGURATION = new Configuration()
-            .setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect")
-            .setProperty("hibernate.connection.driver_class", "org.h2.Driver")
-            .setProperty("hibernate.connection.url", URL)
-            .setProperty("hibernate.show_sql", "true")
-            .setProperty("hibernate.hbm2ddl.auto", "create")
-            .setProperty("hibernate.generate_statistics", "true");
+            .setProperty("service.dialect", "org.service.dialect.H2Dialect")
+            .setProperty("service.connection.driver_class", "org.h2.Driver")
+            .setProperty("service.connection.url", URL)
+            .setProperty("service.show_sql", "true")
+            .setProperty("service.hbm2ddl.auto", "create")
+            .setProperty("service.generate_statistics", "true");
     
     @Test
     void hibernateConfigWithNull() {

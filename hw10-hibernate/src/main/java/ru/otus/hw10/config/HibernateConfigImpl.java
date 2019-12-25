@@ -38,12 +38,12 @@ public class HibernateConfigImpl implements HibernateConfig {
             throw new IllegalArgumentException("Configuration is null!");
 
         Properties properties = configuration.getProperties();
-        if (properties.getProperty("hibernate.connection.url")==null)
-            throw new IllegalStateException("hibernate.connection.url is null!");
-        if (properties.getProperty("hibernate.dialect")==null)
-            throw new IllegalStateException("hibernate.dialect is null!");
-        if (properties.getProperty("hibernate.connection.driver_class")==null)
-            throw new IllegalStateException("hibernate.connection.driver_class is null!");
+        if (properties.getProperty("service.connection.url")==null)
+            throw new IllegalStateException("service.connection.url is null!");
+        if (properties.getProperty("service.dialect")==null)
+            throw new IllegalStateException("service.dialect is null!");
+        if (properties.getProperty("service.connection.driver_class")==null)
+            throw new IllegalStateException("service.connection.driver_class is null!");
     }
 
     private static SessionFactory createSessionFactory(Configuration configuration, Class... annotatedClasses) {
