@@ -1,4 +1,4 @@
-package ru.otus.hw10.config;
+package ru.otus.hw11.config;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
@@ -6,9 +6,9 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import ru.otus.hw10.model.Address;
-import ru.otus.hw10.model.User;
-import ru.otus.hw10.model.Phone;
+import ru.otus.hw11.model.Address;
+import ru.otus.hw11.model.Phone;
+import ru.otus.hw11.model.User;
 
 import java.util.Arrays;
 import java.util.Properties;
