@@ -3,10 +3,10 @@ package hw11.config;
 
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.Test;
-import ru.otus.hw11.config.HibernateConfigImpl;
-import ru.otus.hw11.model.Address;
-import ru.otus.hw11.model.Phone;
-import ru.otus.hw11.model.User;
+import ru.otus.hw11.hw10.config.HibernateConfigImpl;
+import ru.otus.hw11.hw10.model.Address;
+import ru.otus.hw11.hw10.model.Phone;
+import ru.otus.hw11.hw10.model.User;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;

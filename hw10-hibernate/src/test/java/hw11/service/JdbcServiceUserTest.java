@@ -1,4 +1,4 @@
-package ru.otus.hw11.service;
+package ru.otus.hw11.hw10.service;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

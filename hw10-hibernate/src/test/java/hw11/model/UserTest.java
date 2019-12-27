@@ -1,4 +1,4 @@
-package ru.otus.hw11.model;
+package ru.otus.hw11.hw10.model;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

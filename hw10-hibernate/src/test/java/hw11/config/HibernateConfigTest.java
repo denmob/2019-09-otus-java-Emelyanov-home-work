@@ -1,4 +1,4 @@
-package ru.otus.hw11.config;
+package ru.otus.hw11.hw10.config;
 
 
 import org.hibernate.cfg.Configuration;

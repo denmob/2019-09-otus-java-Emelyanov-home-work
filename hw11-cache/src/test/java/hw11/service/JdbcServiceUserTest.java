@@ -5,13 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw11.dao.UserDao;
-import ru.otus.hw11.dao.UserDaoJdbc;
-import ru.otus.hw11.model.User;
-import ru.otus.hw11.service.ORMServiceUser;
-import ru.otus.hw11.service.ORMServiceUserImpl;
-import ru.otus.hw11.sessionmanager.SessionManager;
-import ru.otus.hw11.sessionmanager.SessionManagerJdbc;
+import ru.otus.hw11.hw10.dao.UserDao;
+import ru.otus.hw11.hw10.dao.UserDaoJdbc;
+import ru.otus.hw11.hw10.model.User;
+import ru.otus.hw11.hw10.service.ORMServiceUser;
+import ru.otus.hw11.hw10.service.ORMServiceUserImpl;
+import ru.otus.hw11.hw10.sessionmanager.SessionManager;
+import ru.otus.hw11.hw10.sessionmanager.SessionManagerJdbc;
 
 import java.util.Optional;
 
