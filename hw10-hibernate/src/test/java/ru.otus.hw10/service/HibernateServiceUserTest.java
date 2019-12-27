@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw10.config.HibernateConfig;
-import ru.otus.hw10.config.HibernateConfigImpl;
+import ru.otus.hw10.config.HibernateConfigDefaultImpl;
 import ru.otus.hw10.dao.UserDao;
 import ru.otus.hw10.dao.UserDaoHibernate;
 import ru.otus.hw10.model.Address;
@@ -27,14 +27,14 @@ class HibernateServiceUserTest {
 
     private static final Logger logger = LoggerFactory.getLogger(HibernateServiceUserTest.class);
 
-    private final HibernateConfig hibernateConfig  = new HibernateConfigImpl();
-
+    private HibernateConfig hibernateConfig;
     private SessionManager sessionManager;
     private UserDao userDao;
     private ORMServiceUser ormServiceUser;
 
     @BeforeEach
     void setUp() {
+        hibernateConfig = new HibernateConfigDefaultImpl();
         sessionManager = new SessionManagerHibernate(hibernateConfig.getSessionFactory());
         userDao  = new UserDaoHibernate(sessionManager);
         ormServiceUser = new ORMServiceUserImpl(userDao);

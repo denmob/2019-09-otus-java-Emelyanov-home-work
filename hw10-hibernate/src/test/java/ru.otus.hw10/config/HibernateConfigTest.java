@@ -3,6 +3,8 @@ package ru.otus.hw10.config;
 
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.otus.hw10.model.Address;
 import ru.otus.hw10.model.Phone;
 import ru.otus.hw10.model.User;
@@ -12,35 +14,82 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class HibernateConfigTest {
 
-    private static final String URL = "jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1";
+    private static final Logger logger = LoggerFactory.getLogger(HibernateConfigTest.class);
 
-    private static final  Configuration CONFIGURATION = new Configuration()
-            .setProperty("service.dialect", "org.service.dialect.H2Dialect")
-            .setProperty("service.connection.driver_class", "org.h2.Driver")
-            .setProperty("service.connection.url", URL)
-            .setProperty("service.show_sql", "true")
-            .setProperty("service.hbm2ddl.auto", "create")
-            .setProperty("service.generate_statistics", "true");
-    
     @Test
     void hibernateConfigWithNull() {
-        assertThrows(IllegalArgumentException.class, ()-> { new HibernateConfigImpl(null); });
+        Exception thrown = assertThrows(IllegalArgumentException.class, () -> {
+            new HibernateConfigImpl(null);
+        });
+        logger.info(thrown.getMessage());
     }
 
     @Test
     void hibernateConfigWithEmptyConfig() {
-        assertThrows(IllegalStateException.class, ()-> { new HibernateConfigImpl(new Configuration()); });
+        Exception thrown = assertThrows(IllegalStateException.class, () -> {
+            new HibernateConfigImpl(new Configuration());
+        });
+        logger.info(thrown.getMessage());
     }
 
     @Test
-    void hibernateConfig1() {
-        HibernateConfigImpl hibernate =  new HibernateConfigImpl(CONFIGURATION, User.class, Address.class, Phone.class);
+    void hibernateConfigInvalid1() {
+        Configuration configuration = new Configuration()
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect")
+                .setProperty("hibernate.connection.driver_class", "org.h2.Driver")
+                .setProperty("hibernate.connection.url", "jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1")
+                .setProperty("hibernate.show_sql", "true");
+
+        Exception thrown =  assertThrows(IllegalStateException.class, () -> {
+            new HibernateConfigImpl(configuration, User.class, Address.class, Phone.class);
+        });
+        logger.info(thrown.getMessage());
+    }
+
+    @Test
+    void hibernateConfigInvalid2() {
+        Configuration configuration = new Configuration()
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+
+        Exception thrown = assertThrows(IllegalStateException.class, () -> {
+            new HibernateConfigImpl(configuration);
+        });
+        logger.info(thrown.getMessage());
+    }
+
+
+    @Test
+    void hibernateConfigInvalid3() {
+        Configuration configuration = new Configuration()
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect")
+                .setProperty("hibernate.connection.driver_class", "org.h2.Driver")
+                .setProperty("hibernate.connection.url", "jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1");
+        Exception thrown =  assertThrows(IllegalStateException.class, () -> {
+            new HibernateConfigImpl(configuration,User.class,  User.class);
+        });
+        logger.info(thrown.getMessage());
+    }
+
+
+    @Test
+    void hibernateConfigValid() {
+        Configuration configuration = new Configuration()
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect")
+                .setProperty("hibernate.connection.driver_class", "org.h2.Driver")
+                .setProperty("hibernate.connection.url", "jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1")
+                .setProperty("hibernate.show_sql", "true")
+                .setProperty("hibernate.hbm2ddl.auto", "create");
+
+        HibernateConfigImpl hibernate = new HibernateConfigImpl(configuration, Address.class, Phone.class, User.class);
         assertNotNull(hibernate);
     }
 
     @Test
-    void hibernateConfig2() {
-        HibernateConfigImpl hibernate =  new HibernateConfigImpl(CONFIGURATION, Address.class, Phone.class, User.class);
-        assertNotNull(hibernate);
+    void defaultHibernateConfig() {
+        HibernateConfigDefaultImpl hibernateConfigDefault = new HibernateConfigDefaultImpl();
+        assertNotNull(hibernateConfigDefault);
+        assertNotNull(hibernateConfigDefault.getSessionFactory());
     }
+
+  //
 }
