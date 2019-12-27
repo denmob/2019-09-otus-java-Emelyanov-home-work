@@ -12,11 +12,11 @@ import ru.otus.hw10.model.User;
 
 import java.util.Arrays;
 
-public class HibernateConfigDefaultImpl implements HibernateConfig {
+public class HibernateConfigDefault1 implements HibernateConfig {
 
     private SessionFactory sessionFactory;
 
-    public HibernateConfigDefaultImpl() {
+    public HibernateConfigDefault1() {
 
         Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
 

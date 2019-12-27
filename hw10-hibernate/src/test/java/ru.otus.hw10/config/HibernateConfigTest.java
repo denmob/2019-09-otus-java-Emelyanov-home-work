@@ -85,10 +85,17 @@ class HibernateConfigTest {
     }
 
     @Test
-    void defaultHibernateConfig() {
-        HibernateConfigDefaultImpl hibernateConfigDefault = new HibernateConfigDefaultImpl();
-        assertNotNull(hibernateConfigDefault);
-        assertNotNull(hibernateConfigDefault.getSessionFactory());
+    void defaultHibernateConfig1() {
+        HibernateConfig hibernateConfigDefault1 = new HibernateConfigDefault1();
+        assertNotNull(hibernateConfigDefault1);
+        assertNotNull(hibernateConfigDefault1.getSessionFactory());
+    }
+
+    @Test
+    void defaultHibernateConfig2() {
+        HibernateConfig hibernateConfigDefault2 = new HibernateConfigDefault2();
+        assertNotNull(hibernateConfigDefault2);
+        assertNotNull(hibernateConfigDefault2.getSessionFactory());
     }
 
   //
