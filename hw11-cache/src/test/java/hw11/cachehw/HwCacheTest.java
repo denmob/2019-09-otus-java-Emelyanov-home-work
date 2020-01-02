@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import ru.otus.hw11.cachehw.HwCache;
 import ru.otus.hw11.cachehw.HwCacheImpl;
 import ru.otus.hw11.cachehw.HwListener;
+import ru.otus.hw11.hw10.Demo;
 
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -108,26 +109,29 @@ public class HwCacheTest {
     }
 
     @Test
-    void hwCacheListenersWeak () throws InterruptedException {
+    void hwCacheListenersWeakWithGC () throws InterruptedException {
         int size = 3;
         HwCache<Integer, String> cache = new HwCacheImpl<>(100, 2);
         HwListener<Integer, String> listener =
                 (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
 
         WeakReference<HwListener> listenerWeakReference = new WeakReference<>(listener);
-
-        cache.addListenerWeak(listenerWeakReference);
-        cache.addListenerWeak(listenerWeakReference);
-        cache.addListenerWeak(listenerWeakReference);
+        WeakReference<HwListener> listenerWeakReference1 = new WeakReference<>(listener);
+        WeakReference<HwListener> listenerWeakReference2 = new WeakReference<>(listener);
 
         logger.info("Log put before System.gc()");
         for (int i=0;i<size;i++) {
             cache.put(i, ("value"+i));
         }
 
-        Thread.sleep(100);
+        cache.addListenerWeak(listenerWeakReference);
+        cache.addListenerWeak(listenerWeakReference1);
+        cache.addListenerWeak(listenerWeakReference2);
+
+
+        Thread.sleep(1000);
         System.gc();
-        Thread.sleep(100);
+        Thread.sleep(1000);
 
         logger.info("Log put after System.gc()");
         for (int i=0;i<size;i++) {
@@ -135,6 +139,7 @@ public class HwCacheTest {
         }
 
         cache.removeListenerWeak(listenerWeakReference);
+        cache.removeListenerWeak(listenerWeakReference2);
 
         logger.info("Log put after removeListener 1");
         for (int i=0;i<size;i++) {
@@ -147,12 +152,10 @@ public class HwCacheTest {
         for (int i=0;i<size;i++) {
             cache.put(i, ("value"+i));
         }
-
-
     }
 
     @Test
-    void hwCacheListenersSoft () throws InterruptedException {
+    void hwCacheListenersSoftkWithGC () throws InterruptedException {
         int size = 3;
         HwCache<Integer, String> cache = new HwCacheImpl<>(100, 2);
         HwListener<Integer, String> listener =

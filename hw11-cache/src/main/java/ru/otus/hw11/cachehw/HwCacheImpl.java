@@ -2,8 +2,8 @@ package ru.otus.hw11.cachehw;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.hw11.hw10.service.ORMServiceUserImpl;
 
-import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.WeakHashMap;
 
 public class HwCacheImpl<K, V> implements HwCache<K, V> {
 
-  private final Logger logger = LoggerFactory.getLogger(HwCacheImpl.class);
+  private Logger logger = LoggerFactory.getLogger(HwCacheImpl.class);
 
   private final int maxElements;
   private final int maxListeners;
@@ -22,7 +22,7 @@ public class HwCacheImpl<K, V> implements HwCache<K, V> {
   private  Map<K, WeakReference<V>> elements;
 
   private List<WeakReference<HwListener>> listenersWeak;
-  private List<SoftReference> listenersSoft;
+  private List<SoftReference<HwListener>> listenersSoft;
   private List<HwListener> listenersRef;
 
   public HwCacheImpl(int maxElements, int maxListeners) {
@@ -63,11 +63,18 @@ public class HwCacheImpl<K, V> implements HwCache<K, V> {
       value =  (value== null) ? get(key):value;
       listenerSoftReference.get().notify(key,value, action);
     }
+
+    if (!listenersRef.isEmpty()) {
+      HwListener hwListener = listenersRef.get(listenersRef.size() - 1);
+      value =  (value== null) ? get(key):value;
+      hwListener.notify(key,value, action);
+    }
   }
 
   @Override
   public V get(K key) {
     WeakReference<V> vWeakReference = elements.get(key);
+    if (vWeakReference == null) logger.debug("Element {} not found", key);
    return vWeakReference != null ? vWeakReference.get() : null;
   }
 

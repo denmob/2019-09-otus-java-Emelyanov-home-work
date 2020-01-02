@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.hw11.cachehw.HwCache;
+import ru.otus.hw11.cachehw.HwCacheImpl;
+import ru.otus.hw11.cachehw.HwListener;
 import ru.otus.hw11.hw10.dao.UserDao;
 import ru.otus.hw11.hw10.dao.UserDaoJdbc;
 import ru.otus.hw11.hw10.model.User;
@@ -13,6 +16,7 @@ import ru.otus.hw11.hw10.service.ORMServiceUserImpl;
 import ru.otus.hw11.hw10.sessionmanager.SessionManager;
 import ru.otus.hw11.hw10.sessionmanager.SessionManagerJdbc;
 
+import java.lang.ref.WeakReference;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,12 +28,18 @@ class JdbcServiceUserTest {
     private SessionManager sessionManager;
     private UserDao userDao;
     private ORMServiceUser ormServiceUser;
+    private HwCache<Long, User> cache;
+    private HwListener<Long, User> listener;
 
     @BeforeEach
     void setUp() {
         sessionManager = new SessionManagerJdbc();
         userDao  = new UserDaoJdbc(sessionManager);
-        ormServiceUser = new ORMServiceUserImpl(userDao);
+        cache = new HwCacheImpl<>(100, 1);
+        listener = (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
+        cache.addListenerWeak(new WeakReference<>(listener));
+
+        ormServiceUser = new ORMServiceUserImpl(userDao,cache);
     }
 
     @AfterEach

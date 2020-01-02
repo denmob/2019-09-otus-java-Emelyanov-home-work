@@ -89,7 +89,7 @@ public class User {
 		if (o == null || getClass() != o.getClass()) return false;
 		User that = (User) o;
 		return id == that.id &&
-				name.equals(that.name) &&
+				(name!= null) && name.equals(that.name) &&
 				age == that.age;
 	}
 

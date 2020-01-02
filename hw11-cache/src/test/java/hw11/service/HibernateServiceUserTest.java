@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw10.config.HibernateConfigDefault1;
+import ru.otus.hw11.cachehw.HwCache;
+import ru.otus.hw11.cachehw.HwCacheImpl;
+import ru.otus.hw11.cachehw.HwListener;
 import ru.otus.hw11.hw10.config.HibernateConfig;
 import ru.otus.hw11.hw10.config.HibernateConfigDefault;
 import ru.otus.hw11.hw10.config.HibernateConfigImpl;
@@ -20,6 +23,7 @@ import ru.otus.hw11.hw10.service.ORMServiceUserImpl;
 import ru.otus.hw11.hw10.sessionmanager.SessionManager;
 import ru.otus.hw11.hw10.sessionmanager.SessionManagerHibernate;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,19 +32,26 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HibernateServiceUserTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(HibernateServiceUserTest.class);
+    private final Logger logger = LoggerFactory.getLogger(HibernateServiceUserTest.class);
 
     private final HibernateConfig hibernateConfig  = new HibernateConfigDefault();
 
     private SessionManager sessionManager;
     private UserDao userDao;
     private ORMServiceUser ormServiceUser;
+    private HwCache<Long, User> cache;
+    private HwListener<Long, User> listener;
 
     @BeforeEach
     void setUp() {
+
         sessionManager = new SessionManagerHibernate(hibernateConfig.getSessionFactory());
         userDao  = new UserDaoHibernate(sessionManager);
+
+        cache = new HwCacheImpl<>(1000, 1);
+        listener = (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
+        cache.addListenerWeak(new WeakReference<>(listener));
+
         ormServiceUser = new ORMServiceUserImpl(userDao);
     }
 
@@ -72,6 +83,8 @@ class HibernateServiceUserTest {
 
     @Test
     void logicTest() {
+        ormServiceUser = new ORMServiceUserImpl(userDao,cache);
+
         User user = new User();
         user.setName("Den");
         user.setAge(31);
@@ -107,5 +120,126 @@ class HibernateServiceUserTest {
         logger.info("user PhoneDataSet: {}", Collections.singletonList(user.getPhoneDataSet()));
 
     }
+
+    private User createAnyUse() {
+        User user = new User();
+        user.setName("Den");
+        user.setAge(31);
+        Address address = new Address("user_address_street",user);
+        user.setAddress(address);
+        List<Phone> listPhone = new ArrayList<>();
+        listPhone.add(new Phone("user_number_phone  123", user));
+        listPhone.add(new Phone("user_number_phone  456", user));
+        listPhone.add(new Phone("user_number_phone  789", user));
+        user.setPhoneDataSet(listPhone);
+        return user;
+    }
+
+
+    @Test
+    void CacheVsHibernateWithoutGC_1000elements () {
+        int size = 1000;
+        for (int i=1;i<size;i++) {
+            ormServiceUser.saveEntity(createAnyUse());
+        }
+
+        long startTime = System.currentTimeMillis();
+        for (int i=1;i<size;i++) ormServiceUser.getEntity(i);
+
+        long endTime = System.currentTimeMillis();
+        long resultHibernateGetEntity = (endTime - startTime);
+
+
+        ormServiceUser = new ORMServiceUserImpl(userDao,cache);
+
+        for (int i=1;i<size;i++) ormServiceUser.saveEntity(createAnyUse());
+
+         startTime = System.currentTimeMillis();
+        for (int i=1;i<size;i++) {
+            ormServiceUser.getEntity(i);
+        }
+         endTime = System.currentTimeMillis();
+         long resultCacheteGetEntity = (endTime - startTime);
+
+         logger.info("Hibernate {} milliseconds", resultHibernateGetEntity);
+         logger.info("Cache+Hibernate {} milliseconds", resultCacheteGetEntity);
+         assertTrue(resultHibernateGetEntity>resultCacheteGetEntity);
+    }
+
+
+    @Test
+    void CacheVsHibernateWithGC_100elements () throws InterruptedException {
+        int size = 100;
+
+        ormServiceUser = new ORMServiceUserImpl(userDao,cache);
+
+        for (int i=1;i<size;i++) ormServiceUser.saveEntity(createAnyUse());
+
+        long startTime = System.currentTimeMillis();
+        for (int i=1;i<size;i++) ormServiceUser.getEntity(i);
+           // logger.debug("Selected user.id {} cache",ormServiceUser.getEntity(i).get().getId());
+
+        long endTime = System.currentTimeMillis();
+        long resultCacheGetEntity = (endTime - startTime);
+
+        // clear cache
+        Thread.sleep(1000);
+        System.gc();
+        Thread.sleep(1000);
+
+        startTime = System.currentTimeMillis();
+        for (int i=1;i<size;i++)  ormServiceUser.getEntity(i);
+         //   logger.debug("Selected user.id {} hibernate",ormServiceUser.getEntity(i).get().getId());
+
+        endTime = System.currentTimeMillis();
+        long resultHibernateGetEntity = (endTime - startTime);
+
+        logger.info("Hibernate {} milliseconds", resultHibernateGetEntity);
+        logger.info("Cache+Hibernate {} milliseconds", resultCacheGetEntity);
+        assertTrue(resultHibernateGetEntity>resultCacheGetEntity);
+    }
+
+
+    @Test
+    void CacheVsHibernateWithGC_500elements () throws InterruptedException {
+        int size = 500;
+
+        ormServiceUser = new ORMServiceUserImpl(userDao,cache);
+
+        for (int i=1;i<size;i++) {
+            ormServiceUser.saveEntity(createAnyUse());
+        }
+
+        long startTime = System.currentTimeMillis();
+        for (int i=1;i<size;i++) {
+            logger.debug("Selected user.id {} cache",ormServiceUser.getEntity(i).get().getId());
+        }
+        long endTime = System.currentTimeMillis();
+        long resultCacheGetEntity = (endTime - startTime);
+
+        // clear cache
+        Thread.sleep(1000);
+        System.gc();
+        Thread.sleep(1000);
+
+        startTime = System.currentTimeMillis();
+        for (int i=1;i<size;i++) {
+            logger.debug("Selected user.id {} hibernate",ormServiceUser.getEntity(i).get().getId());
+        }
+        endTime = System.currentTimeMillis();
+        long resultHibernateGetEntity = (endTime - startTime);
+
+
+        logger.info("Hibernate {} milliseconds", resultHibernateGetEntity);
+        logger.info("Cache+Hibernate {} milliseconds", resultCacheGetEntity);
+        assertTrue(resultCacheGetEntity >resultHibernateGetEntity);
+
+    }
+
+
+
+
+
+
 
 }
