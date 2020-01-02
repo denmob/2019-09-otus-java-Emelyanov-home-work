@@ -10,7 +10,7 @@
     </parent>
 
 	<artifactId>hw11-cache</artifactId>
-	<name>hw10-cache</name>
+	<name>hw11-cache</name>
 
 	<dependencies>
 		<dependency>

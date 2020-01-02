@@ -1,34 +1,44 @@
-package ru.otus.hw11.hw10.service;
+package hw10.service;
+
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.hw10.config.HibernateConfig;
+import ru.otus.hw10.config.HibernateConfigDefault1;
 import ru.otus.hw10.dao.UserDao;
-import ru.otus.hw10.dao.UserDaoJdbc;
+import ru.otus.hw10.dao.UserDaoHibernate;
+import ru.otus.hw10.model.Address;
+import ru.otus.hw10.model.Phone;
 import ru.otus.hw10.model.User;
 import ru.otus.hw10.service.ORMServiceUser;
 import ru.otus.hw10.service.ORMServiceUserImpl;
 import ru.otus.hw10.sessionmanager.SessionManager;
-import ru.otus.hw10.sessionmanager.SessionManagerJdbc;
+import ru.otus.hw10.sessionmanager.SessionManagerHibernate;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class JdbcServiceUserTest {
+class HibernateServiceUserTest {
+
     private static final Logger logger = LoggerFactory.getLogger(HibernateServiceUserTest.class);
 
-
+    private HibernateConfig hibernateConfig;
     private SessionManager sessionManager;
     private UserDao userDao;
     private ORMServiceUser ormServiceUser;
 
     @BeforeEach
     void setUp() {
-        sessionManager = new SessionManagerJdbc();
-        userDao  = new UserDaoJdbc(sessionManager);
+        hibernateConfig = new HibernateConfigDefault1();
+        sessionManager = new SessionManagerHibernate(hibernateConfig.getSessionFactory());
+        userDao  = new UserDaoHibernate(sessionManager);
         ormServiceUser = new ORMServiceUserImpl(userDao);
     }
 
@@ -63,6 +73,13 @@ class JdbcServiceUserTest {
         User user = new User();
         user.setName("Den");
         user.setAge(31);
+        Address address = new Address("user_address_street",user);
+        user.setAddress(address);
+        List<Phone> listPhone = new ArrayList<>();
+        listPhone.add(new Phone("user_number_phone  123", user));
+        listPhone.add(new Phone("user_number_phone  456", user));
+        listPhone.add(new Phone("user_number_phone  789", user));
+        user.setPhoneDataSet(listPhone);
 
         logger.info("user before save: {}",user);
         ormServiceUser.saveEntity(user);
@@ -72,21 +89,21 @@ class JdbcServiceUserTest {
         Optional<User> optionalUser = ormServiceUser.getEntity(user.getId());
         assertTrue(optionalUser.isPresent());
 
-
         User selectedUser = optionalUser.get();
         logger.info("user selected: {}",user);
         assertNotNull(selectedUser);
 
-        selectedUser.setName("Max");
-        selectedUser.setAge(66);
-        ormServiceUser.saveEntity(user);
 
-        optionalUser = ormServiceUser.getEntity(user.getId());
-        assertTrue(optionalUser.isPresent());
-        User selectedUser1 = optionalUser.get();
+        assertEquals(user.getName(),selectedUser.getName());
+        assertEquals(user.getAge(),selectedUser.getAge());
 
-        assertEquals(user.getName(),selectedUser1.getName());
-        assertEquals(user.getAge(),selectedUser1.getAge());
+        assertEquals(user.getAddress(),selectedUser.getAddress());
+
+        for (int i=0; i< listPhone.size();i++) {
+            assertEquals(listPhone.get(i).getNumber(),selectedUser.getPhoneDataSet().get(i).getNumber());
+        }
+        logger.info("user PhoneDataSet: {}", Collections.singletonList(user.getPhoneDataSet()));
+
     }
 
 }

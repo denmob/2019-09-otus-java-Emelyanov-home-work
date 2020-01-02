@@ -3,6 +3,7 @@ package ru.otus.hw10;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw10.config.HibernateConfig;
+import ru.otus.hw10.config.HibernateConfigDefault1;
 import ru.otus.hw10.config.HibernateConfigImpl;
 import ru.otus.hw10.dao.UserDao;
 import ru.otus.hw10.dao.UserDaoHibernate;
@@ -36,7 +37,7 @@ public class Demo {
 
 	private static void testHibernate() {
 
-		HibernateConfig hibernateConfig  = new HibernateConfigImpl();
+		HibernateConfig hibernateConfig  = new HibernateConfigDefault1();
 		SessionManager sessionManager = new SessionManagerHibernate(hibernateConfig.getSessionFactory());
 		UserDao userDao  = new UserDaoHibernate(sessionManager);
 		ORMServiceUser ormServiceUser = new ORMServiceUserImpl(userDao);
