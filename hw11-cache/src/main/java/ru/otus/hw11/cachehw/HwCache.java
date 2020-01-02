@@ -1,9 +1,9 @@
 package ru.otus.hw11.cachehw;
 
-/**
- * @author sergey
- * created on 14.12.18.
- */
+
+import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
+
 public interface HwCache<K, V> {
 
   void put(K key, V value);
@@ -12,7 +12,12 @@ public interface HwCache<K, V> {
 
   V get(K key);
 
-  void addListener(HwListener listener);
+  void addListener(HwListener  listener);
+  void addListenerWeak(WeakReference<HwListener>  listener);
+  void addListenerSoft(SoftReference<HwListener>  listener);
 
   void removeListener(HwListener listener);
+  void removeListenerWeak(WeakReference<HwListener> listener);
+  void removeListenerSoft(SoftReference<HwListener> listener);
+
 }
