@@ -2,7 +2,6 @@ package ru.otus.hw11.cachehw;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw11.hw10.service.ORMServiceUserImpl;
 
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -74,8 +73,9 @@ public class HwCacheImpl<K, V> implements HwCache<K, V> {
   @Override
   public V get(K key) {
     WeakReference<V> vWeakReference = elements.get(key);
-    if (vWeakReference == null) logger.debug("Element {} not found", key);
+    //if (vWeakReference == null) logger.debug("Element {} not found", key);
    return vWeakReference != null ? vWeakReference.get() : null;
+   // return  vWeakReference.get();
   }
 
   @Override

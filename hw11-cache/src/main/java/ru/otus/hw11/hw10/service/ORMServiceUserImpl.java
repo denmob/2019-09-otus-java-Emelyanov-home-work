@@ -39,6 +39,7 @@ public class ORMServiceUserImpl implements ORMServiceUser {
       try {
         Optional<User> userOptional = userDao.findById(id);
         logger.debug("user: {}", userOptional.orElse(null));
+        // чтоб положить в кеш тратится времени примерно столько же, сколько нужно, чтоб взять из бд, т.е. целесообразно ложить если брать надо много раз.
         if (hwCache != null && userOptional.isPresent()) {
           hwCache.put(id,userOptional.get());
         }
