@@ -161,7 +161,7 @@ class HibernateServiceUserTest {
 
 
     @Test
-    void CacheVsHibernate_10000elements () {
+    void cacheVsHibernate_10000elements () {
 
         long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(10000,false);
         long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(10000,true);
@@ -173,11 +173,10 @@ class HibernateServiceUserTest {
 
         assertTrue(timeSaveAndGetEntityWithoutCache>timeSaveAndGetEntityWithCache);
         assertTrue(timeSaveAndGetEntityWithCache>timeGetEntityWithCache);
-        assertTrue(timeSaveAndGetEntityWithoutCache>timeGetEntityWithCache);
     }
 
     @Test
-    void CacheVsHibernate_1000elements () {
+    void cacheVsHibernate_1000elements () {
 
         long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(1000,false);
         long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(1000,true);
@@ -193,7 +192,7 @@ class HibernateServiceUserTest {
     }
 
     @Test
-    void CacheVsHibernate_500elements () {
+    void cacheVsHibernate_500elements () {
         long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(500,false);
         long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(500,true);
         long timeGetEntityWithCache = getTimeGetEntity(500);
@@ -202,13 +201,12 @@ class HibernateServiceUserTest {
         logger.info("timeSaveAndGetEntityWithCache {} milliseconds", timeSaveAndGetEntityWithCache);
         logger.info("timeGetEntityWithCache {} milliseconds", timeGetEntityWithCache);
 
-      //  assertTrue(timeSaveAndGetEntityWithoutCache<timeSaveAndGetEntityWithCache);
         assertTrue(timeSaveAndGetEntityWithCache>timeGetEntityWithCache);
         assertTrue(timeSaveAndGetEntityWithoutCache>timeGetEntityWithCache);
     }
 
     @Test
-    void CacheVsHibernate_100elements () {
+    void cacheVsHibernate_100elements () {
         long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(100,false);
         long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(100,true);
         long timeGetEntityWithCache = getTimeGetEntity(100);
@@ -217,7 +215,6 @@ class HibernateServiceUserTest {
         logger.info("timeSaveAndGetEntityWithCache {} milliseconds", timeSaveAndGetEntityWithCache);
         logger.info("timeGetEntityWithCache {} milliseconds", timeGetEntityWithCache);
 
-      //  assertTrue(timeSaveAndGetEntityWithoutCache>timeSaveAndGetEntityWithCache);
         assertTrue(timeSaveAndGetEntityWithCache>timeGetEntityWithCache);
         assertTrue(timeSaveAndGetEntityWithoutCache>timeGetEntityWithCache);
     }

@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import ru.otus.hw11.cachehw.HwCache;
 import ru.otus.hw11.cachehw.HwCacheImpl;
 import ru.otus.hw11.cachehw.HwListener;
-import ru.otus.hw11.hw10.Demo;
 
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
