@@ -17,11 +17,11 @@ import ru.otus.hw11.hw10.model.Address;
 import ru.otus.hw11.hw10.model.Phone;
 import ru.otus.hw11.hw10.model.User;
 import ru.otus.hw11.hw10.service.ORMServiceUser;
-import ru.otus.hw11.hw10.service.ORMServiceUserImpl;
+import ru.otus.hw11.hw10.service.ORMServiceUserWithCacheImpl;
+import ru.otus.hw11.hw10.service.ORMServiceUserWithoutCacheImpl;
 import ru.otus.hw11.hw10.sessionmanager.SessionManager;
 import ru.otus.hw11.hw10.sessionmanager.SessionManagerHibernate;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +36,8 @@ class HibernateServiceUserTest {
 
     private SessionManager sessionManager;
     private UserDao userDao;
-    private ORMServiceUser ormServiceUser;
+    private ORMServiceUser ormServiceUserWithCache;
+    private ORMServiceUser ormServiceUserWithoutCache;
     private HwCache<Long, User> cache;
     private HwListener<Long, User> listener;
 
@@ -48,9 +49,10 @@ class HibernateServiceUserTest {
 
         cache = new HwCacheImpl<>(1000, 1);
         listener = (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
-        cache.addListenerWeak(new WeakReference<>(listener));
+        cache.addListener(listener);
 
-        ormServiceUser = new ORMServiceUserImpl(userDao,cache);
+        ormServiceUserWithCache = new ORMServiceUserWithCacheImpl(userDao,cache);
+        ormServiceUserWithoutCache = new ORMServiceUserWithoutCacheImpl(userDao);
     }
 
     @AfterEach
@@ -65,7 +67,7 @@ class HibernateServiceUserTest {
     void saveEntity() {
         User user = new User();
         logger.info("user before save: {}",user);
-        ormServiceUser.saveEntity(user);
+        ormServiceUserWithCache.saveEntity(user);
         logger.info("user after save: {}",user);
         assertTrue(user.getId()>0);
     }
@@ -74,17 +76,17 @@ class HibernateServiceUserTest {
     void getEntity() {
         User user = new User();
         logger.info("user before save: {}",user);
-        ormServiceUser.saveEntity(user);
+        ormServiceUserWithCache.saveEntity(user);
         logger.info("user after save: {}",user);
         assertTrue(user.getId()>0);
-        Optional<User> user1 = ormServiceUser.getEntity(user.getId());
+        Optional<User> user1 = ormServiceUserWithCache.getEntity(user.getId());
         logger.info("user selected: {}",user);
         assertNotNull(user1);
     }
 
     @Test
     void logicTest() {
-        ormServiceUser = new ORMServiceUserImpl(userDao,cache);
+        ormServiceUserWithCache = new ORMServiceUserWithCacheImpl(userDao,cache);
 
         User user = new User();
         user.setName("Den");
@@ -98,11 +100,11 @@ class HibernateServiceUserTest {
         user.setPhoneDataSet(listPhone);
 
         logger.info("user before save: {}",user);
-        ormServiceUser.saveEntity(user);
+        ormServiceUserWithCache.saveEntity(user);
         logger.info("user after save: {}",user);
 
         assertTrue(user.getId()>0);
-        Optional<User> optionalUser = ormServiceUser.getEntity(user.getId());
+        Optional<User> optionalUser = ormServiceUserWithCache.getEntity(user.getId());
         assertTrue(optionalUser.isPresent());
 
         User selectedUser = optionalUser.get();
@@ -136,25 +138,19 @@ class HibernateServiceUserTest {
         return user;
     }
 
-    private long getTimeSaveAndGetEntity(int countEntity, boolean useCache) {
+    private long getTimeSaveAndGetEntity(int countEntity, ORMServiceUser ormServiceUser) {
 
-        ormServiceUser = new ORMServiceUserImpl(userDao,useCache ? cache: null);
-        for (int i=1;i<countEntity;i++) {
-            ormServiceUser.saveEntity(createAnyUse());
-        }
-
+        for (int i=1;i<countEntity;i++) ormServiceUser.saveEntity(createAnyUse());
         long startTime = System.currentTimeMillis();
         for (int i=1;i<countEntity;i++) ormServiceUser.getEntity(i);
-
         long endTime = System.currentTimeMillis();
         return  (endTime - startTime);
     }
 
-    private long getTimeGetEntity(int countEntity) {
+    private long getTimeGetEntity(int countEntity, ORMServiceUser ormServiceUser) {
 
         long startTime = System.currentTimeMillis();
         for (int i=1;i<countEntity;i++) ormServiceUser.getEntity(i);
-
         long endTime = System.currentTimeMillis();
         return  (endTime - startTime);
     }
@@ -163,9 +159,10 @@ class HibernateServiceUserTest {
     @Test
     void cacheVsHibernate_10000elements () {
 
-        long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(10000,false);
-        long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(10000,true);
-        long timeGetEntityWithCache = getTimeGetEntity(10000);
+
+        long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(10000,ormServiceUserWithoutCache);
+        long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(10000,ormServiceUserWithCache);
+        long timeGetEntityWithCache = getTimeGetEntity(10000,ormServiceUserWithCache);
 
         logger.info("timeSaveAndGetEntityWithoutCache {} milliseconds", timeSaveAndGetEntityWithoutCache);
         logger.info("timeSaveAndGetEntityWithCache {} milliseconds", timeSaveAndGetEntityWithCache);
@@ -178,9 +175,9 @@ class HibernateServiceUserTest {
     @Test
     void cacheVsHibernate_1000elements () {
 
-        long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(1000,false);
-        long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(1000,true);
-        long timeGetEntityWithCache = getTimeGetEntity(1000);
+        long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(1000,ormServiceUserWithoutCache);
+        long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(1000,ormServiceUserWithCache);
+        long timeGetEntityWithCache = getTimeGetEntity(1000,ormServiceUserWithCache);
 
         logger.info("timeSaveAndGetEntityWithoutCache {} milliseconds", timeSaveAndGetEntityWithoutCache);
         logger.info("timeSaveAndGetEntityWithCache {} milliseconds", timeSaveAndGetEntityWithCache);
@@ -193,9 +190,9 @@ class HibernateServiceUserTest {
 
     @Test
     void cacheVsHibernate_500elements () {
-        long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(500,false);
-        long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(500,true);
-        long timeGetEntityWithCache = getTimeGetEntity(500);
+        long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(500,ormServiceUserWithoutCache);
+        long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(500,ormServiceUserWithCache);
+        long timeGetEntityWithCache = getTimeGetEntity(500,ormServiceUserWithCache);
 
         logger.info("timeSaveAndGetEntityWithoutCache {} milliseconds", timeSaveAndGetEntityWithoutCache);
         logger.info("timeSaveAndGetEntityWithCache {} milliseconds", timeSaveAndGetEntityWithCache);
@@ -207,9 +204,9 @@ class HibernateServiceUserTest {
 
     @Test
     void cacheVsHibernate_100elements () {
-        long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(100,false);
-        long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(100,true);
-        long timeGetEntityWithCache = getTimeGetEntity(100);
+        long timeSaveAndGetEntityWithoutCache = getTimeSaveAndGetEntity(100,ormServiceUserWithoutCache);
+        long timeSaveAndGetEntityWithCache = getTimeSaveAndGetEntity(100,ormServiceUserWithCache);
+        long timeGetEntityWithCache = getTimeGetEntity(100,ormServiceUserWithCache);
 
         logger.info("timeSaveAndGetEntityWithoutCache {} milliseconds", timeSaveAndGetEntityWithoutCache);
         logger.info("timeSaveAndGetEntityWithCache {} milliseconds", timeSaveAndGetEntityWithCache);

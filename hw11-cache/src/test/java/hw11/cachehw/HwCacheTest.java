@@ -7,9 +7,6 @@ import ru.otus.hw11.cachehw.HwCache;
 import ru.otus.hw11.cachehw.HwCacheImpl;
 import ru.otus.hw11.cachehw.HwListener;
 
-import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HwCacheTest {
@@ -36,8 +33,7 @@ public class HwCacheTest {
         HwListener<Integer, String> listener =
                 (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
 
-        WeakReference<HwListener> listenerWeakReference = new WeakReference<>(listener);
-        cache.addListenerWeak(listenerWeakReference);
+        cache.addListener(listener);
 
         for (int i=0;i<100;i++) {
             cache.put(i, ("value"+i));
@@ -53,7 +49,7 @@ public class HwCacheTest {
         cache.remove(10);
         assertNull(cache.get(10));
 
-        cache.removeListenerWeak(listenerWeakReference);
+        cache.removeListener(listener);
     }
 
     @Test
@@ -64,8 +60,7 @@ public class HwCacheTest {
         HwListener<Integer, BigObject> listener =
                 (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
 
-        WeakReference<HwListener> listenerWeakReference = new WeakReference<>(listener);
-        cache.addListenerWeak(listenerWeakReference);
+        cache.addListener(listener);
 
         for (int k = 0; k < size; k++) {
             cache.put(k,new BigObject());
@@ -77,55 +72,54 @@ public class HwCacheTest {
         cache.remove(1);
         assertNull(cache.get(1));
 
-        cache.removeListenerWeak(listenerWeakReference);
+        cache.removeListener(listener);
     }
 
 
     @Test
     void hwCacheWithGC () throws InterruptedException {
-        int size = 10;
+        int size = 100;
         HwCache<Integer, String> cache = new HwCacheImpl<>(100, 2);
 
         HwListener<Integer, String> listener =
                 (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
 
-        WeakReference<HwListener> listenerWeakReference = new WeakReference<>(listener);
-        cache.addListenerWeak(listenerWeakReference);
+        cache.addListener(listener);
 
         for (int i=0;i<size;i++) {
             cache.put(i, ("value"+i));
         }
 
-        Thread.sleep(100);
+        Thread.sleep(1000);
         System.gc();
-        Thread.sleep(100);
+        Thread.sleep(1000);
 
-        assertNull(cache.get(1));
-        assertNull(cache.get(10));
+        assertNotNull(cache.get(1));
+        assertNotNull(cache.get(10));
 
-        cache.removeListenerWeak(listenerWeakReference);
-
+        cache.removeListener(listener);
     }
 
     @Test
-    void hwCacheListenersWeakWithGC () throws InterruptedException {
+    void hwCacheListenersWithGC () throws InterruptedException {
         int size = 3;
         HwCache<Integer, String> cache = new HwCacheImpl<>(100, 2);
-        HwListener<Integer, String> listener =
-                (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
+        HwListener<Integer, String> listener1 =
+                (key, value, action) -> logger.info("listener1 key:{}, value:{}, action: {}", key, value, action);
+        HwListener<Integer, String> listener2 =
+                (key, value, action) -> logger.info("listener2 key:{}, value:{}, action: {}", key, value, action);
+        HwListener<Integer, String> listener3 =
+                (key, value, action) -> logger.info("listener3 key:{}, value:{}, action: {}", key, value, action);
 
-        WeakReference<HwListener> listenerWeakReference = new WeakReference<>(listener);
-        WeakReference<HwListener> listenerWeakReference1 = new WeakReference<>(listener);
-        WeakReference<HwListener> listenerWeakReference2 = new WeakReference<>(listener);
 
         logger.info("Log put before System.gc()");
         for (int i=0;i<size;i++) {
             cache.put(i, ("value"+i));
         }
 
-        cache.addListenerWeak(listenerWeakReference);
-        cache.addListenerWeak(listenerWeakReference1);
-        cache.addListenerWeak(listenerWeakReference2);
+        cache.addListener(listener1);
+        cache.addListener(listener2);
+        cache.addListener(listener3);
 
 
         Thread.sleep(1000);
@@ -137,56 +131,20 @@ public class HwCacheTest {
             cache.put(i, ("value"+i));
         }
 
-        cache.removeListenerWeak(listenerWeakReference);
-        cache.removeListenerWeak(listenerWeakReference2);
+        cache.removeListener(listener1);
+        cache.removeListener(listener2);
 
         logger.info("Log put after removeListener 1");
         for (int i=0;i<size;i++) {
             cache.put(i, ("value"+i));
         }
 
-        cache.removeListenerWeak(listenerWeakReference);
+        cache.removeListener(listener3);
 
         logger.info("Log put after removeListener 2");
         for (int i=0;i<size;i++) {
             cache.put(i, ("value"+i));
         }
-    }
-
-    @Test
-    void hwCacheListenersSoftkWithGC () throws InterruptedException {
-        int size = 3;
-        HwCache<Integer, String> cache = new HwCacheImpl<>(100, 2);
-        HwListener<Integer, String> listener =
-                (key, value, action) -> logger.info("key:{}, value:{}, action: {}", key, value, action);
-
-        SoftReference<HwListener> hwListenerSoftReference = new SoftReference<>(listener);
-
-        cache.addListenerSoft(hwListenerSoftReference);
-
-        logger.info("Log put before System.gc()");
-        for (int i=0;i<size;i++) {
-            cache.put(i, ("value"+i));
-        }
-
-        Thread.sleep(100);
-        System.gc();
-        Thread.sleep(100);
-
-        logger.info("Log put after System.gc()");
-        for (int i=0;i<size;i++) {
-            cache.put(i, ("value"+i));
-        }
-
-        cache.removeListenerSoft(hwListenerSoftReference);
-
-        logger.info("Log put after removeListener 1");
-        for (int i=0;i<size;i++) {
-            cache.put(i, ("value"+i));
-        }
-
-        cache.removeListenerSoft(hwListenerSoftReference);
-
     }
 
 
