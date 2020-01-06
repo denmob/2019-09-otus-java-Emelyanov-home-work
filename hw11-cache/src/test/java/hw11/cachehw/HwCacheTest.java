@@ -147,5 +147,31 @@ public class HwCacheTest {
         }
     }
 
+    @Test
+    void hwCacheListenerFail()   {
+
+        HwCache<Integer, String> cache = new HwCacheImpl<>(100, 2);
+        HwListener<Integer, String> listener1 =
+                (key, value, action) -> {throw new RuntimeException("hwCacheListenerFail");};
+        cache.addListener(listener1);
+        cache.put(1, "value");
+
+    }
+
+    @Test
+    void hwCacheListenerFail1()   {
+        HwCache<Integer, String> cache = new HwCacheImpl<>(100, 2);
+        cache.addListener(null);
+        cache.put(1, "value");
+        cache.addListener(null);
+    }
+
+    @Test
+    void hwCacheListenerFail2()   {
+        HwCache<Integer, String> cache = new HwCacheImpl<>(100, 2);
+        cache.removeListener(null);
+        cache.put(1, "value");
+    }
+
 
 }

@@ -47,29 +47,31 @@ public class HwCacheImpl<K, V> implements HwCache<K, V> {
         try {
           hwListener.notify(key, value, action);
         }catch (Exception e) {
-          throw new HwCacheException(e);
+          logger.error("hwListener.notify exception key: {}, value: {}, action: {}",key,value,action);
+          logger.error("cause exception",e);
         }
       }
   }
 
   @Override
   public V get(K key) {
-    V value =  elements.get(key);
-    if (value != null)  listenerNotify(key,  value,"get");
-    if (value == null)  logger.error("Element not found");
-    return value;
+      V value = elements.get(key);
+      if (value != null)
+        listenerNotify(key, value, "get");
+      else logger.error("Element not found");
+      return value;
   }
 
   @Override
   public void addListener(HwListener listener) {
-    if (hwListeners.size() != this.maxListeners)
+    if ((hwListeners.size() != this.maxListeners) && (listener != null))
       this.hwListeners.add(listener);
   }
 
 
   @Override
   public void removeListener(HwListener listener) {
-    if (!hwListeners.isEmpty()) {
+    if (!hwListeners.isEmpty()&& (listener != null)) {
       this.hwListeners.remove(listener);
     }
   }
