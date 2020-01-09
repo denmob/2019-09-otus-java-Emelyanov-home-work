@@ -1,22 +1,22 @@
 package ru.otus.hw12.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import javax.annotation.processing.Generated;
 
 @Document(collection = "users")
 public class User {
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @Id
     private String id;
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
 
     @Field("user_id")
     private long userId;
@@ -27,10 +27,10 @@ public class User {
     @Field("user_password")
     private String userPassword;
 
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + userId +
                 ", UserId=" + userId +
                 ", userName='" + userName + '\'' +
                 ", userLogin=" + userLogin +
@@ -40,10 +40,6 @@ public class User {
 
     public long getUserId() {
         return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public String getUserName() {

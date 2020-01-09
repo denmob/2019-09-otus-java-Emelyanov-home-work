@@ -28,6 +28,7 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         Map<String, Object> paramsMap = new HashMap<>();
+
         userDao.findByUserId(1L).ifPresent(randomUser -> paramsMap.put(TEMPLATE_ATTR_RANDOM_USER, randomUser));
 
         response.setContentType("text/html");

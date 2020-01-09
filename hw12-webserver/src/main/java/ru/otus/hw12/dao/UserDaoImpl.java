@@ -2,10 +2,12 @@ package ru.otus.hw12.dao;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw12.model.User;
 import ru.otus.hw12.repository.UserRepository;
+import ru.otus.hw12.services.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +18,10 @@ public class UserDaoImpl implements UserDao {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MongoOperations mongoOperations;
+
 
     @Override
     public Optional<User> findByUserId(Long userId) {
@@ -35,8 +41,14 @@ public class UserDaoImpl implements UserDao {
     @Override
     @Transactional
     public void saveUser(User user) {
-        Optional<User> foundUser = findByUserId(user.getUserId());
-        if (foundUser.isEmpty())
-            userRepository.save(user);
+        long id  = user.getUserId();
+        if (id==0) {
+           user.setUserId(SequenceGeneratorService.getNextSequence(mongoOperations, "customSequences"));
+           userRepository.save(user);
+        } else {
+            Optional<User> foundUser = findByUserId(id);
+            if (foundUser.isEmpty())
+                userRepository.save(user);
+        }
     }
 }

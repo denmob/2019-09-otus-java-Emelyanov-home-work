@@ -7,7 +7,7 @@ import ru.otus.hw12.model.User;
 
 import java.util.List;
 
-@Repository
+
 public interface UserRepository extends MongoRepository<User, String> {
      User findByUserId(Long UserId);
 

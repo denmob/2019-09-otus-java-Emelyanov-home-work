@@ -21,6 +21,8 @@ import ru.otus.hw12.services.TemplateProcessor;
 import ru.otus.hw12.services.UserAuthService;
 import ru.otus.hw12.servlet.AuthorizationFilter;
 import ru.otus.hw12.servlet.LoginServlet;
+import ru.otus.hw12.servlet.UsersApiServlet;
+import ru.otus.hw12.servlet.UsersServlet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +99,8 @@ public class UsersWebServerImpl implements UsersWebServer {
 
     private ServletContextHandler createServletContextHandler() {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor, userDao)), "/users");
+        servletContextHandler.addServlet(new ServletHolder(new UsersApiServlet(userDao, gson)), "/api/user/*");
         return servletContextHandler;
     }
 
