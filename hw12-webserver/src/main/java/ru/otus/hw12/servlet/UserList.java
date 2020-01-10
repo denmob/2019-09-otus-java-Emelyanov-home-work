@@ -12,15 +12,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class UsersServlet extends HttpServlet {
+public class UserList extends HttpServlet {
 
-    private static final String USERS_PAGE_TEMPLATE = "users.html";
-    private static final String TEMPLATE_ATTR_RANDOM_USER = "randomUser";
+    private static final String USERS_PAGE_TEMPLATE = "user_list.ftl";
+    private static final String TEMPLATE_ATTR_USERS = "users";
 
     private final UserDao userDao;
     private final TemplateProcessor templateProcessor;
 
-    public UsersServlet(TemplateProcessor templateProcessor, UserDao userDao) {
+    public UserList(TemplateProcessor templateProcessor, UserDao userDao) {
         this.templateProcessor = templateProcessor;
         this.userDao = userDao;
     }
@@ -28,9 +28,7 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         Map<String, Object> paramsMap = new HashMap<>();
-
-        userDao.findByUserId(1L).ifPresent(randomUser -> paramsMap.put(TEMPLATE_ATTR_RANDOM_USER, randomUser));
-
+        paramsMap.put(TEMPLATE_ATTR_USERS, userDao.getAllUsers());
         response.setContentType("text/html");
         response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, paramsMap));
     }

@@ -34,21 +34,29 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getAllUsers(Long id) {
-        return userRepository.getAllByIdExists();
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
     @Transactional
     public void saveUser(User user) {
-        long id  = user.getUserId();
-        if (id==0) {
-           user.setUserId(SequenceGeneratorService.getNextSequence(mongoOperations, "customSequences"));
-           userRepository.save(user);
-        } else {
-            Optional<User> foundUser = findByUserId(id);
-            if (foundUser.isEmpty())
-                userRepository.save(user);
+        if (checkUserData(user)) {
+            prepareUserToSave(user);
+            userRepository.save(user);
         }
     }
+
+    private boolean checkUserData(User user) {
+        Optional<User> foundUser = findByUserLogin(user.getUserLogin());
+        return foundUser.isEmpty();
+    }
+
+    private void prepareUserToSave(User user) {
+        if (user.getUserId() == 0) {
+            user.setUserId(SequenceGeneratorService.getNextSequence(mongoOperations, "customSequences"));
+        }
+    }
+
+
 }

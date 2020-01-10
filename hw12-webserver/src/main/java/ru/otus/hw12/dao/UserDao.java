@@ -12,7 +12,7 @@ public interface UserDao {
 
     Optional<User> findByUserLogin(String  login);
 
-    List<User> getAllUsers(Long id);
+    List<User> getAllUsers();
 
     void saveUser(User userDao);
 }

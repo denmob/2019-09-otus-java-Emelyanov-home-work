@@ -1,12 +1,6 @@
 package ru.otus.hw12.server;
 
 
-import com.google.gson.Gson;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
-import org.eclipse.jetty.security.LoginService;
-import org.eclipse.jetty.security.SecurityHandler;
-import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -14,48 +8,34 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.security.Constraint;
 import ru.otus.hw12.dao.UserDao;
 import ru.otus.hw12.helpers.FileSystemHelper;
 import ru.otus.hw12.services.TemplateProcessor;
 import ru.otus.hw12.services.UserAuthService;
-import ru.otus.hw12.servlet.AuthorizationFilter;
-import ru.otus.hw12.servlet.LoginServlet;
-import ru.otus.hw12.servlet.UsersApiServlet;
-import ru.otus.hw12.servlet.UsersServlet;
+import ru.otus.hw12.servlet.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
 
 
 public class UsersWebServerImpl implements UsersWebServer {
     private static final String START_PAGE_NAME = "index.html";
     private static final String COMMON_RESOURCES_DIR = "static";
-    private static final String ROLE_NAME_USER = "user";
-    private static final String ROLE_NAME_ADMIN = "admin";
-    private static final String CONSTRAINT_NAME = "auth";
+    private static final String ADMIN_PAGE_URL = "/admin";
+    private static final String USERS_LIST_URL = "/admin/usersList";
+    private static final String USER_CREATE_URL = "/admin/userCreate";
 
     private final int port;
-    private final SecurityType securityType;
     private final UserAuthService userAuthServiceForFilterBasedSecurity;
-    private final LoginService loginServiceForBasicSecurity;
     private final UserDao userDao;
-    private final Gson gson;
     private final TemplateProcessor templateProcessor;
     private final Server server;
 
-    public UsersWebServerImpl(int port, SecurityType securityType,
-                              UserAuthService userAuthServiceForFilterBasedSecurity,
-                              LoginService loginServiceForBasicSecurity, UserDao userDao,
-                              Gson gson,
+    public UsersWebServerImpl(int port,
+                              UserAuthService userAuthServiceForFilterBasedSecurity, UserDao userDao,
                               TemplateProcessor templateProcessor) {
         this.port = port;
-        this.securityType = securityType;
         this.userAuthServiceForFilterBasedSecurity = userAuthServiceForFilterBasedSecurity;
-        this.loginServiceForBasicSecurity = loginServiceForBasicSecurity;
         this.userDao = userDao;
-        this.gson = gson;
         this.templateProcessor = templateProcessor;
         server = initContext();
     }
@@ -99,22 +79,15 @@ public class UsersWebServerImpl implements UsersWebServer {
 
     private ServletContextHandler createServletContextHandler() {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor, userDao)), "/users");
-        servletContextHandler.addServlet(new ServletHolder(new UsersApiServlet(userDao, gson)), "/api/user/*");
+        servletContextHandler.addServlet(new ServletHolder(new UserList(templateProcessor, userDao)), USERS_LIST_URL);
+        servletContextHandler.addServlet(new ServletHolder(new UserCreate(templateProcessor, userDao)), USER_CREATE_URL);
+        servletContextHandler.addServlet(new ServletHolder(new AdminPage(templateProcessor)), ADMIN_PAGE_URL);
         return servletContextHandler;
     }
 
     private Handler applySecurity(ServletContextHandler servletContextHandler) {
-        if (securityType == SecurityType.NONE){
-            return servletContextHandler;
-        } else if (securityType == SecurityType.FILTER_BASED) {
-            applyFilterBasedSecurity(servletContextHandler, "/users", "/api/user/*");
-            return servletContextHandler;
-        } else if (securityType == SecurityType.BASIC) {
-            return createBasicAuthSecurityHandler(servletContextHandler, "/users", "/api/user/*");
-        } else {
-            throw new InvalidSecurityTypeException(securityType);
-        }
+        applyFilterBasedSecurity(servletContextHandler, "/admin");
+        return servletContextHandler;
     }
 
     private ServletContextHandler applyFilterBasedSecurity(ServletContextHandler servletContextHandler, String... paths) {
@@ -124,34 +97,5 @@ public class UsersWebServerImpl implements UsersWebServer {
                 .forEachOrdered(i -> servletContextHandler.addFilter(new FilterHolder(authorizationFilter), paths[i], null));
         return servletContextHandler;
     }
-
-    private SecurityHandler createBasicAuthSecurityHandler(ServletContextHandler context, String... paths) {
-        Constraint constraint = new Constraint();
-        constraint.setName(CONSTRAINT_NAME);
-        constraint.setAuthenticate(true);
-        constraint.setRoles(new String[]{ROLE_NAME_USER, ROLE_NAME_ADMIN});
-
-        List<ConstraintMapping> constraintMappings = new ArrayList<>();
-        IntStream.range(0, paths.length).forEachOrdered(i -> {
-            ConstraintMapping mapping = new ConstraintMapping();
-            mapping.setPathSpec(paths[i]);
-            mapping.setConstraint(constraint);
-            constraintMappings.add(mapping);
-        });
-
-        ConstraintSecurityHandler security = new ConstraintSecurityHandler();
-        //как декодировать стороку с юзером:паролем https://www.base64decode.org/
-        security.setAuthenticator(new BasicAuthenticator());
-
-        security.setLoginService(loginServiceForBasicSecurity);
-        security.setConstraintMappings(constraintMappings);
-        security.setHandler(new HandlerList(context));
-
-        return security;
-    }
-
-
-
-
 
 }
