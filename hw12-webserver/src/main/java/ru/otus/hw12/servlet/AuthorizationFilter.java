@@ -32,11 +32,5 @@ public class AuthorizationFilter implements Filter {
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
         }
-
-    }
-
-    @Override
-    public void destroy() {
-
     }
 }

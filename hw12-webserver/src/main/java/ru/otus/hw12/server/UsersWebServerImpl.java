@@ -23,6 +23,7 @@ public class UsersWebServerImpl implements UsersWebServer {
     private static final String ADMIN_PAGE_URL = "/admin";
     private static final String USERS_LIST_URL = "/admin/usersList";
     private static final String USER_CREATE_URL = "/admin/userCreate";
+    private static final String ERROR_PAGE_URL = "/admin/errorPage";
 
     private final int port;
     private final UserAuthService userAuthServiceForFilterBasedSecurity;
@@ -82,6 +83,7 @@ public class UsersWebServerImpl implements UsersWebServer {
         servletContextHandler.addServlet(new ServletHolder(new UserList(templateProcessor, userDao)), USERS_LIST_URL);
         servletContextHandler.addServlet(new ServletHolder(new UserCreate(templateProcessor, userDao)), USER_CREATE_URL);
         servletContextHandler.addServlet(new ServletHolder(new AdminPage(templateProcessor)), ADMIN_PAGE_URL);
+        servletContextHandler.addServlet(new ServletHolder(new ErrorPage(templateProcessor)), ERROR_PAGE_URL);
         return servletContextHandler;
     }
 

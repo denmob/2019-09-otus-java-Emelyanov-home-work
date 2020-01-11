@@ -12,7 +12,7 @@
 		        <label for="holder-input">Имя:</label>
 		        <input id="holder-input" name="name" type="text" value="Vasya"/>
 				<input id="holder-input" name="login" type="text" value="god"/>
-				<input id="holder-input" name="password" type="text" value="123"/>
+				<input id="holder-input" name="password" type="password" value="123"/>
 		    </div>
 		
 		    <div class="row">

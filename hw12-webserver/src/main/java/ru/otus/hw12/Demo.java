@@ -25,9 +25,9 @@ class Demo {
 
     private void createAdminUser() {
         User user = new User();
-        user.setUserName("Den");
+        user.setUserName("Otus");
         user.setUserLogin("admin");
-        user.setUserPassword("123");
+        user.setUserPassword("12345");
         userDao.saveUser(user);
     }
 

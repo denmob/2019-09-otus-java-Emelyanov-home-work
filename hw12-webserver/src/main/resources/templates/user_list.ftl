@@ -21,7 +21,7 @@
 		   <td style="width: 50px">Номер</td>
 		   <td style="width: 150px">Имя</td>
 		   <td style="width: 100px">Логин</td>
-		   <td style="width: 100px">Пароль</td>
+		   <td style="width: 100px" >Пароль</td>
 	   </tr>
 	   </thead>
 	  <#list users as user>

@@ -1,7 +1,6 @@
 package ru.otus.hw12.dao;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +15,16 @@ import java.util.Optional;
 @Service
 public class UserDaoImpl implements UserDao {
 
-    @Autowired
-    private UserRepository userRepository;
+  //  @Autowired
+    private final UserRepository userRepository;
 
-    @Autowired
-    private MongoOperations mongoOperations;
+  //  @Autowired
+    private final MongoOperations mongoOperations;
+
+    public UserDaoImpl(UserRepository userRepository, MongoOperations mongoOperations) {
+        this.userRepository = userRepository;
+        this.mongoOperations = mongoOperations;
+    }
 
 
     @Override
