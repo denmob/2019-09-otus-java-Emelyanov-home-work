@@ -27,7 +27,7 @@ class Demo {
         User user = new User();
         user.setUserName("Otus");
         user.setUserLogin("admin");
-        user.setUserPassword("12345");
+        user.setUserPassword("123");
         userDao.saveUser(user);
     }
 
