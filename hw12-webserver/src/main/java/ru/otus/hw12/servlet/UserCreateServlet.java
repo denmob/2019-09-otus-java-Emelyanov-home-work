@@ -8,28 +8,23 @@ import ru.otus.hw12.services.TemplateProcessor;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-public class UserCreate extends HttpServlet {
+public class UserCreateServlet extends HttpServlet {
 	
-	private static final String USER_NAME_PARAMETER = "name";
-	private static final String USER_LOGIN_PARAMETER = "login";
+	private static final String USER_NAME_PARAMETER = "userName";
+	private static final String USER_LOGIN_PARAMETER = "userLogin";
+	private static final String USER_PASSWORD_PARAMETER = "userPassword";
 
 	private static final String USER_CREATE_PAGE_TEMPLATE = "create_user.ftl";
 
 	private static final String REDIRECT_ADMIN_PAGE = "/admin";
-
-	private static final String TEMPLATE_ERROR_PAGE = "error_page.ftl";
-	private static final String TEMPLATE_ERROR_MESSAGE = "errorMessage";
-	private static final String ERROR_MESSAGE_USER_FOUND = "Пользователь с таким логином уже существует!";
-
-
+	private static final String REDIRECT_ERROR_PAGE = "/admin/errorPage";
 
 	private final UserDao userDao;
 
-	public UserCreate(TemplateProcessor templateProcessor, UserDao userDao) {
+	public UserCreateServlet(TemplateProcessor templateProcessor, UserDao userDao) {
 		this.userDao = userDao;
 		this.templateProcessor = templateProcessor;
 	}
@@ -46,15 +41,14 @@ public class UserCreate extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		if (userDao.findByUserLogin(request.getParameter(USER_LOGIN_PARAMETER)).isPresent()) {
-			Map<String, Object> paramsMap = new HashMap<>();
-			paramsMap.put(TEMPLATE_ERROR_MESSAGE, ERROR_MESSAGE_USER_FOUND);
-			response.setContentType("text/html");
-			response.getWriter().println(templateProcessor.getPage(TEMPLATE_ERROR_PAGE, paramsMap));
+			HttpSession session = request.getSession();
+			session.setAttribute("errorMessage","Пользователь с таким логином уже существует!");
+			response.sendRedirect(REDIRECT_ERROR_PAGE);
 		} else {
 			User newUser = new User();
-			newUser.setUserName(request.getParameter(USER_NAME_PARAMETER));
-			newUser.setUserLogin(request.getParameter(USER_LOGIN_PARAMETER));
-			newUser.setUserPassword(request.getParameter("password"));
+			newUser.setName(request.getParameter(USER_NAME_PARAMETER));
+			newUser.setLogin(request.getParameter(USER_LOGIN_PARAMETER));
+			newUser.setPassword(request.getParameter(USER_PASSWORD_PARAMETER));
 			userDao.saveUser(newUser);
 			response.sendRedirect(REDIRECT_ADMIN_PAGE);
 		}

@@ -14,7 +14,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Override
     public boolean authenticate(String login, String password) {
         return userDao.findByUserLogin(login)
-                .map(user -> user.getUserPassword().equals(password))
+                .map(user -> user.getPassword().equals(password))
                 .orElse(false);
     }
 

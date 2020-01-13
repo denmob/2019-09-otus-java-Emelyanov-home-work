@@ -1,64 +1,50 @@
 package ru.otus.hw12.dao;
 
-
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.mongodb.client.MongoCollection;
 import ru.otus.hw12.model.User;
-import ru.otus.hw12.repository.UserRepository;
-import ru.otus.hw12.services.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.Optional;
 
 
-@Service
 public class UserDaoImpl implements UserDao {
 
-  //  @Autowired
-    private final UserRepository userRepository;
+    private final MongoCollection<User> mongoCollection;
 
-  //  @Autowired
-    private final MongoOperations mongoOperations;
-
-    public UserDaoImpl(UserRepository userRepository, MongoOperations mongoOperations) {
-        this.userRepository = userRepository;
-        this.mongoOperations = mongoOperations;
-    }
-
-
-    @Override
-    public Optional<User> findByUserId(Long userId) {
-       return Optional.ofNullable(userRepository.findByUserId(userId));
+    public UserDaoImpl(MongoCollection<User> mongoCollection) {
+        this.mongoCollection = mongoCollection;
     }
 
     @Override
     public Optional<User> findByUserLogin(String userLogin) {
-        return Optional.ofNullable(userRepository.findByUserLogin(userLogin));
+      //  return Optional.ofNullable(mongoDatabase.findByUserLogin(userLogin));
+        return null;
     }
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return null;
+       // return mongoDatabase.findAll();
     }
 
     @Override
-    @Transactional
     public void saveUser(User user) {
-        if (checkUserData(user)) {
-            prepareUserToSave(user);
-            userRepository.save(user);
-        }
+       // if (checkUserData(user)) {
+         //   prepareUserToSave(user);
+         //   mongoDatabase. save(user);
+       // }
+
+        mongoCollection.insertOne(user);
     }
 
     private boolean checkUserData(User user) {
-        Optional<User> foundUser = findByUserLogin(user.getUserLogin());
+        Optional<User> foundUser = findByUserLogin(user.getLogin());
         return foundUser.isEmpty();
     }
 
     private void prepareUserToSave(User user) {
-        if (user.getUserId() == 0) {
-            user.setUserId(SequenceGeneratorService.getNextSequence(mongoOperations, "customSequences"));
+        if (user.getId() == 0) {
+           // user.setUserId(SequenceGeneratorService.getNextSequence(mongoOperations, "customSequences"));
         }
     }
 

@@ -16,6 +16,7 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 public class LoginServlet extends HttpServlet {
 
     private static final String PARAM_LOGIN = "login";
+    private static final String PARAM_PASSWORD = "password";
     private static final int MAX_INACTIVE_INTERVAL = 30;
     private static final String LOGIN_PAGE_TEMPLATE = "login.html";
 
@@ -38,7 +39,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String name = request.getParameter(PARAM_LOGIN);
-        String password = request.getParameter("password");
+        String password = request.getParameter(PARAM_PASSWORD);
 
         if (userAuthService.authenticate(name, password)) {
             HttpSession session = request.getSession();

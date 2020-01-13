@@ -80,10 +80,10 @@ public class UsersWebServerImpl implements UsersWebServer {
 
     private ServletContextHandler createServletContextHandler() {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        servletContextHandler.addServlet(new ServletHolder(new UserList(templateProcessor, userDao)), USERS_LIST_URL);
-        servletContextHandler.addServlet(new ServletHolder(new UserCreate(templateProcessor, userDao)), USER_CREATE_URL);
-        servletContextHandler.addServlet(new ServletHolder(new AdminPage(templateProcessor)), ADMIN_PAGE_URL);
-        servletContextHandler.addServlet(new ServletHolder(new ErrorPage(templateProcessor)), ERROR_PAGE_URL);
+        servletContextHandler.addServlet(new ServletHolder(new UserListServlet(templateProcessor, userDao)), USERS_LIST_URL);
+        servletContextHandler.addServlet(new ServletHolder(new UserCreateServlet(templateProcessor, userDao)), USER_CREATE_URL);
+        servletContextHandler.addServlet(new ServletHolder(new AdminPageServlet(templateProcessor)), ADMIN_PAGE_URL);
+        servletContextHandler.addServlet(new ServletHolder(new ErrorPageServlet(templateProcessor)), ERROR_PAGE_URL);
         return servletContextHandler;
     }
 

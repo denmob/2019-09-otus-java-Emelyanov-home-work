@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class UserList extends HttpServlet {
+public class UserListServlet extends HttpServlet {
 
     private static final String USERS_PAGE_TEMPLATE = "user_list.ftl";
     private static final String TEMPLATE_ATTR_USERS = "users";
@@ -20,7 +20,7 @@ public class UserList extends HttpServlet {
     private final UserDao userDao;
     private final TemplateProcessor templateProcessor;
 
-    public UserList(TemplateProcessor templateProcessor, UserDao userDao) {
+    public UserListServlet(TemplateProcessor templateProcessor, UserDao userDao) {
         this.templateProcessor = templateProcessor;
         this.userDao = userDao;
     }
