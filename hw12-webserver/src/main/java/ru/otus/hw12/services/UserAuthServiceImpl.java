@@ -1,19 +1,17 @@
 package ru.otus.hw12.services;
 
 
-import ru.otus.hw12.dao.UserDao;
-
 public class UserAuthServiceImpl implements UserAuthService {
 
-    private final UserDao userDao;
+    private final ORMService ormService;
 
-    public UserAuthServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
+    public UserAuthServiceImpl(ORMService ormService) {
+        this.ormService = ormService;
     }
 
     @Override
     public boolean authenticate(String login, String password) {
-        return userDao.findByUserLogin(login)
+        return ormService.findByUserLogin(login)
                 .map(user -> user.getPassword().equals(password))
                 .orElse(false);
     }

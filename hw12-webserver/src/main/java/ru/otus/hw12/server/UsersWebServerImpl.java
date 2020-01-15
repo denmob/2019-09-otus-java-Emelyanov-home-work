@@ -10,6 +10,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import ru.otus.hw12.dao.UserDao;
 import ru.otus.hw12.helpers.FileSystemHelper;
+import ru.otus.hw12.services.ORMService;
 import ru.otus.hw12.services.TemplateProcessor;
 import ru.otus.hw12.services.UserAuthService;
 import ru.otus.hw12.servlet.*;
@@ -27,16 +28,16 @@ public class UsersWebServerImpl implements UsersWebServer {
 
     private final int port;
     private final UserAuthService userAuthServiceForFilterBasedSecurity;
-    private final UserDao userDao;
+    private final ORMService ormService;
     private final TemplateProcessor templateProcessor;
     private final Server server;
 
     public UsersWebServerImpl(int port,
-                              UserAuthService userAuthServiceForFilterBasedSecurity, UserDao userDao,
+                              UserAuthService userAuthServiceForFilterBasedSecurity, ORMService ormService,
                               TemplateProcessor templateProcessor) {
         this.port = port;
         this.userAuthServiceForFilterBasedSecurity = userAuthServiceForFilterBasedSecurity;
-        this.userDao = userDao;
+        this.ormService = ormService;
         this.templateProcessor = templateProcessor;
         server = initContext();
     }
@@ -80,8 +81,8 @@ public class UsersWebServerImpl implements UsersWebServer {
 
     private ServletContextHandler createServletContextHandler() {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        servletContextHandler.addServlet(new ServletHolder(new UserListServlet(templateProcessor, userDao)), USERS_LIST_URL);
-        servletContextHandler.addServlet(new ServletHolder(new UserCreateServlet(templateProcessor, userDao)), USER_CREATE_URL);
+        servletContextHandler.addServlet(new ServletHolder(new UserListServlet(templateProcessor, ormService)), USERS_LIST_URL);
+        servletContextHandler.addServlet(new ServletHolder(new UserCreateServlet(templateProcessor, ormService)), USER_CREATE_URL);
         servletContextHandler.addServlet(new ServletHolder(new AdminPageServlet(templateProcessor)), ADMIN_PAGE_URL);
         servletContextHandler.addServlet(new ServletHolder(new ErrorPageServlet(templateProcessor)), ERROR_PAGE_URL);
         return servletContextHandler;

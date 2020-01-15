@@ -1,8 +1,8 @@
 package ru.otus.hw12.servlet;
 
 
-import ru.otus.hw12.dao.UserDao;
 import ru.otus.hw12.model.User;
+import ru.otus.hw12.services.ORMService;
 import ru.otus.hw12.services.TemplateProcessor;
 
 import javax.servlet.http.HttpServlet;
@@ -22,10 +22,10 @@ public class UserCreateServlet extends HttpServlet {
 	private static final String REDIRECT_ADMIN_PAGE = "/admin";
 	private static final String REDIRECT_ERROR_PAGE = "/admin/errorPage";
 
-	private final UserDao userDao;
+	private final ORMService ormService;
 
-	public UserCreateServlet(TemplateProcessor templateProcessor, UserDao userDao) {
-		this.userDao = userDao;
+	public UserCreateServlet(TemplateProcessor templateProcessor, ORMService ormService) {
+		this.ormService = ormService;
 		this.templateProcessor = templateProcessor;
 	}
 
@@ -40,7 +40,7 @@ public class UserCreateServlet extends HttpServlet {
 	@Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		if (userDao.findByUserLogin(request.getParameter(USER_LOGIN_PARAMETER)).isPresent()) {
+		if (ormService.findByUserLogin(request.getParameter(USER_LOGIN_PARAMETER)).isPresent()) {
 			HttpSession session = request.getSession();
 			session.setAttribute("errorMessage","Пользователь с таким логином уже существует!");
 			response.sendRedirect(REDIRECT_ERROR_PAGE);
@@ -49,7 +49,7 @@ public class UserCreateServlet extends HttpServlet {
 			newUser.setName(request.getParameter(USER_NAME_PARAMETER));
 			newUser.setLogin(request.getParameter(USER_LOGIN_PARAMETER));
 			newUser.setPassword(request.getParameter(USER_PASSWORD_PARAMETER));
-			userDao.saveUser(newUser);
+			ormService.saveUser(newUser);
 			response.sendRedirect(REDIRECT_ADMIN_PAGE);
 		}
     }

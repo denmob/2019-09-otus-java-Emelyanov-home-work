@@ -78,6 +78,13 @@
             <version>${mongo.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>${mongo.version}</version>
+        </dependency>
+
+
     </dependencies>
 	
 </project>

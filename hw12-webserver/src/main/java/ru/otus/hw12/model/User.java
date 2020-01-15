@@ -3,8 +3,6 @@ package ru.otus.hw12.model;
 
 import com.mongodb.BasicDBObject;
 
-import java.util.Objects;
-
 public class User extends BasicDBObject {
 
     private static final long serialVersionUID = 2105061907470199595L;
@@ -13,8 +11,6 @@ public class User extends BasicDBObject {
     private static final String NAME = "name";
     private static final String LOGIN = "login";
     private static final String PASSWORD = "password";
-
-    public static final String COLLECTION_NAME = "user";
 
     public Long getId() {
         return getLong(ID);
@@ -48,20 +44,4 @@ public class User extends BasicDBObject {
         put(PASSWORD,password);
     }
 
-
-    @Override
-    public String toString() {
-        return "User{" +
-                ", id=" + ID +
-                ", name='" + NAME +
-                ", login=" + LOGIN +
-                ", password='" + COLLECTION_NAME +
-                '}';
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ID, NAME,LOGIN,COLLECTION_NAME);
-    }
 }
