@@ -4,19 +4,19 @@ import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import ru.otus.hw12.dbmanager.DBManager;
-import ru.otus.hw12.model.CustomSequences;
+import ru.otus.hw12.model.CustomSequence;
 
 public class SequenceDaoImpl implements SequenceDao{
 
-    private final MongoCollection<CustomSequences> sequencesMongoCollection;
+    private final MongoCollection<CustomSequence> sequencesMongoCollection;
 
     public SequenceDaoImpl(DBManager customSequencesDBManager) {
-        this.sequencesMongoCollection = customSequencesDBManager.getMongoDatabase().getCollection("customSequences",CustomSequences.class);
+        this.sequencesMongoCollection = customSequencesDBManager.getMongoDatabase().getCollection("customSequence", CustomSequence.class);
         if (!checkFoundCustomSequences()) createCustomSequences();
     }
 
     private void createCustomSequences(){
-        CustomSequences customSequences = new CustomSequences();
+        CustomSequence customSequences = new CustomSequence();
         customSequences.setNameSeq("userSeq");
         customSequences.setValueSeq(0);
         sequencesMongoCollection.insertOne(customSequences);
@@ -28,7 +28,7 @@ public class SequenceDaoImpl implements SequenceDao{
 
     @Override
     public long getNextSequence() {
-        CustomSequences customSequences = sequencesMongoCollection.find().first();
+        CustomSequence customSequences = sequencesMongoCollection.find().first();
         long newSequence =customSequences.getValueSeq()+1;
         Bson filter = new Document("nameSeq", "userSeq");
         Bson newValue = new Document("valueSeq", newSequence);

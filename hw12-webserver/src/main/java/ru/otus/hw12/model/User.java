@@ -1,47 +1,47 @@
 package ru.otus.hw12.model;
 
 
-import com.mongodb.BasicDBObject;
+public class User {
 
-public class User extends BasicDBObject {
+    private long no;
 
-    private static final long serialVersionUID = 2105061907470199595L;
-
-    private static final String ID = "id";
-    private static final String NAME = "name";
-    private static final String LOGIN = "login";
-    private static final String PASSWORD = "password";
-
-    public Long getId() {
-        return getLong(ID);
+    public long getNo() {
+        return no;
     }
 
-    public  String getName() {
-        return getString(NAME);
+    public void setNo(long no) {
+        this.no = no;
     }
 
-    public String getLogin() {
-        return  getString(LOGIN);
-    }
-
-    public String getPassword() {
-        return  getString(PASSWORD);
-    }
-
-    public void setID(long id) {
-         put(ID,id);
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
-         put(NAME,name);
+        this.name = name;
+    }
+
+    public String getLogin() {
+        return login;
     }
 
     public void setLogin(String login) {
-        put(LOGIN,login);
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
-        put(PASSWORD,password);
+        this.password = password;
     }
+
+    private String name;
+    private String login;
+    private String password;
+
+
+
 
 }

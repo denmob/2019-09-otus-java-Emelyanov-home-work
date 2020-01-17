@@ -26,10 +26,10 @@
 	   </thead>
 	  <#list users as user>
 	    <tr>
-			<td>${user.userId}</td>
-			<td>${user.userName}</td>
-			<td>${user.userLogin}</td>
-			<td>${user.userPassword}</td>
+			<td>${user.no}</td>
+			<td>${user.name}</td>
+			<td>${user.login}</td>
+			<td>${user.password}</td>
 	    </tr>
 	  </#list>
 	</table> 

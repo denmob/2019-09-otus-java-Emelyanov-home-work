@@ -1,9 +1,7 @@
 package ru.otus.hw12.model;
 
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBObject;
+public class CustomSequence {
 
-public class CustomSequences {
     private static final long serialVersionUID = 2105061907470199595L;
 
     private String nameSeq;
@@ -25,12 +23,5 @@ public class CustomSequences {
     }
 
     private int valueSeq;
-
-    public DBObject toDBObject() {
-        BasicDBObjectBuilder builder = BasicDBObjectBuilder
-                .start("nameSeq", nameSeq)
-                .append("valueSeq", valueSeq);
-        return builder.get();
-    }
 
 }

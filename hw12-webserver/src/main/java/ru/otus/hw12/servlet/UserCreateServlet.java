@@ -15,7 +15,7 @@ public class UserCreateServlet extends HttpServlet {
 	
 	private static final String USER_NAME_PARAMETER = "userName";
 	private static final String USER_LOGIN_PARAMETER = "userLogin";
-	private static final String USER_PASSWORD_PARAMETER = "userPassword";
+	private static final String USER_PW_PARAMETER = "userPassword";
 
 	private static final String USER_CREATE_PAGE_TEMPLATE = "create_user.ftl";
 
@@ -48,7 +48,7 @@ public class UserCreateServlet extends HttpServlet {
 			User newUser = new User();
 			newUser.setName(request.getParameter(USER_NAME_PARAMETER));
 			newUser.setLogin(request.getParameter(USER_LOGIN_PARAMETER));
-			newUser.setPassword(request.getParameter(USER_PASSWORD_PARAMETER));
+			newUser.setPassword(request.getParameter(USER_PW_PARAMETER));
 			ormService.saveUser(newUser);
 			response.sendRedirect(REDIRECT_ADMIN_PAGE);
 		}
