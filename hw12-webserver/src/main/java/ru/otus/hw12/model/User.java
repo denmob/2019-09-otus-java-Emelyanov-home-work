@@ -1,10 +1,22 @@
 package ru.otus.hw12.model;
 
 
+import org.bson.types.ObjectId;
+
 import java.util.Objects;
 
 public class User {
-    
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    private ObjectId id;
+
     public String getName() {
         return name;
     }
@@ -35,7 +47,8 @@ public class User {
 
     @Override
     public String toString() {
-        return "User: name = " + name
+        return "User: id = " + id
+                + ", name = " + name
                 + ", login = " + login
                 + ", password = " + password;
     }
@@ -46,14 +59,15 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User that = (User) o;
-        return name.equals(that.name) &&
+        return  id.equals(that.id) &&
+                name.equals(that.name) &&
                 name.equals(that.login) &&
                 password == that.password;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, login, password);
+        return Objects.hash(id, name, login, password);
     }
 
 

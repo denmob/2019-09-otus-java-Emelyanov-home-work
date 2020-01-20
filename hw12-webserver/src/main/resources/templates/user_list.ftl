@@ -18,6 +18,7 @@
 	<table style="width: 400px">
 	   <thead>
 	   <tr>
+		   <td style="width: 150px">Номер</td>
 		   <td style="width: 150px">Имя</td>
 		   <td style="width: 100px">Логин</td>
 		   <td style="width: 100px" >Пароль</td>
@@ -25,6 +26,7 @@
 	   </thead>
 	  <#list users as user>
 	    <tr>
+			<td>${user.id}</td>
 			<td>${user.name}</td>
 			<td>${user.login}</td>
 			<td>${user.password}</td>
