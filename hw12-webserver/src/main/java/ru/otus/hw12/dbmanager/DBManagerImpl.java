@@ -11,20 +11,16 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class DBManagerImpl implements DBManager{
 
-    private static final String MONGO_DB_HOST = "localhost";
-    private static final String DB = "hw12";
-    private static MongoDatabase mongoDatabase;
+    private MongoDatabase mongoDatabase;
 
     public DBManagerImpl() {
         initMongoDB();
     }
 
     private void initMongoDB() {
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-        MongoClient mongoClient = new MongoClient(MONGO_DB_HOST, MongoClientOptions.builder().codecRegistry(pojoCodecRegistry).build());
-        mongoDatabase = mongoClient.getDatabase(DB);
-
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(), fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+        MongoClient mongoClient = new MongoClient("localhost", MongoClientOptions.builder().codecRegistry(pojoCodecRegistry).build());
+        mongoDatabase = mongoClient.getDatabase("hw12");
     }
 
     @Override

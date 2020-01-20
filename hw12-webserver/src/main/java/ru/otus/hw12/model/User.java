@@ -1,18 +1,10 @@
 package ru.otus.hw12.model;
 
 
+import java.util.Objects;
+
 public class User {
-
-    private long no;
-
-    public long getNo() {
-        return no;
-    }
-
-    public void setNo(long no) {
-        this.no = no;
-    }
-
+    
     public String getName() {
         return name;
     }
@@ -41,6 +33,28 @@ public class User {
     private String login;
     private String password;
 
+    @Override
+    public String toString() {
+        return "User: name = " + name
+                + ", login = " + login
+                + ", password = " + password;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User that = (User) o;
+        return name.equals(that.name) &&
+                name.equals(that.login) &&
+                password == that.password;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, login, password);
+    }
 
 
 

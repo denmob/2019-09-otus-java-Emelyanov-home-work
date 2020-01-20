@@ -3,7 +3,6 @@ package ru.otus.hw12.dao;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import ru.otus.hw12.dbmanager.DBManager;
 import ru.otus.hw12.model.User;
 
 import java.util.ArrayList;
@@ -15,8 +14,8 @@ public class UserDaoImpl implements UserDao {
 
     private final MongoCollection<User> usersCollection;
 
-    public UserDaoImpl(DBManager userDBManager) {
-        this.usersCollection = userDBManager.getMongoDatabase().getCollection("user",User.class);
+    public UserDaoImpl(MongoCollection<User> usersCollection) {
+        this.usersCollection = usersCollection;
     }
 
     @Override

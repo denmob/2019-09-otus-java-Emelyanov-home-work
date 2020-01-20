@@ -1,23 +1,31 @@
 package ru.otus.hw12;
 
-import ru.otus.hw12.dbmanager.DBManager;
+import com.mongodb.client.MongoDatabase;
+import ru.otus.hw12.dao.UserDao;
+import ru.otus.hw12.dao.UserDaoImpl;
 import ru.otus.hw12.dbmanager.DBManagerImpl;
 import ru.otus.hw12.model.User;
 import ru.otus.hw12.server.UsersWebServer;
 import ru.otus.hw12.server.UsersWebServerImpl;
 import ru.otus.hw12.services.*;
 
+import java.io.IOException;
+
 
 class Demo {
 
     private static final int WEB_SERVER_PORT = 8080;
     private static final String TEMPLATES_DIR = "/templates/";
-    private final  ORMService ormService;
-    private final DBManager dbManager = new DBManagerImpl();
 
-    Demo() {
-        ormService = new ORMServiceImpl(dbManager);
-        ormService.saveUser(createAdminUser());
+    private UsersWebServer usersWebServer;
+    private final UserDao userDao;
+
+    Demo() throws IOException {
+        MongoDatabase mongoDatabase = new DBManagerImpl().getMongoDatabase();
+        userDao = new UserDaoImpl(mongoDatabase.getCollection("user",User.class));
+
+        userDao.saveUser(createAdminUser());
+        createWebServer();
     }
 
 
@@ -29,15 +37,16 @@ class Demo {
        return user;
     }
 
-    void start() throws Exception {
-        UserAuthService userAuthServiceForFilterBasedSecurity = new UserAuthServiceImpl(ormService);
+    private void createWebServer() throws IOException {
+        UserAuthService userAuthServiceForFilterBasedSecurity = new UserAuthServiceImpl(userDao);
         TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
-        UsersWebServer usersWebServer = new UsersWebServerImpl(WEB_SERVER_PORT,
+         usersWebServer = new UsersWebServerImpl(WEB_SERVER_PORT,
                 userAuthServiceForFilterBasedSecurity,
-                ormService,
+                 userDao,
                 templateProcessor);
+    }
 
+    void start() throws Exception {
         usersWebServer.start();
-        usersWebServer.join();
     }
 }
