@@ -7,6 +7,15 @@ import java.util.Objects;
 
 public class User {
 
+    public User(String name, String login, String password) {
+        this.name = name;
+        this.login = login;
+        this.password = password;
+    }
+
+    public User() {
+    }
+
     public ObjectId getId() {
         return id;
     }

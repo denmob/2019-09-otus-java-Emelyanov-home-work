@@ -22,12 +22,16 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Login</th>
+                <th>Password</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="user : ${users}">
                 <td th:text="${user.id}">1</td>
                 <td th:text="${user.name}">John Doe</td>
+                <td th:text="${user.login}">admin</td>
+                <td th:text="${user.password}">123</td>
             </tr>
         </tbody>
     </table>

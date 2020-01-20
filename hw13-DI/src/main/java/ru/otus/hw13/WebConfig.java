@@ -1,5 +1,6 @@
 package ru.otus.hw13;
 
+import com.mongodb.client.MongoCollection;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,6 +12,9 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import ru.otus.hw13.domain.User;
+import ru.otus.hw13.services.DBManager;
+import ru.otus.hw13.services.DBManagerImpl;
 
 @Configuration
 @ComponentScan
@@ -49,6 +53,12 @@ public class WebConfig implements WebMvcConfigurer {
         viewResolver.setOrder(1);
         viewResolver.setCharacterEncoding("UTF-8");
         return viewResolver;
+    }
+
+    @Bean
+    public MongoCollection<User> usersCollection() {
+        DBManager dbManager = new DBManagerImpl();
+        return dbManager.getMongoDatabase().getCollection("user",User.class);
     }
 
     @Override
