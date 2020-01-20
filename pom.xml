@@ -29,7 +29,7 @@
         <module>hw09-jdbc</module>
         <module>hw10-hibernate</module>
         <module>hw11-cache</module>
-        <module>hw12-webserver</module>
+        <module>hw12-webServer</module>
     </modules>
 
     <dependencyManagement>
