@@ -1,13 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Admin page</title>
+	<meta charset="UTF-8"/>
+	<title>Admin page</title>
+	<style type="text/css">
+		body {
+			padding: 50px;
+		}
+
+		label {
+			display: inline-block;
+			width: 100px;
+		}
+
+		input:read-only {
+			background: lightgray;
+		}
+
+	</style>
 </head>
 <body>
 	<h2 th:text="${name}">Hello </h2>
 
-	<a th:href="@{/user/create}" href="userCreate.html">New user</a>
-	<a th:href="@{/user/list}" href="userList.html">List users</a>
+	<p><a th:href="@{/user/create}" href="userCreate.html">Create new user</a></p>
+
+	<p><a th:href="@{/user/list}" href="userList.html">View list user</a></p>
 </body>
 </html>

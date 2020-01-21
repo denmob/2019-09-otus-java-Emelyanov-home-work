@@ -1,12 +1,31 @@
 ﻿<html   xmlns:th="http://www.thymeleaf.org" content="text/html;">
 <head>
+    <meta charset="UTF-8"/>
     <title>Login</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 <div class="top">
-    <img th:src="@{/static/img/login.png}"/>
+    <img th:src="@{/logo2.png}" style="width: 128px; height: 128px">
     <br/>
-        <form id="login-form" th:action="@{/user/login}" th:object="${user}" th:method="post" accept-charset="utf-8">
+        <form id="login-form" th:action="@{/login}" th:object="${user}" th:method="post" accept-charset="utf-8">
             <div class="row">
                 <label for="userLoginTextBox">Login:</label>
                 <input id="userLoginTextBox" name="login" type="text" th:value="${user.login}" value="god"/>

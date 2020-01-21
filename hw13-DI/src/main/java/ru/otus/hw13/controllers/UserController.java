@@ -19,6 +19,10 @@ public class UserController {
 
     private final UserRepository repository;
 
+    private static final  String MESSAGE_USER_FOUND = "User with this login already exists!";
+    private static final  String MESSAGE_USER_NOT_FOUND = "User login does not exist";
+    private static final  String MESSAGE_USER_DATA_INCORRECT = "User login or password incorrect";
+
     public UserController(UserRepository repository) {
         this.repository = repository;
     }
@@ -54,16 +58,24 @@ public class UserController {
         return "errorPage.html";
     }
 
+    @GetMapping("/login")
+    public String loginPageView(Model model ) {
+        model.addAttribute("user", createAdminUser());
+        return "loginPage.html";
+    }
+
     @PostMapping("/login")
     public RedirectView loginSubmit(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         Optional<User> optionalUser =repository.findByUserLogin(user.getLogin());
 
         if (optionalUser.isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Пользователя с таким логином не существует!");
+            redirectAttributes.addFlashAttribute("errorMessage", MESSAGE_USER_NOT_FOUND);
+            redirectAttributes.addFlashAttribute("isAuthenticated",false);
             return new RedirectView("/error/page", true);
         } else
         if  (!optionalUser.get().getPassword().equals(user.getPassword()))  {
-            redirectAttributes.addFlashAttribute("errorMessage", "Пользователя с таким логином и паролем не существует!");
+            redirectAttributes.addFlashAttribute("errorMessage", MESSAGE_USER_DATA_INCORRECT);
+            redirectAttributes.addFlashAttribute("isAuthenticated",false);
             return new RedirectView("/error/page", true);
         } else {
             repository.saveUser(user);
@@ -72,21 +84,20 @@ public class UserController {
     }
 
     @GetMapping("/admin/page")
-    public String фвьштPageView(@ModelAttribute("name") String errorMessage ) {
-        return "errorPage.html";
+    public String adminPageView(@ModelAttribute("name") String errorMessage ) {
+        return "adminPage.html";
     }
 
     @PostMapping("/user/save")
     public RedirectView userSave(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         if (repository.findByUserLogin(user.getLogin()).isPresent()) {
-            redirectAttributes.addFlashAttribute("errorMessage",  "Пользователь с таким логином уже существует!");
+            redirectAttributes.addFlashAttribute("errorMessage",  MESSAGE_USER_FOUND);
+            redirectAttributes.addFlashAttribute("isAuthenticated",true);
             return new RedirectView("/error/page", true);
         } else {
             repository.saveUser(user);
             return new RedirectView("/user/list", true);
         }
     }
-
-
 
 }

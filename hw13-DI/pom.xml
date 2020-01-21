@@ -9,6 +9,7 @@
         <version>2019-09-SNAPSHOT</version>
     </parent>
 
+    <packaging>war</packaging>
 	<artifactId>hw13-DI</artifactId>
 	<name>hw13-DI</name>
 
