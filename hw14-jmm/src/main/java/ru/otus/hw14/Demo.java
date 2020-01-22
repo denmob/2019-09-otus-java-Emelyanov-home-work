@@ -20,7 +20,9 @@ class Demo implements Runnable {
     private boolean isIncreaseState = true;
 
     public Demo(Printer print, int maxValue, boolean isFirst) {
+        if (print == null)  throw new IllegalArgumentException("Printer is null!");
         this.print = print;
+        if (maxValue <= 0)  throw new IllegalArgumentException("MaxValue mast be over 0!");
         this.maxValue= maxValue;
         this.isFirst = isFirst;
         this.printValue = isFirst;
