@@ -5,23 +5,25 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-class Demo2 implements Runnable {
+class Demo implements Runnable {
 
-    private Logger logger = LoggerFactory.getLogger(Demo2.class);
+    private Logger logger = LoggerFactory.getLogger(Demo.class);
 
     private int maxValue;
     private Printer print;
     private boolean isFirst;
+    private boolean printValue;
 
     private volatile int currentValue;
     private AtomicInteger value = new AtomicInteger(1);
     private static final int START_VALUE = 1;
     private boolean isIncreaseState = true;
 
-    public Demo2(Printer print, int maxValue, boolean isFirst) {
+    public Demo(Printer print, int maxValue, boolean isFirst) {
         this.print = print;
         this.maxValue= maxValue;
         this.isFirst = isFirst;
+        this.printValue = isFirst;
     }
 
     private void checkMode(int value) {
@@ -33,16 +35,25 @@ class Demo2 implements Runnable {
         }
     }
 
-
     @Override
     public void run() {
         do  {
-            currentValue =  (isIncreaseState ? value.getAndIncrement() : value.getAndDecrement());
-            checkMode(currentValue);
-            if (isFirst)
-                print.printFirst(currentValue);
-            else
-                print.printRepeat(currentValue);
+            if (printValue) {
+                currentValue =  (isIncreaseState ? value.getAndIncrement() : value.getAndDecrement());
+                checkMode(currentValue);
+                if (isFirst)
+                    print.printFirst(currentValue);
+                else
+                    print.printRepeat(currentValue);
+                printValue = false;
+            }
+            else {
+                if (isFirst)
+                    print.printFirst("");
+                else
+                    print.printRepeat("");
+                printValue = true;
+            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
