@@ -53,8 +53,10 @@ class Printer {
     }
 
     private boolean check(int[] arr, int toCheckValue) {
-        for (int element : arr) {
-            if (element == toCheckValue) return true;
+        if (arr != null) {
+            for (int element : arr) {
+                if (element == toCheckValue) return true;
+            }
         }
         return false;
     }
