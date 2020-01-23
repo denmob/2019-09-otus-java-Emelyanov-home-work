@@ -16,7 +16,6 @@
         </developer>
     </developers>
 
-
     <modules>
         <module>hw01-maven</module>
         <module>hw02-DIYarrayList</module>
@@ -30,6 +29,7 @@
         <module>hw10-hibernate</module>
         <module>hw11-cache</module>
         <module>hw12-webServer</module>
+        <module>hw14-jmm</module>
     </modules>
 
     <dependencyManagement>
