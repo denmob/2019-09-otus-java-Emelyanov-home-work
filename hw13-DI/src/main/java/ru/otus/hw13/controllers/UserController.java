@@ -12,6 +12,7 @@ import ru.otus.hw13.repostory.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 @Controller
@@ -58,19 +59,24 @@ public class UserController {
 
     @PostMapping("/login")
     public RedirectView loginSubmit(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
+        AtomicReference<RedirectView> redirectView = new AtomicReference<>();
         Optional<User> optionalUser =repository.findByUserLogin(user.getLogin());
         optionalUser.ifPresentOrElse(
                 value -> {
                     if (!value.getPassword().equals(user.getPassword())) {
                         redirectAttributes.addFlashAttribute("errorMessage", MESSAGE_USER_DATA_INCORRECT).addFlashAttribute("isAuthenticated", false);
-                    } else
-                        redirectAttributes.addFlashAttribute("name", value.getName()).addFlashAttribute("isAuthenticated", true); },
-                () ->   redirectAttributes.addFlashAttribute("errorMessage", MESSAGE_USER_NOT_FOUND).addFlashAttribute("isAuthenticated", false)
+                        redirectView.set(new RedirectView("/error/page", true));
+                    } else {
+                        redirectAttributes.addFlashAttribute("name", value.getName()).addFlashAttribute("isAuthenticated", true);
+                        redirectView.set(new RedirectView("/admin/page", true));
+                    }
+                },
+                () ->  {
+                    redirectAttributes.addFlashAttribute("errorMessage", MESSAGE_USER_NOT_FOUND).addFlashAttribute("isAuthenticated", false);
+                    redirectView.set(new RedirectView("/error/page", true));
+                }
         );
-        if ( redirectAttributes.getFlashAttributes().get("isAuthenticated").equals(false))
-            return new RedirectView("/error/page", true);
-        else
-            return new RedirectView("/admin/page", true);
+        return redirectView.get();
     }
 
     @GetMapping("/admin/page")
@@ -80,14 +86,18 @@ public class UserController {
 
     @PostMapping("/user/save")
     public RedirectView userSave(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
-        if (repository.findByUserLogin(user.getLogin()).isPresent()) {
-            redirectAttributes.addFlashAttribute("errorMessage",  MESSAGE_USER_FOUND);
-            redirectAttributes.addFlashAttribute("isAuthenticated",true);
-            return new RedirectView("/error/page", true);
-        } else {
-            repository.saveUser(user);
-            return new RedirectView("/user/list", true);
-        }
+        AtomicReference<RedirectView> redirectView = new AtomicReference<>();
+        Optional<User> optionalUser = repository.findByUserLogin(user.getLogin());
+        optionalUser.ifPresentOrElse(
+                value -> {
+                    redirectAttributes.addFlashAttribute("errorMessage",  MESSAGE_USER_FOUND).addFlashAttribute("isAuthenticated", true);
+                    redirectView.set(new RedirectView("/error/page", true));
+                },
+                () -> {
+                    repository.saveUser(user);
+                    redirectView.set(new RedirectView("/user/list", true));
+                }
+        );
+        return redirectView.get();
     }
-
 }

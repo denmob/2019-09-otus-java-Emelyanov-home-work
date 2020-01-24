@@ -4,10 +4,7 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.hw13.domain.User;
-
-import java.time.LocalDateTime;
 
 @ChangeLog
 public class UserSets {
@@ -19,9 +16,14 @@ public class UserSets {
         mongoDatabase.getCollection(COLLECTION_NAME).insertOne(createMongoDocument(getClient("otus", "admin", "123")));
     }
 
-    @ChangeSet(id= "withMongoTemplate", order = "002", author = "Mongock")
-    public void changeSet2(MongoTemplate template) {
-        template.insert(getClient("MongoTemplate", "changeSet2", LocalDateTime.now().toString()), COLLECTION_NAME);
+    @ChangeSet(id= "withMongoDatabase", order = "002", author = "Mongock")
+    public void changeSet2(MongoDatabase mongoDatabase) {
+        mongoDatabase.getCollection(COLLECTION_NAME).insertOne(createMongoDocument(getClient("test", "admin123", "456")));
+    }
+
+    @ChangeSet(id= "withMongoDatabase", order = "003", author = "Mongock")
+    public void changeSet3(MongoDatabase mongoDatabase) {
+        mongoDatabase.getCollection(COLLECTION_NAME).insertOne(createMongoDocument(getClient("god", "qwerty", "789")));
     }
 
     private Document createMongoDocument(User user) {
