@@ -39,17 +39,9 @@ public class UserController {
         return "index.html";
     }
 
-    private User createAdminUser() {
-        User user = new User();
-        user.setName("Otus");
-        user.setLogin("admin");
-        user.setPassword("123");
-        return user;
-    }
-
     @GetMapping("/user/create")
     public String userCreateView(Model model) {
-        model.addAttribute("user", createAdminUser());
+        model.addAttribute("user",  new User("Name","login","password"));
         return "userCreate.html";
     }
 
@@ -60,31 +52,29 @@ public class UserController {
 
     @GetMapping("/login")
     public String loginPageView(Model model ) {
-        model.addAttribute("user", createAdminUser());
+        model.addAttribute("user", new User("","",""));
         return "loginPage.html";
     }
 
     @PostMapping("/login")
     public RedirectView loginSubmit(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         Optional<User> optionalUser =repository.findByUserLogin(user.getLogin());
-
-        if (optionalUser.isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", MESSAGE_USER_NOT_FOUND);
-            redirectAttributes.addFlashAttribute("isAuthenticated",false);
+        optionalUser.ifPresentOrElse(
+                value -> {
+                    if (!value.getPassword().equals(user.getPassword())) {
+                        redirectAttributes.addFlashAttribute("errorMessage", MESSAGE_USER_DATA_INCORRECT).addFlashAttribute("isAuthenticated", false);
+                    } else
+                        redirectAttributes.addFlashAttribute("name", value.getName()).addFlashAttribute("isAuthenticated", true); },
+                () ->   redirectAttributes.addFlashAttribute("errorMessage", MESSAGE_USER_NOT_FOUND).addFlashAttribute("isAuthenticated", false)
+        );
+        if ( redirectAttributes.getFlashAttributes().get("isAuthenticated").equals(false))
             return new RedirectView("/error/page", true);
-        } else
-        if  (!optionalUser.get().getPassword().equals(user.getPassword()))  {
-            redirectAttributes.addFlashAttribute("errorMessage", MESSAGE_USER_DATA_INCORRECT);
-            redirectAttributes.addFlashAttribute("isAuthenticated",false);
-            return new RedirectView("/error/page", true);
-        } else {
-            repository.saveUser(user);
+        else
             return new RedirectView("/admin/page", true);
-        }
     }
 
     @GetMapping("/admin/page")
-    public String adminPageView(@ModelAttribute("name") String errorMessage ) {
+    public String adminPageView(@ModelAttribute("name") String name) {
         return "adminPage.html";
     }
 

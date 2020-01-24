@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-    Optional<User> findByUserLogin(String login);
+    Optional<User> findByUserLogin(String value);
 
     List<User> getAllUsers();
 
