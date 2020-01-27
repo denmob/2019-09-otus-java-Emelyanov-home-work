@@ -1,0 +1,4 @@
+mongodb:
+  mongoHost: localhost
+  mongoPort: 27017
+  mongoDatabase: hw12
