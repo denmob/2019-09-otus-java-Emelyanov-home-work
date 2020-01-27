@@ -8,7 +8,7 @@
         <groupId>otus-hw</groupId>
         <artifactId>otus-java</artifactId>
         <version>2019-09-SNAPSHOT</version>
-    </parent>
+   </parent>
 
     <artifactId>hw15-MS</artifactId>
     <name>hw15-MS</name>
@@ -24,6 +24,7 @@
         <javax.servlet.version>4.0.1</javax.servlet.version>
         <mongock-spring.version>3.2.2.BETA</mongock-spring.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

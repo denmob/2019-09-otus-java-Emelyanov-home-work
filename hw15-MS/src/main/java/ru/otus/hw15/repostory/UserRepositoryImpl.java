@@ -3,13 +3,13 @@ package ru.otus.hw15.repostory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import ru.otus.hw15.domain.User;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Service
 public class UserRepositoryImpl implements UserRepository {
 
     private final MongoOperations mongoOperation;

@@ -11,17 +11,17 @@ public class UserSets {
 
     private static final String COLLECTION_NAME = "user";
 
-    @ChangeSet(id= "withMongoDatabase", order = "001", author = "Mongock")
+    @ChangeSet(id= "withMongoDatabase01", order = "001", author = "Mongock")
     public void changeSet1(MongoDatabase mongoDatabase) {
         mongoDatabase.getCollection(COLLECTION_NAME).insertOne(createMongoDocument(getClient("otus", "admin", "123")));
     }
 
-    @ChangeSet(id= "withMongoDatabase", order = "002", author = "Mongock")
+    @ChangeSet(id= "withMongoDatabase02", order = "002", author = "Mongock")
     public void changeSet2(MongoDatabase mongoDatabase) {
         mongoDatabase.getCollection(COLLECTION_NAME).insertOne(createMongoDocument(getClient("test", "admin123", "456")));
     }
 
-    @ChangeSet(id= "withMongoDatabase", order = "003", author = "Mongock")
+    @ChangeSet(id= "withMongoDatabase03", order = "003", author = "Mongock")
     public void changeSet3(MongoDatabase mongoDatabase) {
         mongoDatabase.getCollection(COLLECTION_NAME).insertOne(createMongoDocument(getClient("god", "qwerty", "789")));
     }

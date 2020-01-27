@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.otus.hw15.domain.User;
+import ru.otus.hw15.front.FrontendService;
 import ru.otus.hw15.repostory.UserRepository;
 
 import java.util.List;
@@ -18,13 +19,15 @@ import java.util.concurrent.atomic.AtomicReference;
 @Controller
 public class UserController {
 
+    private final FrontendService frontendService;
     private final UserRepository repository;
 
     private static final  String MESSAGE_USER_FOUND = "User with this login already exists!";
     private static final  String MESSAGE_USER_NOT_FOUND = "User login does not exist";
     private static final  String MESSAGE_USER_DATA_INCORRECT = "User login or password incorrect";
 
-    public UserController(UserRepository repository) {
+    public UserController(FrontendService frontendService,UserRepository repository) {
+        this.frontendService = frontendService;
         this.repository = repository;
     }
 
