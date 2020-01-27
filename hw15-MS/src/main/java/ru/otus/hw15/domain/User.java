@@ -1,21 +1,37 @@
-package ru.otus.hw15.model;
+package ru.otus.hw15.domain;
 
 
-import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Objects;
 
+@Document(collection = "user")
 public class User {
 
-    public ObjectId getId() {
+    public User(String name, String login, String password) {
+        this.name = name;
+        this.login = login;
+        this.password = password;
+    }
+
+
+    @Id
+    private String id;
+    private String name;
+    private String login;
+    private String password;
+
+    public User() {
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
-
-    private ObjectId id;
 
     public String getName() {
         return name;
@@ -41,9 +57,6 @@ public class User {
         this.password = password;
     }
 
-    private String name;
-    private String login;
-    private String password;
 
     @Override
     public String toString() {
