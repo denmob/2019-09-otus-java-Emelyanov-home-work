@@ -11,7 +11,7 @@ import ru.otus.hw15.messagesystem.MessageSystem;
 import ru.otus.hw15.messagesystem.MessageType;
 import ru.otus.hw15.messagesystem.MsClient;
 import ru.otus.hw15.messagesystem.MsClientImpl;
-import ru.otus.hw15.repostory.UserRepository;
+import ru.otus.hw15.db.DBService;
 
 @Configuration
 @ComponentScan
@@ -19,19 +19,6 @@ public class MSConfig {
 
     private static final String FRONTEND_SERVICE_CLIENT_NAME = "frontendService";
     private static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";
-
-
-
-//    @Bean
-//    public MessageSystem messageSystem () {
-//        return new MessageSystemImpl();
-//    }
-//
-//    @Bean
-//    public UserRepository userRepository (MongoOperations mongoOperations) {
-//        return new UserRepositoryImpl(mongoOperations);
-//    }
-
 
     @Bean
     public FrontendService frontendService(MessageSystem messageSystem) {
@@ -43,7 +30,7 @@ public class MSConfig {
     }
 
     @Bean
-    public MsClient msDataBaseClientImpl(MessageSystem messageSystem, UserRepository repository) {
+    public MsClient msDataBaseClientImpl(MessageSystem messageSystem, DBService repository) {
         MsClient databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem);
         databaseMsClient.addHandler(MessageType.USER_DATA, new GetUserDataRequestHandler(repository));
         messageSystem.addClient(databaseMsClient);

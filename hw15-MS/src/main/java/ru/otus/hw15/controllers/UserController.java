@@ -1,5 +1,7 @@
 package ru.otus.hw15.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,26 +11,32 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.otus.hw15.domain.User;
 import ru.otus.hw15.front.FrontendService;
-import ru.otus.hw15.repostory.UserRepository;
+import ru.otus.hw15.db.DBService;
+import ru.otus.hw15.messagesystem.MessageSystem;
+import ru.otus.hw15.messagesystem.MessageSystemImpl;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 
 @Controller
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final FrontendService frontendService;
-    private final UserRepository repository;
+    private final DBService repository;
+    private final MessageSystem messageSystem;
 
     private static final  String MESSAGE_USER_FOUND = "User with this login already exists!";
     private static final  String MESSAGE_USER_NOT_FOUND = "User login does not exist";
     private static final  String MESSAGE_USER_DATA_INCORRECT = "User login or password incorrect";
 
-    public UserController(FrontendService frontendService,UserRepository repository) {
+    public UserController(FrontendService frontendService, DBService repository, MessageSystem messageSystem) {
         this.frontendService = frontendService;
         this.repository = repository;
+        this.messageSystem = messageSystem;
     }
 
     @GetMapping({"/user/list"})
@@ -63,6 +71,16 @@ public class UserController {
     @PostMapping("/login")
     public RedirectView loginSubmit(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         AtomicReference<RedirectView> redirectView = new AtomicReference<>();
+        messageSystem.start();
+        Consumer<String> stringConsumer = new Consumer<String>() {
+            @Override
+            public void accept(String s) {
+                logger.info("loginSubmit "+s);
+            }
+        };
+
+        frontendService.getUserData(user.getLogin(),stringConsumer);
+        messageSystem.start();
         Optional<User> optionalUser =repository.findByUserLogin(user.getLogin());
         optionalUser.ifPresentOrElse(
                 value -> {

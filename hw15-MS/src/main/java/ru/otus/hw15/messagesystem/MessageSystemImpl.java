@@ -20,38 +20,28 @@ public final class MessageSystemImpl implements MessageSystem {
   private final Map<String, MsClient> clientMap = new ConcurrentHashMap<>();
   private final BlockingQueue<Message> messageQueue = new ArrayBlockingQueue<>(MESSAGE_QUEUE_SIZE);
 
-  private Runnable disposeCallback;
-
   private final ExecutorService msgProcessor = Executors.newSingleThreadExecutor(runnable -> {
     Thread thread = new Thread(runnable);
     thread.setName("msg-processor-thread");
     return thread;
   });
-
-  private final ExecutorService msgHandler = Executors.newFixedThreadPool(MSG_HANDLER_THREAD_LIMIT, new ThreadFactory() {
-    private final AtomicInteger threadNameSeq = new AtomicInteger(0);
-
-    @Override
-    public Thread newThread(Runnable runnable) {
-      Thread thread = new Thread(runnable);
-      thread.setName("msg-handler-thread-" + threadNameSeq.incrementAndGet());
-      return thread;
-    }
-  });
-
-  public MessageSystemImpl() {
-    start();
-  }
-
-  public MessageSystemImpl(boolean startProcessing) {
-    if (startProcessing) {
-      start();
-    }
-  }
+//
+//  private final ExecutorService msgHandler = Executors.newFixedThreadPool(MSG_HANDLER_THREAD_LIMIT, new ThreadFactory()
+//  {
+//    private final AtomicInteger threadNameSeq = new AtomicInteger(0);
+//
+//    @Override
+//    public Thread newThread(Runnable runnable) {
+//      Thread thread = new Thread(runnable);
+//      thread.setName("msg-handler-thread-" + threadNameSeq.incrementAndGet());
+//      return thread;
+//    }
+//  });
 
   @Override
   public void start() {
     msgProcessor.submit(this::msgProcessor);
+  //  msgProcessor();
   }
 
 
@@ -64,15 +54,6 @@ public final class MessageSystemImpl implements MessageSystem {
     clientMap.put(msClient.getName(), msClient);
   }
 
-  @Override
-  public void removeClient(String clientId) {
-    MsClient removedClient = clientMap.remove(clientId);
-    if (removedClient == null) {
-      logger.warn("client not found: {}", clientId);
-    } else {
-      logger.info("removed client:{}", removedClient);
-    }
-  }
 
   @Override
   public boolean newMessage(Message msg) {
@@ -84,50 +65,27 @@ public final class MessageSystemImpl implements MessageSystem {
     }
   }
 
-  @Override
-  public void dispose() throws InterruptedException {
-
-    runFlag.set(false);
-    insertStopMessage();
-    msgProcessor.shutdown();
-    msgHandler.awaitTermination(60, TimeUnit.SECONDS);
-  }
-
-
   private void msgProcessor() {
-    while (runFlag.get() || !messageQueue.isEmpty()) {
+    while (runFlag.get()) {
       try {
         Message msg = messageQueue.take();
-        if (msg == Message.VOID_MESSAGE) {
-          logger.info("received the stop message");
-        } else {
           MsClient clientTo = clientMap.get(msg.getTo());
           if (clientTo == null) {
             logger.warn("client not found");
           } else {
-            msgHandler.submit(() -> handleMessage(clientTo, msg));
+          //  msgHandler.submit(() -> handleMessage(clientTo, msg));
+            clientTo.handle(msg);
           }
-        }
       } catch (InterruptedException ex) {
         logger.error(ex.getMessage(), ex);
         Thread.currentThread().interrupt();
       } catch (Exception ex) {
+        String s = ex.getMessage();
         logger.error(ex.getMessage(), ex);
       }
     }
-
-    if (disposeCallback != null) {
-      msgHandler.submit(disposeCallback);
-    }
-    msgHandler.submit(this::messageHandlerShutdown);
     logger.info("msgProcessor finished");
   }
-
-  private void messageHandlerShutdown() {
-    msgHandler.shutdown();
-    logger.info("msgHandler has been shut down");
-  }
-
 
   private void handleMessage(MsClient msClient, Message msg) {
     try {
@@ -138,12 +96,5 @@ public final class MessageSystemImpl implements MessageSystem {
     }
   }
 
-  private void insertStopMessage() throws InterruptedException {
-    boolean result = messageQueue.offer(Message.VOID_MESSAGE);
-    while (!result) {
-      Thread.sleep(100);
-      result = messageQueue.offer(Message.VOID_MESSAGE);
-    }
-  }
 
 }

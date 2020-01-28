@@ -2,7 +2,6 @@ package ru.otus.hw15.messagesystem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw15.common.Serializers;
 
 import java.util.Map;
 import java.util.Objects;
@@ -43,13 +42,16 @@ public class MsClientImpl implements MsClient {
 
   @Override
   public void handle(Message msg) {
+//    RequestHandler requestHandler = handlers.get(0);
+//    requestHandler.handle(msg);
+
     logger.info("new message:{}", msg);
     try {
-      RequestHandler requestHandler = handlers.get(msg.getType());
+      RequestHandler requestHandler = handlers.get(1);
       if (requestHandler != null) {
         requestHandler.handle(msg).ifPresent(this::sendMessage);
       } else {
-        logger.error("handler not found for the message type:{}", msg.getType());
+        logger.error("handler not found for the message type");
       }
     } catch (Exception ex) {
       logger.error("msg:" + msg, ex);
@@ -57,8 +59,8 @@ public class MsClientImpl implements MsClient {
   }
 
   @Override
-  public <T> Message produceMessage(String to, T data, MessageType msgType) {
-    return new Message(name, to, null, msgType.getValue(), Serializers.serialize(data));
+  public <T> Message produceMessage(String to, String command, Object object) {
+    return new Message(name, to, command,object);
   }
 
 

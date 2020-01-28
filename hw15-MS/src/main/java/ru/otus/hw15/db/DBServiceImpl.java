@@ -1,4 +1,4 @@
-package ru.otus.hw15.repostory;
+package ru.otus.hw15.db;
 
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserRepositoryImpl implements UserRepository {
+public class DBServiceImpl implements DBService {
 
     private final MongoOperations mongoOperation;
 
-    public UserRepositoryImpl(MongoOperations mongoOperation) {
+    public DBServiceImpl(MongoOperations mongoOperation) {
         this.mongoOperation = mongoOperation;
     }
 

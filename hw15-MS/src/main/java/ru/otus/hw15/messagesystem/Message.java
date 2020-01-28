@@ -5,32 +5,25 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class Message {
-  static final Message VOID_MESSAGE = new Message();
 
   private final UUID id = UUID.randomUUID();
   private final String from;
   private final String to;
-  private final UUID sourceMessageId;
-  private final String type;
-  private final int payloadLength;
-  private final byte[] payload;
+  private final String command;
+  private final Object object;
 
   private Message() {
     this.from = null;
     this.to = null;
-    this.sourceMessageId = null;
-    this.type = "voidTechnicalMessage";
-    this.payload = new byte[1];
-    this.payloadLength = payload.length;
+    this.command = null;
+    this.object = null;
   }
 
-  public Message(String from, String to, UUID sourceMessageId, String type, byte[] payload) {
+  public Message(String from, String to, String command, Object object ) {
     this.from = from;
     this.to = to;
-    this.sourceMessageId = sourceMessageId;
-    this.type = type;
-    this.payloadLength = payload.length;
-    this.payload = payload;
+    this.command = command;
+    this.object = object;
   }
 
   @Override
@@ -52,9 +45,8 @@ public class Message {
         "id=" + id +
         ", from='" + from + '\'' +
         ", to='" + to + '\'' +
-        ", sourceMessageId=" + sourceMessageId +
-        ", type='" + type + '\'' +
-        ", payloadLength=" + payloadLength +
+        ", command=" + command +
+        ", object='" + object +
         '}';
   }
 
@@ -70,20 +62,12 @@ public class Message {
     return to;
   }
 
-  public String getType() {
-    return type;
+  public String getCommand() {
+    return command;
   }
 
-  public byte[] getPayload() {
-    return payload;
+  public Object getObject() {
+    return object;
   }
 
-  public int getPayloadLength() {
-    return payloadLength;
-  }
-
-
-  public Optional<UUID> getSourceMessageId() {
-    return Optional.ofNullable(sourceMessageId);
-  }
 }
