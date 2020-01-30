@@ -1,10 +1,11 @@
 package ru.otus.hw15.db;
 
+import ru.otus.hw15.domain.User;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import ru.otus.hw15.domain.User;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +21,8 @@ public class DBServiceImpl implements DBService {
 
     @Override
     public Optional<User> findByUserLogin(String value) {
-        Query searchStudent = new Query(Criteria.where("login").is(value));
-        return   Optional.ofNullable( mongoOperation.findOne(searchStudent, User.class));
+        Query searchUserLogin = new Query(Criteria.where("login").is(value));
+        return   Optional.ofNullable(mongoOperation.findOne(searchUserLogin, User.class));
     }
 
     @Override
@@ -30,10 +31,11 @@ public class DBServiceImpl implements DBService {
     }
 
     @Override
-    public void saveUser(User user) {
+    public boolean saveUser(User user) {
         if (checkUserData(user)) {
             mongoOperation.save(user);
-        }
+            return true;
+        } return false;
     }
 
     private boolean checkUserData(User user) {

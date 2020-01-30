@@ -9,19 +9,15 @@ public class Message {
   private final UUID id = UUID.randomUUID();
   private final String from;
   private final String to;
-  private final String command;
+  private final UUID sourceMessageId;
+  private final CommandType command;
   private final Object object;
 
-  private Message() {
-    this.from = null;
-    this.to = null;
-    this.command = null;
-    this.object = null;
-  }
 
-  public Message(String from, String to, String command, Object object ) {
+  public Message(String from, String to, UUID sourceMessageId,  CommandType command, Object object ) {
     this.from = from;
     this.to = to;
+    this.sourceMessageId = sourceMessageId;
     this.command = command;
     this.object = object;
   }
@@ -45,6 +41,7 @@ public class Message {
         "id=" + id +
         ", from='" + from + '\'' +
         ", to='" + to + '\'' +
+            ", sourceMessageId=" + sourceMessageId +
         ", command=" + command +
         ", object='" + object +
         '}';
@@ -62,12 +59,16 @@ public class Message {
     return to;
   }
 
-  public String getCommand() {
+  public CommandType getCommand() {
     return command;
   }
 
   public Object getObject() {
     return object;
+  }
+
+  public Optional<UUID> getSourceMessageId() {
+    return Optional.ofNullable(sourceMessageId);
   }
 
 }

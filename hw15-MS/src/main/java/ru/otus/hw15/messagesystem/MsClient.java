@@ -2,7 +2,7 @@ package ru.otus.hw15.messagesystem;
 
 public interface MsClient {
 
-  void addHandler(MessageType type, RequestHandler requestHandler);
+  void addHandler(RequestHandler requestHandler);
 
   boolean sendMessage(Message msg);
 
@@ -10,6 +10,6 @@ public interface MsClient {
 
   String getName();
 
-  <T> Message produceMessage(String to, String command, Object object);
+  <T> Message produceMessage(String to, CommandType command, Object object);
 
 }

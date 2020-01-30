@@ -1,11 +1,9 @@
 package ru.otus.hw15.messagesystem;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 public class MsClientImpl implements MsClient {
@@ -13,7 +11,7 @@ public class MsClientImpl implements MsClient {
 
   private final String name;
   private final MessageSystem messageSystem;
-  private final Map<String, RequestHandler> handlers = new ConcurrentHashMap<>();
+  private  RequestHandler handler;
 
 
   public MsClientImpl(String name, MessageSystem messageSystem) {
@@ -22,8 +20,9 @@ public class MsClientImpl implements MsClient {
   }
 
   @Override
-  public void addHandler(MessageType type, RequestHandler requestHandler) {
-    this.handlers.put(type.getValue(), requestHandler);
+  public void addHandler(RequestHandler requestHandler) {
+    this.handler = requestHandler;
+
   }
 
   @Override
@@ -42,25 +41,16 @@ public class MsClientImpl implements MsClient {
 
   @Override
   public void handle(Message msg) {
-//    RequestHandler requestHandler = handlers.get(0);
-//    requestHandler.handle(msg);
-
-    logger.info("new message:{}", msg);
     try {
-      RequestHandler requestHandler = handlers.get(1);
-      if (requestHandler != null) {
-        requestHandler.handle(msg).ifPresent(this::sendMessage);
-      } else {
-        logger.error("handler not found for the message type");
-      }
+        handler.handle(msg).ifPresent(this::sendMessage);
     } catch (Exception ex) {
       logger.error("msg:" + msg, ex);
     }
   }
 
   @Override
-  public <T> Message produceMessage(String to, String command, Object object) {
-    return new Message(name, to, command,object);
+  public <T> Message produceMessage(String to, CommandType command, Object object) {
+    return new Message(name, to,null, command,object);
   }
 
 

@@ -1,6 +1,7 @@
 package ru.otus.hw15.db;
 
 
+
 import ru.otus.hw15.domain.User;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface DBService {
 
     List<User> getAllUsers();
 
-    void saveUser(User userDao);
+    boolean saveUser(User userDao);
 }
