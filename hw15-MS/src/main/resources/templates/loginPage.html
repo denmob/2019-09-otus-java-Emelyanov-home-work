@@ -23,19 +23,19 @@
 </head>
 <body>
 <div class="top">
-    <img th:src="@{/logo2.png}" style="width: 128px; height: 128px">
+    <img th:src="@{/img/logo2.png}" style="width: 128px; height: 128px">
     <br/>
-        <form id="login-form" th:action="@{/login}" th:object="${user}" th:method="post" accept-charset="utf-8">
+        <form id="loginForm" name="loginForm" method="POST">
             <div class="row">
                 <label for="userLoginTextBox">Login:</label>
-                <input id="userLoginTextBox" name="login" type="text" th:value="${user.login}" value="god"/>
+                <input id="userLoginTextBox" name="userLogin" type="text" value="admin"/>
                 <label for="userPasswordTextBox">Password:</label>
-                <input id="userPasswordTextBox" name="password" type="password"  th:value="${user.password}" value="123"/>
+                <input id="userPasswordTextBox" name="userPassword" type="password" value="123"/>
             </div>
             <div class="row">
                 <button type="submit">Login</button>
             </div>
-    </form>
+        </form>
 </div>
 </body>
 </html>

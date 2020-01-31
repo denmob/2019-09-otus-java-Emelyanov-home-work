@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public interface FrontendService {
+public interface FrontEndAsynchronousService {
 
   void getUserWithLogin(String userLogin, Consumer<Object> dataConsumer);
 

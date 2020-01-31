@@ -6,7 +6,6 @@ import ru.otus.hw15.messagesystem.Message;
 import ru.otus.hw15.messagesystem.MsClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,15 +13,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 
-public class FrontendServiceImpl implements FrontendService {
-  private static final Logger logger = LoggerFactory.getLogger(FrontendServiceImpl.class);
+public class FrontEndAsynchronousServiceImpl implements FrontEndAsynchronousService {
+  private static final Logger logger = LoggerFactory.getLogger(FrontEndAsynchronousServiceImpl.class);
 
   private final Map<UUID, Consumer<?>> consumerMap = new ConcurrentHashMap<>();
   private final MsClient msClient;
   private final String databaseServiceClientName;
 
 
-  public FrontendServiceImpl(MsClient msClient, String databaseServiceClientName) {
+  public FrontEndAsynchronousServiceImpl(MsClient msClient, String databaseServiceClientName) {
     this.msClient = msClient;
     this.databaseServiceClientName = databaseServiceClientName;
   }
@@ -57,4 +56,6 @@ public class FrontendServiceImpl implements FrontendService {
     }
     return Optional.of(consumer);
   }
+
+
 }

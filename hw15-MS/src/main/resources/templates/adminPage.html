@@ -20,10 +20,12 @@
 	</style>
 </head>
 <body>
-	<h2 th:text="${name}">Hello </h2>
+	<h2 th:text="${userLogin}">Hello </h2>
+
+	<p><a th:href="@{/chat/websocket}" href="chatPage.html">Chat with MS</a></p>
 
 	<p><a th:href="@{/user/create}" href="userCreate.html">Create new user</a></p>
-
 	<p><a th:href="@{/user/list}" href="userList.html">View list user</a></p>
+
 </body>
 </html>
