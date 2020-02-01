@@ -9,7 +9,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import ru.otus.hw15.model.ChatMessage;
+import ru.otus.hw15.domain.ChatMessage;
 
 @Component
 public class WebSocketEventListener {
@@ -27,18 +27,13 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
         String username = (String) headerAccessor.getSessionAttributes().get("userLogin");
-
         if(username != null) {
-            logger.info("User Disconnected : " + username);
-
+            logger.info("User Disconnected : {}", username);
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.setType(ChatMessage.MessageType.LEAVE);
             chatMessage.setSender(username);
-
             messagingTemplate.convertAndSend("/topic/publicChatRoom", chatMessage);
         }
     }
-
 }

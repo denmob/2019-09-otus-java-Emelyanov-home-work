@@ -17,6 +17,7 @@ public class UserController {
 
     private static final  String MESSAGE_USER_FOUND = "User with this login already exists!";
     private static final  String MESSAGE_USER_NOT_FOUND = "User login does not exist";
+
     private final FrontEndSynchronousService frontEndSynchronousService;
 
     public UserController(FrontEndSynchronousService frontEndSynchronousService) {

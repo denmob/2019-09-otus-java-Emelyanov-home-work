@@ -69,7 +69,7 @@ public class FrontEndSynchronousServiceImpl implements FrontEndSynchronousServic
         });
 
         Thread thread = new Thread(() -> {
-            Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.GET_AllUSERS, null);
+            Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.GET_ALL_USERS, null);
             consumerMap.put(outMsg.getId(), dataConsumer);
             msClient.sendMessage(outMsg);
             });

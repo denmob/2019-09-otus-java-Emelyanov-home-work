@@ -3,12 +3,8 @@
    <head>
       <title>Hw15: chat with MS</title>
       <link rel="stylesheet" th:href="@{/css/main.css}" />
-       
-      <!-- https://cdnjs.com/libraries/sockjs-client -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
-      <!-- https://cdnjs.com/libraries/stomp.js/ -->
       <script  src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-       
    </head>
    <body>
       <div id="chat-container">
@@ -19,9 +15,7 @@
             </div>
             <h3>Hw15: chat with MS</h3>
          </div>
-          
          <hr/>
-          
          <div id="connecting">Connecting...</div>
          <ul id="messageArea">
          </ul>
@@ -33,8 +27,6 @@
             </div>
          </form>
       </div>
-       
       <script th:src="@{/js/main.js}"></script>
-       
    </body>
 </html>

@@ -19,10 +19,8 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
-                                   Map<String, Object> attributes) throws Exception {
-
+                                   Map<String, Object> attributes){
         logger.info("Call beforeHandshake");
-
         if (request instanceof ServletServerHttpRequest) {
             ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
             HttpSession session = servletRequest.getServletRequest().getSession();
@@ -35,5 +33,4 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
                                Exception ex) {
         logger.info("Call afterHandshake");
     }
-
 }

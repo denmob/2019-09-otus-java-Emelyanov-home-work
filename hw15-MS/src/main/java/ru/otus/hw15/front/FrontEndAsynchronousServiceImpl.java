@@ -1,11 +1,14 @@
 package ru.otus.hw15.front;
 
+import ru.otus.hw15.domain.ChatMessage;
 import ru.otus.hw15.domain.User;
 import ru.otus.hw15.messagesystem.CommandType;
 import ru.otus.hw15.messagesystem.Message;
 import ru.otus.hw15.messagesystem.MsClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,22 +30,15 @@ public class FrontEndAsynchronousServiceImpl implements FrontEndAsynchronousServ
   }
 
   @Override
-  public void getUserWithLogin(String userLogin, Consumer<Object> dataConsumer) {
-    Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.GET_USER_WITH_LOGIN, userLogin);
+  public void saveChatMessage(ChatMessage chatMessage, Consumer<Object> dataConsumer) {
+    Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.SAVE_CHAT_MESSAGE, chatMessage);
     consumerMap.put(outMsg.getId(), dataConsumer);
     msClient.sendMessage(outMsg);
   }
 
   @Override
-  public void getAllUsers(Consumer<Object> dataConsumer) {
-    Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.GET_AllUSERS, null);
-    consumerMap.put(outMsg.getId(), dataConsumer);
-    msClient.sendMessage(outMsg);
-  }
-
-  @Override
-  public void saveUser(User user, Consumer<Object> dataConsumer) {
-    Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.SAVE_USER, user);
+  public void getHistoryChatMessage(Consumer<List<ChatMessage>> dataConsumer) {
+    Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.GET_All_CHAT_MESSAGES, null);
     consumerMap.put(outMsg.getId(), dataConsumer);
     msClient.sendMessage(outMsg);
   }

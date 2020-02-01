@@ -19,6 +19,7 @@ import ru.otus.hw15.db.DBService;
 @ComponentScan
 public class MSConfig {
     private static final Logger logger = LoggerFactory.getLogger(MSConfig.class);
+
     private static final String FRONTEND_ASYNCHRONOUS_SERVICE_CLIENT_NAME = "frontEndAsynchronousService";
     private static final String FRONTEND_SYNCHRONOUS_SERVICE_CLIENT_NAME = "frontendSynchronousService";
     private static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";

@@ -2,6 +2,7 @@ package ru.otus.hw15.db;
 
 
 
+import ru.otus.hw15.domain.ChatMessage;
 import ru.otus.hw15.domain.User;
 
 import java.util.List;
@@ -14,4 +15,9 @@ public interface DBService {
     List<User> getAllUsers();
 
     boolean saveUser(User userDao);
+
+    boolean saveChatMessage(ChatMessage chatMessage);
+
+    List<ChatMessage> getHistoryChatMessage();
+
 }
