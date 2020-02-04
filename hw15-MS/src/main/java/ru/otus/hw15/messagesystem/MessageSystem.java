@@ -8,5 +8,7 @@ public interface MessageSystem {
 
   void start();
 
+  void dispose() throws InterruptedException;
+
 }
 

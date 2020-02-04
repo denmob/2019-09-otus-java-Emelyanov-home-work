@@ -2,9 +2,12 @@ package ru.otus.hw15.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import ru.otus.hw15.db.handlers.GetDataRequestHandler;
 import ru.otus.hw15.front.FrontEndAsynchronousService;
 import ru.otus.hw15.front.FrontEndAsynchronousServiceImpl;
@@ -16,13 +19,19 @@ import ru.otus.hw15.messagesystem.*;
 import ru.otus.hw15.db.DBService;
 
 @Configuration
-@ComponentScan
+@ConfigurationProperties(prefix="client")
+@PropertySource("settings.yml")
 public class MSConfig {
     private static final Logger logger = LoggerFactory.getLogger(MSConfig.class);
 
-    private static final String FRONTEND_ASYNCHRONOUS_SERVICE_CLIENT_NAME = "frontEndAsynchronousService";
-    private static final String FRONTEND_SYNCHRONOUS_SERVICE_CLIENT_NAME = "frontendSynchronousService";
-    private static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";
+    @Value("${frontEndAsyncName}")
+    private String frontEndAsyncName;
+
+    @Value("${frontEndSyncName}")
+    private String frontEndSyncName;
+
+    @Value("${backEndDBServiceName}")
+    private String backEndDBServiceName;
 
     @Bean
     public MessageSystem messageSystem() {
@@ -33,9 +42,9 @@ public class MSConfig {
 
     @Bean
     public FrontEndAsynchronousService frontEndAsynchronousService(MessageSystem messageSystem) {
-        logger.info("create frontEndAsynchronousService");
-        MsClient frontendMsClient = new MsClientImpl(FRONTEND_ASYNCHRONOUS_SERVICE_CLIENT_NAME, messageSystem);
-        FrontEndAsynchronousService frontEndAsynchronousService = new FrontEndAsynchronousServiceImpl(frontendMsClient, DATABASE_SERVICE_CLIENT_NAME);
+        logger.debug("create frontEndAsynchronousService with frontEndAsyncName:{} backEndDBServiceName:{}",frontEndAsyncName,backEndDBServiceName);
+        MsClient frontendMsClient = new MsClientImpl(frontEndAsyncName, messageSystem);
+        FrontEndAsynchronousService frontEndAsynchronousService = new FrontEndAsynchronousServiceImpl(frontendMsClient, backEndDBServiceName);
         frontendMsClient.addHandler(new GetAsynchronousDataResponseHandler(frontEndAsynchronousService));
         messageSystem.addClient(frontendMsClient);
         return frontEndAsynchronousService;
@@ -43,9 +52,9 @@ public class MSConfig {
 
     @Bean
     public FrontEndSynchronousService frontEndSynchronousService(MessageSystem messageSystem) {
-        logger.info("create frontEndSynchronousService");
-        MsClient frontendMsClient = new MsClientImpl(FRONTEND_SYNCHRONOUS_SERVICE_CLIENT_NAME, messageSystem);
-        FrontEndSynchronousService frontEndSynchronousService = new FrontEndSynchronousServiceImpl(frontendMsClient, DATABASE_SERVICE_CLIENT_NAME);
+        logger.debug("create frontEndSynchronousService with frontEndSyncName:{} backEndDBServiceName:{}",frontEndSyncName,backEndDBServiceName);
+        MsClient frontendMsClient = new MsClientImpl(frontEndSyncName, messageSystem);
+        FrontEndSynchronousService frontEndSynchronousService = new FrontEndSynchronousServiceImpl(frontendMsClient, backEndDBServiceName);
         frontendMsClient.addHandler(new GetSynchronousDataResponseHandler(frontEndSynchronousService));
         messageSystem.addClient(frontendMsClient);
         return frontEndSynchronousService;
@@ -53,8 +62,8 @@ public class MSConfig {
 
     @Bean
     public MsClient msDataBaseClientImpl(MessageSystem messageSystem, DBService repository) {
-        logger.info("create msDataBaseClientImpl");
-        MsClient databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem);
+        logger.debug("create msDataBaseClientImpl with backEndDBServiceName:{}",backEndDBServiceName);
+        MsClient databaseMsClient = new MsClientImpl(backEndDBServiceName, messageSystem);
         databaseMsClient.addHandler(new GetDataRequestHandler(repository));
         messageSystem.addClient(databaseMsClient);
         return databaseMsClient;
