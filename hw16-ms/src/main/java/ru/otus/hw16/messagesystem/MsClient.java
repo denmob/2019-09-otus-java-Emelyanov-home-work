@@ -1,0 +1,15 @@
+package ru.otus.hw16.messagesystem;
+
+public interface MsClient {
+
+  void addHandler(RequestHandler requestHandler);
+
+  boolean sendMessage(Message msg);
+
+  void handle(Message msg);
+
+  String getName();
+
+  <T> Message produceMessage(String to, CommandType command, Object object);
+
+}
