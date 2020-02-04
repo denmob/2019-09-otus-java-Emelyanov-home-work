@@ -10,11 +10,9 @@
     <artifactId>hw15-MS</artifactId>
     <name>hw15-MS</name>
 
-
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-data-mongodb.version>2.0.5.RELEASE</spring-data-mongodb.version>
         <mongock-spring.version>3.2.2.BETA</mongock-spring.version>
@@ -87,6 +85,11 @@
             <version>${logback.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>

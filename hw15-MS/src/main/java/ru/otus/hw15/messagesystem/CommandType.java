@@ -5,8 +5,8 @@ public enum CommandType {
   GET_ALL_USERS("GetAllUsers"),
   SAVE_USER("SaveUser"),
   SAVE_CHAT_MESSAGE("SaveChatMessage"),
-  GET_All_CHAT_MESSAGES("GetAllChatMessages");
-
+  GET_All_CHAT_MESSAGES("GetAllChatMessages"),
+  VOID_TECHNICAL_MESSAGE(" voidTechnicalMessage");
 
   private final String value;
 

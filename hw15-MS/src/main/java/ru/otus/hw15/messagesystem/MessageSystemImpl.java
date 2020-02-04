@@ -101,5 +101,21 @@ public final class MessageSystemImpl implements MessageSystem {
     }
   }
 
+  private void insertStopMessage() throws InterruptedException {
+    boolean result = messageQueue.offer(Message.VOID_MESSAGE);
+    while (!result) {
+      Thread.sleep(100);
+      result = messageQueue.offer(Message.VOID_MESSAGE);
+    }
+  }
+
+  @Override
+  public void dispose() throws InterruptedException {
+    runFlag.set(false);
+    insertStopMessage();
+    msgProcessor.shutdown();
+    msgHandler.awaitTermination(60, TimeUnit.SECONDS);
+  }
+
 
 }

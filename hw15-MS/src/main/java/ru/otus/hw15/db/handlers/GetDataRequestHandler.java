@@ -42,6 +42,9 @@ public class GetDataRequestHandler implements RequestHandler {
               List<ChatMessage> chatMessages = dbService.getHistoryChatMessage();
               return Optional.of(new Message(msg.getTo(), msg.getFrom(),msg.getId(), msg.getCommand(), chatMessages));
           }
+          case VOID_TECHNICAL_MESSAGE:{
+              return Optional.of(new Message());
+          }
       }
    return Optional.empty();
   }

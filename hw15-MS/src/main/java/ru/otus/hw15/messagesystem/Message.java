@@ -6,6 +6,8 @@ import java.util.UUID;
 
 public class Message {
 
+  static final Message VOID_MESSAGE = new Message();
+
   private final UUID id = UUID.randomUUID();
   private final String from;
   private final String to;
@@ -13,6 +15,14 @@ public class Message {
   private final CommandType command;
   private final Object object;
 
+
+  public Message() {
+    this.from = null;
+    this.to = null;
+    this.sourceMessageId = null;
+    this.command = CommandType.VOID_TECHNICAL_MESSAGE;
+    this.object = null;
+  }
 
   public Message(String from, String to, UUID sourceMessageId,  CommandType command, Object object ) {
     this.from = from;
