@@ -8,9 +8,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 
-/*
-netstat -tulpn | grep 1099
- */
 public class RmiServer extends UnicastRemoteObject implements EchoInterface {
   private static final long serialVersionUID = 1L;
 
@@ -22,7 +19,6 @@ public class RmiServer extends UnicastRemoteObject implements EchoInterface {
   private RmiServer(int port) throws RemoteException {
     super(port);
   }
-
 
   @Override
   public String echo(String data) {

@@ -1,14 +1,19 @@
 package ru.otus.hw16.runner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.otus.hw16.sockets.Server;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class ProcessRunnerImpl implements ProcessRunner {
+    private static Logger logger = LoggerFactory.getLogger(ProcessRunnerImpl.class);
+
     private final StringBuffer out = new StringBuffer();
     private Process process;
-
 
     @Override
     public void start(String command) throws IOException {
@@ -18,17 +23,12 @@ public class ProcessRunnerImpl implements ProcessRunner {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("is proccess status: " + process.isAlive());
+        logger.info(process.info().toString()+ " process status: " + process.isAlive() );
     }
 
     @Override
     public void stop() {
         process.destroy();
-    }
-
-    @Override
-    public String getOutput() {
-        return out.toString();
     }
 
     private Process runProcess(String command) throws IOException {
@@ -39,8 +39,7 @@ public class ProcessRunnerImpl implements ProcessRunner {
         StreamListener output = new StreamListener(process.getInputStream(), "OUTPUT");
         output.start();
 
-        System.out.println(process.isAlive());
-
+        logger.info(process.info().toString()+ " process status: " + process.isAlive() );
         return process;
     }
 
@@ -63,7 +62,7 @@ public class ProcessRunnerImpl implements ProcessRunner {
                     out.append(type).append('>').append(line).append("\n");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(),e);
             }
         }
     }

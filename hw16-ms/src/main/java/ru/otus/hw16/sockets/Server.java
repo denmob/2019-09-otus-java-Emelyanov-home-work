@@ -21,24 +21,34 @@ public class Server {
   private static Logger logger = LoggerFactory.getLogger(Server.class);
   private static final int PORT = 8080;
 
-  private static final String FRONTEND_START_COMMAND = "java -jar F:\\Documents\\java\\2019-09-otus-java-Emelyanov\\/hw16-frontend/target/hw16-frontEnd-2019-09-SNAPSHOT-jar-with-dependencies.jar";
+  private static String FRONTEND_START_COMMAND;
 
-  private static final String DB_SERVICE_START_COMMAND = "java -jar F:\\Documents\\java\\2019-09-otus-java-Emelyanov\\/hw16-dbservice/target/hw16-dbService-2019-09-SNAPSHOT-jar-with-dependencies.jar";
+  private static  String DB_SERVICE_START_COMMAND;
 
   private static final int CLIENTS_NUMBER = 2;
 
   private static final int CLIENT_START_DELAY_SEC = 5;
 
   public static void main(String[] args) {
-    new Server().go();
+   String frontEndPathJar = System.getenv("FRONTEND_CLIENT_PATH_JAR");
+   if (frontEndPathJar == null)   throw new IllegalArgumentException("System environment FRONTEND_CLIENT_PATH_JAR is null!");
+
+   String backEndPathJar = System.getenv("BACKEND_CLIENT_PATH_JAR");
+    if (backEndPathJar == null)   throw new IllegalArgumentException("System environment BACKEND_CLIENT_PATH_JAR is null!");
+
+    FRONTEND_START_COMMAND = "java -jar " + frontEndPathJar;
+    DB_SERVICE_START_COMMAND = "java -jar " + backEndPathJar;
+    logger.debug("FRONTEND_START_COMMAND: {}",FRONTEND_START_COMMAND);
+    logger.debug("DB_SERVICE_START_COMMAND: {}",DB_SERVICE_START_COMMAND);
+
+    new Server().run();
   }
 
-  private void go() {
+  private void run() {
     ScheduledExecutorService executorService = Executors.newScheduledThreadPool(CLIENTS_NUMBER);
 
     startClient(executorService, getCommands());
 
-    //DatagramSocket - UDP
     try (ServerSocket serverSocket = new ServerSocket(PORT)) {
       while (!Thread.currentThread().isInterrupted()) {
         logger.info("waiting for client connection");
