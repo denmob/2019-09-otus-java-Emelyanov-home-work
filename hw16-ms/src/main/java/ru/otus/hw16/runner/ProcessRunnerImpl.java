@@ -2,7 +2,6 @@ package ru.otus.hw16.runner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw16.sockets.Server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,9 +20,9 @@ public class ProcessRunnerImpl implements ProcessRunner {
         try {
             Thread.sleep(1000L);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
-        logger.info(process.info().toString()+ " process status: " + process.isAlive() );
+        logger.info("process info: {} isAlive:{}", process.info(), process.isAlive() );
     }
 
     @Override
@@ -34,12 +33,12 @@ public class ProcessRunnerImpl implements ProcessRunner {
     private Process runProcess(String command) throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
         processBuilder.redirectErrorStream(true);
-        Process process = processBuilder.start();
+        process = processBuilder.start();
 
         StreamListener output = new StreamListener(process.getInputStream(), "OUTPUT");
         output.start();
 
-        logger.info(process.info().toString()+ " process status: " + process.isAlive() );
+        logger.info("process info: {} isAlive:{}", process.info(), process.isAlive() );
         return process;
     }
 
