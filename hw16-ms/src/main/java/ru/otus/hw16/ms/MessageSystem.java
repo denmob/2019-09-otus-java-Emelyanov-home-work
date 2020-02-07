@@ -46,9 +46,10 @@ public class MessageSystem {
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 Message msg = queueInbox.take();
-                logger.info("new message:{}", msg);
+                logger.info("processMsgInbox new message:{}", msg);
                 msg.getQueueTo().put(msg);
             } catch (InterruptedException e) {
+                logger.error(e.getMessage(), e);
                 Thread.currentThread().interrupt();
             }
         }
@@ -58,8 +59,10 @@ public class MessageSystem {
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 Message msg = queue.take();
+                logger.info("processMsgOutbox take message:{}", msg);
                 client.accept(msg);
             } catch (InterruptedException e) {
+                logger.error(e.getMessage(), e);
                 Thread.currentThread().interrupt();
             }
         }

@@ -1,0 +1,4 @@
+client:
+    frontEndAsyncName: frontEndAsynchronousService
+    frontEndSyncName: frontendSynchronousService
+    backEndDBServiceName: databaseService

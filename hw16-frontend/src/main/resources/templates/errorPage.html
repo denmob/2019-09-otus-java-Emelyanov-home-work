@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Error page</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+        input:read-only {
+            background: lightgray;
+        }
+    </style>
+</head>
+<body>
+<h2 th:text="${errorMessage}"></h2>
+    <div th:if="${!isAuthenticated}">
+        <a th:href="@{/login}" href="loginPage.html">Login page</a>
+    </div>
+    <div th:if="${isAuthenticated}">
+        <a th:href="@{/admin/page}" href="adminPage.html">Admin page</a>
+    </div>
+    <div th:if="${isAuthenticated}">
+        <a th:href="@{/user/create}" href="userCreate.html">Create new user</a>
+    </div>
+</body>
+</html>

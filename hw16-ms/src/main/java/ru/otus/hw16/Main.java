@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw16.ms.MessageSystem;
 import ru.otus.hw16.runner.ProcessRunnerImpl;
-import ru.otus.hw16.sockets.Server;
+import ru.otus.hw16.sockets.ServerImpl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,9 +44,13 @@ public class Main {
         MessageSystem ms = new MessageSystem();
         DatabaseService ds = new DatabaseService(ms);
         Frontend fs = new Frontend(ms);
+        ms.setDatabaseService(ds);
+        ms.setFrontend(fs);
+        ms.init();
 
-        Server server = new Server(fs,ds,ms);
-        server.run();
+        ServerImpl server = new ServerImpl(ms);
+        server.start();
+
 
         executorService.shutdown();
 
