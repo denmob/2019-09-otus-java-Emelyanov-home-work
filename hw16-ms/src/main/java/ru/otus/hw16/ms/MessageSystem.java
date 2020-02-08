@@ -2,10 +2,7 @@ package ru.otus.hw16.ms;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw16.mesages.Message;
-import ru.otus.hw16.mesages.MessageClient;
-import ru.otus.hw16.mesages.MsgFromDatabase;
-import ru.otus.hw16.mesages.MsgFromFrontend;
+import ru.otus.hw16.mesages.*;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -69,7 +66,7 @@ public class MessageSystem {
     }
 
    public Message createMessageForDatabase(String data) {
-        Message msg = new MsgFromFrontend(data);
+       Message msg = new MsgFromFrontend(data);
         msg.setQueueTo(forDatabase);
         return msg;
     }

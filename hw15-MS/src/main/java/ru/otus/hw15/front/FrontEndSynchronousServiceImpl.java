@@ -110,6 +110,7 @@ public class FrontEndSynchronousServiceImpl implements FrontEndSynchronousServic
 
     @Override
     public <T> Optional<Consumer<T>> takeConsumer(UUID sourceMessageId, Class<T> tClass) {
+
         Consumer<T> consumer = (Consumer<T>) consumerMap.remove(sourceMessageId);
         if (consumer == null) {
             logger.warn("consumer not found for:{}", sourceMessageId);

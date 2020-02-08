@@ -2,7 +2,10 @@ package ru.otus.hw16.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.otus.hw16.domain.User;
@@ -25,7 +28,7 @@ public class UserController {
         this.frontEndSynchronousService = frontEndSynchronousService;
     }
 
-    @RequestMapping("/")
+    @GetMapping(path="/")
     public String index(HttpServletRequest request, Model model) {
         String userLogin = (String) request.getSession().getAttribute("userLogin");
 
@@ -37,24 +40,24 @@ public class UserController {
         return "redirect:/admin/page";
     }
 
-    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    @GetMapping(path = "/login")
     public String showLoginPage() {
         return "loginPage";
     }
 
-    @RequestMapping(path = "/admin/page", method = RequestMethod.GET)
+    @GetMapping(path = "/admin/page")
     public String showAdminPage() {
         return "adminPage";
     }
 
-    @RequestMapping(path = "/chat/websocket", method = RequestMethod.GET)
+    @GetMapping(path = "/chat/websocket")
     public String showChatPage(HttpServletRequest request, Model model) {
         String userLogin = (String) request.getSession().getAttribute("userLogin");
         model.addAttribute("userLogin", userLogin);
         return "chatPage";
     }
 
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    @PostMapping(path = "/login")
     public String doLogin(HttpServletRequest request, @RequestParam(defaultValue = "") String userLogin) {
         Optional<User> optionalUser =frontEndSynchronousService.getUserWithLogin(userLogin);
         if (optionalUser.isPresent()) {
@@ -67,10 +70,9 @@ public class UserController {
         }
     }
 
-    @RequestMapping(path = "/logout")
+    @GetMapping(path = "/logout")
     public String logout(HttpServletRequest request) {
         request.getSession(true).invalidate();
-
         return "redirect:/login";
     }
 

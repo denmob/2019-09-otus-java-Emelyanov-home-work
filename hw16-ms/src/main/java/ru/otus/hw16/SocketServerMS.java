@@ -13,8 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Main {
-    private static Logger logger = LoggerFactory.getLogger(Main.class);
+public class SocketServerMS {
+    private static Logger logger = LoggerFactory.getLogger(SocketServerMS.class);
 
     private static String frontendStartCommand;
 

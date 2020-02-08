@@ -4,9 +4,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-public class Message {
+public class MessageTransport {
 
-  public static final Message VOID_MESSAGE = new Message();
+  public static final MessageTransport VOID_MESSAGE = new MessageTransport();
 
   private final UUID id = UUID.randomUUID();
   private final String from;
@@ -16,7 +16,7 @@ public class Message {
   private final Object object;
 
 
-  public Message() {
+  public MessageTransport() {
     this.from = null;
     this.to = null;
     this.sourceMessageId = null;
@@ -24,7 +24,7 @@ public class Message {
     this.object = null;
   }
 
-  public Message(String from, String to, UUID sourceMessageId,  CommandType command, Object object ) {
+  public MessageTransport(String from, String to, UUID sourceMessageId, CommandType command, Object object ) {
     this.from = from;
     this.to = to;
     this.sourceMessageId = sourceMessageId;
@@ -36,7 +36,7 @@ public class Message {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Message message = (Message) o;
+    MessageTransport message = (MessageTransport) o;
     return id == message.id;
   }
 

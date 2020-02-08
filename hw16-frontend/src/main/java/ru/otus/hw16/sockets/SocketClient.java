@@ -6,4 +6,5 @@ public interface SocketClient {
     void start();
     void stop();
     void sendMessage(Message message);
+    Message receiveMessage();
 }

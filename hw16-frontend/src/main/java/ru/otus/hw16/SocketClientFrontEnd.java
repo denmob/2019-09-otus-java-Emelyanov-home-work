@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @SpringBootApplication
-public class SpringBootWebSocketApplication {
+public class SocketClientFrontEnd {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootWebSocketApplication.class, args);
+        SpringApplication.run(SocketClientFrontEnd.class, args);
     }
 
 }

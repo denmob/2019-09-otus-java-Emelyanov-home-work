@@ -3,7 +3,6 @@ package ru.otus.hw16.sockets;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import ru.otus.hw16.mesages.Message;
 
 import java.io.BufferedReader;
@@ -11,32 +10,47 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@Service
+
 public class SocketClientImpl implements SocketClient {
   private static Logger logger = LoggerFactory.getLogger(SocketClientImpl.class);
 
-  private static final int PORT = 8080;
+  private static final int PORT = 8000;
   private static final String HOST = "localhost";
-  private Socket clientSocket;
 
-  private final BlockingQueue<Message>  messages = new LinkedBlockingQueue<>();
+  private  Socket clientSocket;
+
+  private final ArrayBlockingQueue<Message> forMS = new ArrayBlockingQueue<>(10);
+  private final ArrayBlockingQueue<Message> fromMS = new ArrayBlockingQueue<>(10);
+
+  private final ExecutorService executorServer = Executors.newScheduledThreadPool(4);
+
+  public SocketClientImpl() {
+    try {
+      clientSocket = new Socket(HOST, PORT);
+    } catch (IOException e) {
+      logger.error(e.getMessage(),e);
+    }
+  }
 
   private void run() {
     try {
       while (clientSocket.isConnected()) {
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        Message msg = messages.take();
+        Message msg = forMS.take();
         String json =  new Gson().toJson(msg);
         logger.info("sending to server {}",json);
         out.println(json);
+        sleep();
         String resp = in.readLine();
         logger.info("server response: {}", resp);
-        sleep();
+        Message messageOut = new Gson().fromJson(resp,Message.class);
+        fromMS.put(messageOut);
       }
     } catch (Exception ex) {
       logger.error(ex.getMessage(), ex);
@@ -53,13 +67,7 @@ public class SocketClientImpl implements SocketClient {
 
   @Override
   public void start() {
-    try {
-      clientSocket = new Socket(HOST, PORT);
-      run();
-    } catch (IOException e) {
-      logger.error(e.getMessage(),e);
-    }
-
+    executorServer.execute(this::run);
   }
 
   @Override
@@ -73,6 +81,21 @@ public class SocketClientImpl implements SocketClient {
 
   @Override
   public void sendMessage(Message message) {
-    messages.add(message);
+    try {
+      forMS.put(message);
+    } catch (InterruptedException e) {
+      logger.error(e.getMessage(),e);
+    }
   }
+
+  @Override
+  public Message receiveMessage() {
+    try {
+      return fromMS.take();
+    } catch (InterruptedException e) {
+      logger.error(e.getMessage(),e);
+    }
+    return null;
+  }
+
 }

@@ -1,9 +1,11 @@
 package ru.otus.hw16.sockets;
 
 
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw16.mesages.Message;
+import ru.otus.hw16.domain.User;
+import ru.otus.hw16.mesages.MessageTransport;
 import ru.otus.hw16.ms.MessageSystem;
 
 import java.io.BufferedReader;
@@ -16,7 +18,7 @@ import java.util.concurrent.Executors;
 
 public class ServerImpl implements Server {
   private static Logger logger = LoggerFactory.getLogger(ServerImpl.class);
-  private static final int PORT = 8080;
+  private static final int PORT = 8000;
 
   private final MessageSystem messageSystem;
   private boolean running = false;
@@ -45,18 +47,23 @@ public class ServerImpl implements Server {
          BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))
     ) {
       String inputLine;
-      StringBuilder stringBuilder = new StringBuilder();
+
       while ((inputLine = in.readLine()) != null){
-        stringBuilder.append(inputLine);
 
-        String message = stringBuilder.toString();
-        logger.debug("Get message: {} ", message);
+        String jsonIn = inputLine;
+        logger.debug("in json: {} ", jsonIn);
+        MessageTransport messageIn = new Gson().fromJson(jsonIn, MessageTransport.class);
 
-        Message message1 = messageSystem.createMessageForFrontend(message);
-        logger.debug("Create message: {} ", message);
-        messageSystem.sendMessage(message1);
+//        Message message1 = messageSystem.createMessageForFrontend(message);
+//        logger.debug("Create message: {} ", message);
+//        messageSystem.sendMessage(message1);
 
-        out.println("echo "+ message);
+        User user = new User("otus","admin","123");
+        String jsonUser = new Gson().toJson(user);
+        MessageTransport messageOut = new MessageTransport("frontendSynchronousService", "databaseService",messageIn.getId(), messageIn.getCommand(),jsonUser);
+        String jsonOut = new Gson().toJson(messageOut);
+        logger.debug("out json: {} ", jsonOut);
+        out.println(jsonOut);
       }
     } catch (Exception ex) {
       logger.error("error", ex);
