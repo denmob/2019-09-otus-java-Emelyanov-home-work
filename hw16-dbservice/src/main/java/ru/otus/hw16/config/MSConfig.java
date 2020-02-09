@@ -47,7 +47,7 @@ public class MSConfig {
 
     @Bean
     public SocketClient socketClient() {
-        SocketClient socketClient = new SocketClientImpl(hostMS,portMS);
+        SocketClient socketClient = new SocketClientImpl(backEndDBServiceName,hostMS,portMS);
         socketClient.start();
         return socketClient;
     }

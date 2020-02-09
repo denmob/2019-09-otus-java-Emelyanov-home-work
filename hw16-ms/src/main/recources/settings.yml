@@ -1,0 +1,6 @@
+server:
+  socketPort: 8000
+  frontendStartCommand:
+  dbServiceStartCommand:
+  clientsNumber: 2
+  clientStartDelaySec: 5

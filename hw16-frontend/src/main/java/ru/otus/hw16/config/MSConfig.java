@@ -32,6 +32,12 @@ public class MSConfig {
     @Value("${backEndDBServiceName}")
     private String backEndDBServiceName;
 
+    @Value("${hostMS}")
+    private String hostMS;
+
+    @Value("${portMS}")
+    private int portMS;
+
     @Bean
     public SocketManager socketManager() {
         SocketManager socketManager = new SocketManagerImpl();
@@ -41,7 +47,7 @@ public class MSConfig {
 
     @Bean
     public SocketClient socketClient() {
-        SocketClient socketClient = new SocketClientImpl();
+        SocketClient socketClient = new SocketClientImpl(frontEndSyncName,hostMS,portMS);
         socketClient.start();
         return socketClient;
     }

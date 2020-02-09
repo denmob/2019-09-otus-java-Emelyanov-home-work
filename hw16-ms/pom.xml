@@ -72,7 +72,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>ru.otus.hw16.sockets.ServerImpl</mainClass>
+							<mainClass>ru.otus.hw16.sockets.SocketServerImpl</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

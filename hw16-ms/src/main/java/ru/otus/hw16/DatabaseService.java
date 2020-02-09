@@ -6,18 +6,29 @@ import ru.otus.hw16.mesages.Message;
 import ru.otus.hw16.mesages.MessageClient;
 import ru.otus.hw16.ms.MessageSystem;
 
+import java.net.Socket;
+
 
 public class DatabaseService implements MessageClient {
     private static Logger logger = LoggerFactory.getLogger(DatabaseService.class);
     private final MessageSystem ms;
 
-    DatabaseService(MessageSystem ms) {
+    public Socket getSocketClient() {
+        return socketClient;
+    }
+
+    public void setSocketClient(Socket socketClient) {
+        this.socketClient = socketClient;
+    }
+
+    private Socket socketClient;
+
+    public DatabaseService(MessageSystem ms) {
         this.ms = ms;
     }
 
     @Override
     public void init() {
-
         this.ms.setDatabaseService(this);
     }
 

@@ -2,3 +2,6 @@ client:
     frontEndAsyncName: frontEndAsynchronousService
     frontEndSyncName: frontendSynchronousService
     backEndDBServiceName: databaseService
+
+    hostMS: localhost
+    portMS: 8000

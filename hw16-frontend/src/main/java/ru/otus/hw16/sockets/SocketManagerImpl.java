@@ -83,7 +83,6 @@ public final class SocketManagerImpl implements SocketManager{
                     msgHandler.submit(() -> {
                         logger.debug("msgHandler sendMessage: {} ",msg);
                         socketClient.sendMessage(msg);
-                        sleep();
                         Message message = socketClient.receiveMessage();
                         logger.debug("msgHandler receiveMessage: {} ",message);
                         handleMessage(msClient, message);
@@ -100,14 +99,6 @@ public final class SocketManagerImpl implements SocketManager{
         logger.debug("msgProcessor finished");
     }
 
-
-    private static void sleep() {
-        try {
-            Thread.sleep(TimeUnit.SECONDS.toMillis(3));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
 
     private void handleMessage(MsClient msClient, Message msg) {
         try {

@@ -19,8 +19,11 @@ import java.util.concurrent.TimeUnit;
 public class SocketClientImpl implements SocketClient {
   private static Logger logger = LoggerFactory.getLogger(SocketClientImpl.class);
 
-  public SocketClientImpl(String host, int port) {
+  private String name;
+
+  public SocketClientImpl(String name, String host, int port) {
     try {
+      this.name = name;
       clientSocket = new Socket(host, port);
     } catch (IOException e) {
       logger.error(e.getMessage(),e);
@@ -33,6 +36,24 @@ public class SocketClientImpl implements SocketClient {
   private final ArrayBlockingQueue<Message> fromMS = new ArrayBlockingQueue<>(10);
 
   private final ExecutorService executorServer = Executors.newScheduledThreadPool(4);
+
+  private void registrationToMs() {
+    try {
+      if (clientSocket.isConnected()) {
+        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        logger.info("send to MS name: {}",name);
+        out.println(name);
+        boolean answerMs = Boolean.parseBoolean(in.readLine());
+        if (answerMs) {
+          executorServer.execute(this::run);
+          logger.info("client registration successful");
+        }
+      }
+    } catch (Exception ex) {
+      logger.error(ex.getMessage(), ex);
+    }
+  }
 
   private void run() {
     try {
@@ -66,7 +87,7 @@ public class SocketClientImpl implements SocketClient {
 
   @Override
   public void start() {
-    executorServer.execute(this::run);
+    executorServer.execute(this::registrationToMs);
   }
 
   @Override

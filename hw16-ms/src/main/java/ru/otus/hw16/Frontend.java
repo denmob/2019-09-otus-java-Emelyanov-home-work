@@ -6,13 +6,24 @@ import ru.otus.hw16.mesages.Message;
 import ru.otus.hw16.mesages.MessageClient;
 import ru.otus.hw16.ms.MessageSystem;
 
+import java.net.Socket;
+
 
 public class Frontend implements MessageClient {
     private static Logger logger = LoggerFactory.getLogger(Frontend.class);
 
+    public Socket getSocketClient() {
+        return socketClient;
+    }
+
+    public void setSocketClient(Socket socketClient) {
+        this.socketClient = socketClient;
+    }
+
+    private Socket socketClient;
     private final MessageSystem ms;
 
-    Frontend(MessageSystem ms) {
+    public Frontend(MessageSystem ms) {
         this.ms = ms;
     }
 
@@ -20,7 +31,6 @@ public class Frontend implements MessageClient {
     public void init() {
         this.ms.setFrontend(this);
     }
-
 
     void createUser(String userName) throws InterruptedException {
         ms.sendMessage(ms.createMessageForDatabase(userName));
