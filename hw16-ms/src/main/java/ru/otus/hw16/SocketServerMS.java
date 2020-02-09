@@ -2,6 +2,8 @@ package ru.otus.hw16;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import ru.otus.hw16.ms.MessageSystem;
 import ru.otus.hw16.runner.ProcessRunnerImpl;
 import ru.otus.hw16.sockets.ServerImpl;
@@ -13,19 +15,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Configuration
 public class SocketServerMS {
     private static Logger logger = LoggerFactory.getLogger(SocketServerMS.class);
 
-    private static String frontendStartCommand;
+    private String frontendStartCommand;
+    private String dbServiceStartCommand;
 
-    private static  String dbServiceStartCommand;
+    @Value("${clientsNumber}")
+    private int clientsNumber;
 
-    private static final int CLIENTS_NUMBER = 2;
-
-    private static final int CLIENT_START_DELAY_SEC = 5;
+    @Value("${clientStartDelaySec}")
+    private int clientStartDelaySec;
 
     public static void main(String[] args) {
+        new SocketServerMS().start();
+    }
 
+    private void start () {
         String frontEndPathJar = System.getenv("FRONTEND_CLIENT_PATH_JAR");
         if (frontEndPathJar == null)   throw new IllegalArgumentException("System environment FRONTEND_CLIENT_PATH_JAR is null!");
 
@@ -37,7 +44,7 @@ public class SocketServerMS {
         logger.debug("FRONTEND_START_COMMAND: {}", frontendStartCommand);
         logger.debug("BACKEND_START_COMMAND: {}", dbServiceStartCommand);
 
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(CLIENTS_NUMBER);
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(clientsNumber);
 
         startClient(executorService, getCommands());
 
@@ -51,12 +58,10 @@ public class SocketServerMS {
         ServerImpl server = new ServerImpl(ms);
         server.start();
 
-
         executorService.shutdown();
-
     }
 
-    private static void startClient(ScheduledExecutorService executorService, List<String> commands) {
+    private void startClient(ScheduledExecutorService executorService, List<String> commands) {
         for (String command : commands) {
             executorService.schedule(() -> {
                 try {
@@ -64,11 +69,11 @@ public class SocketServerMS {
                 } catch (IOException e) {
                     logger.error(e.getMessage(),e);
                 }
-            }, CLIENT_START_DELAY_SEC, TimeUnit.SECONDS);
+            }, clientStartDelaySec, TimeUnit.SECONDS);
         }
     }
 
-    private static List<String> getCommands() {
+    private  List<String> getCommands() {
         List<String> commands = new ArrayList<>();
         commands.add(frontendStartCommand);
         commands.add(dbServiceStartCommand);

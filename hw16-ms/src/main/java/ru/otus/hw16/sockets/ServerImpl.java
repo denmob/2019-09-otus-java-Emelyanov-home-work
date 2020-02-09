@@ -4,7 +4,7 @@ package ru.otus.hw16.sockets;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw16.domain.User;
+import ru.otus.hw16.mesages.CommandType;
 import ru.otus.hw16.mesages.MessageTransport;
 import ru.otus.hw16.ms.MessageSystem;
 
@@ -22,6 +22,7 @@ public class ServerImpl implements Server {
 
   private final MessageSystem messageSystem;
   private boolean running = false;
+
 
   public ServerImpl( MessageSystem messageSystem) {
     this.messageSystem = messageSystem;
@@ -46,24 +47,31 @@ public class ServerImpl implements Server {
     try (PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
          BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))
     ) {
-      String inputLine;
+      MessageTransport messageOut = new MessageTransport("frontendSynchronousService", "databaseService",null, CommandType.GET_USER_WITH_LOGIN,"admin");
+      logger.info("output message: {}", messageOut);
+      String jsonOut = new Gson().toJson(messageOut);
+      out.println(jsonOut);
 
+      String inputLine;
       while ((inputLine = in.readLine()) != null){
 
-        String jsonIn = inputLine;
-        logger.debug("in json: {} ", jsonIn);
-        MessageTransport messageIn = new Gson().fromJson(jsonIn, MessageTransport.class);
-
-//        Message message1 = messageSystem.createMessageForFrontend(message);
+        //        Message message1 = messageSystem.createMessageForFrontend(message);
 //        logger.debug("Create message: {} ", message);
 //        messageSystem.sendMessage(message1);
 
-        User user = new User("otus","admin","123");
-        String jsonUser = new Gson().toJson(user);
-        MessageTransport messageOut = new MessageTransport("frontendSynchronousService", "databaseService",messageIn.getId(), messageIn.getCommand(),jsonUser);
-        String jsonOut = new Gson().toJson(messageOut);
-        logger.debug("out json: {} ", jsonOut);
-        out.println(jsonOut);
+        logger.debug("in json: {} ", inputLine);
+        MessageTransport messageIn = new Gson().fromJson(inputLine, MessageTransport.class);
+        logger.info("output messageIn: {}", messageIn);
+
+//        User user = new User("otus","admin","123");
+//        String jsonUser = new Gson().toJson(user);
+//        MessageTransport messageOut = new MessageTransport("frontendSynchronousService", "databaseService",messageIn.getId(), messageIn.getCommand(),jsonUser);
+//        String jsonOut = new Gson().toJson(messageOut);
+//        logger.debug("out json: {} ", jsonOut);
+//        out.println(jsonOut);
+
+
+
       }
     } catch (Exception ex) {
       logger.error("error", ex);

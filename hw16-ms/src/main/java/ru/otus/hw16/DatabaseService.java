@@ -17,7 +17,7 @@ public class DatabaseService implements MessageClient {
 
     @Override
     public void init() {
-        //почему не в конструкторе?
+
         this.ms.setDatabaseService(this);
     }
 

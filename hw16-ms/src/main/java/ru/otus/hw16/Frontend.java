@@ -18,7 +18,6 @@ public class Frontend implements MessageClient {
 
     @Override
     public void init() {
-        //почему не в конструкторе?
         this.ms.setFrontend(this);
     }
 
