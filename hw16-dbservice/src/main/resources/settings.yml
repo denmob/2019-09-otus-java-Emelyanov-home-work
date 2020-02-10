@@ -1,6 +1,6 @@
 client:
-  frontendServiceName: frontendServiceName
   dbServiceName: databaseService
+  hostMS: localhost
+  portMS: 8000
 
- hostMS: localhost
- portMS: 8000
+  socketName: databaseService

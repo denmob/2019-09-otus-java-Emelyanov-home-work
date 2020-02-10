@@ -1,5 +1,6 @@
 package ru.otus.hw16.service;
 
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw16.domain.ChatMessage;
@@ -30,7 +31,7 @@ public class FrontEndAsynchronousServiceImpl implements FrontEndAsynchronousServ
 
   @Override
   public void saveChatMessage(ChatMessage chatMessage, Consumer<Object> dataConsumer) {
-    Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.SAVE_CHAT_MESSAGE, chatMessage);
+    Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.SAVE_CHAT_MESSAGE, new Gson().toJson(chatMessage));
     consumerMap.put(outMsg.getId(), dataConsumer);
     msClient.sendMessage(outMsg);
   }

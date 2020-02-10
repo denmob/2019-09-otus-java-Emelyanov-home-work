@@ -6,5 +6,6 @@ server:
   clientStartDelaySec: 5
 
 client:
-  frontendServiceName: frontendServiceName
+  frontendAsynchronousServiceName: frontendAsynchronousServiceName
+  frontendSynchronousServiceName: frontendSynchronousServiceName
   dbServiceName: databaseService

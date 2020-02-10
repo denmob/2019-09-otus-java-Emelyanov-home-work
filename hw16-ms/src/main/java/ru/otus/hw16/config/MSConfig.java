@@ -41,8 +41,11 @@ public class MSConfig {
     @Value("${clientStartDelaySec}")
     private int clientStartDelaySec;
 
-    @Value("${frontendServiceName}")
-    private String frontendServiceName;
+    @Value("${frontendAsynchronousServiceName}")
+    private String frontendAsynchronousServiceName;
+
+    @Value("${frontendSynchronousServiceName}")
+    private String frontendSynchronousServiceName;
 
     @Value("${dbServiceName}")
     private String dbServiceName;
@@ -56,7 +59,7 @@ public class MSConfig {
 
     @Bean
     public SocketServer socketServer(MessageSystem messageSystem) {
-        SocketServerImpl server = new SocketServerImpl(messageSystem,socketPort,dbServiceName,frontendServiceName);
+        SocketServerImpl server = new SocketServerImpl(messageSystem,socketPort,dbServiceName,frontendSynchronousServiceName,frontendAsynchronousServiceName);
         server.start();
         return server;
     }

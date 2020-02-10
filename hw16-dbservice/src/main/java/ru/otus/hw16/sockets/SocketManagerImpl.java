@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.otus.hw16.mesages.Message;
 import ru.otus.hw16.msclient.MsClient;
 
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,7 +21,7 @@ public final class SocketManagerImpl implements SocketManager{
 
     private final AtomicBoolean runFlag = new AtomicBoolean(true);
 
-    private  MsClient msClient;
+    private final Map<String, MsClient> clientMap = new ConcurrentHashMap<>();
     private SocketClient socketClient;
 
     private final BlockingQueue<Message> messageQueue = new ArrayBlockingQueue<>(MESSAGE_QUEUE_SIZE);
@@ -50,8 +51,11 @@ public final class SocketManagerImpl implements SocketManager{
 
     @Override
     public void addMsClient(MsClient msClient) {
-        logger.debug("new msClient:{}", msClient.getName());
-        this.msClient = msClient;
+        logger.debug("new client:{}", msClient.getName());
+        if (clientMap.containsKey(msClient.getName())) {
+            throw new IllegalArgumentException("Error. client: " + msClient.getName() + " already exists");
+        }
+        clientMap.put(msClient.getName(), msClient);
     }
 
     @Override
@@ -92,13 +96,14 @@ public final class SocketManagerImpl implements SocketManager{
             try {
                 logger.debug("messageQueue.take");
                 Message msg = messageQueue.take();
-                if (msClient == null) {
+                MsClient clientTo = clientMap.get(msg.getTo());
+                if (clientTo == null) {
                     logger.warn("client not found");
                 } else {
                     logger.debug("msgHandler.submit");
                     msgHandler.submit(() -> {
                         logger.debug("msgHandler submit message: {} ",msg);
-                        handleMessage(msClient, msg);
+                        handleMessage(clientTo, msg);
                     });
                 }
             } catch (InterruptedException ex) {

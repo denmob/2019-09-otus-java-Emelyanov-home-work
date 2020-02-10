@@ -10,9 +10,11 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import ru.otus.hw16.domain.ChatMessage;
+import ru.otus.hw16.service.FrontEndAsynchronousService;
 
 import java.util.List;
 import java.util.function.Consumer;
+
 
 @Controller
 public class WebSocketController {
@@ -22,6 +24,11 @@ public class WebSocketController {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSocketController.class);
 
+    private final FrontEndAsynchronousService frontEndAsynchronousService;
+
+    public WebSocketController(FrontEndAsynchronousService frontEndAsynchronousService) {
+        this.frontEndAsynchronousService = frontEndAsynchronousService;
+    }
 
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/publicChatRoom")
@@ -34,8 +41,7 @@ public class WebSocketController {
             message.setContent(String.format("chatMessage save=%s to db",newValue));
             messagingTemplate.convertAndSend("/topic/publicChatRoom", message);
         });
-
-
+        frontEndAsynchronousService.saveChatMessage(chatMessage,dataConsumer);
         return chatMessage;
     }
 
@@ -50,7 +56,7 @@ public class WebSocketController {
             }
             messagingTemplate.convertAndSend("/topic/publicChatRoomLoadMessage", newValue);
         });
-
+        frontEndAsynchronousService.getHistoryChatMessage(listConsumer);
 
         return chatMessage;
     }
