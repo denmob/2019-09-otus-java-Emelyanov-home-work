@@ -25,15 +25,24 @@ public class SocketServerImpl implements SocketServer {
   private final MessageSystem messageSystem;
   private final ExecutorService executorServer = Executors.newScheduledThreadPool(4);
   private boolean running = false;
-  private final String dbServiceName;
-  private final String frontendSynchronousServiceName;
+  private final String db1ServiceName;
+  private final String db2ServiceName;
+  private final String frontend1ServiceName;
+  private final String frontend2ServiceName;
   private final String frontendAsynchronousServiceName;
+  private final String frontendSynchronousServiceName;
+  private final String dbServiceName;
 
-
-  public SocketServerImpl(MessageSystem messageSystem, int socketPort, String dbServiceName, String frontendSynchronousServiceName,String frontendAsynchronousServiceName) {
-    this.dbServiceName = dbServiceName;
-    this.frontendSynchronousServiceName = frontendSynchronousServiceName;
+  public SocketServerImpl(MessageSystem messageSystem, int socketPort,
+                          String db1ServiceName, String  db2ServiceName,String frontend1ServiceName,String frontend2ServiceName,
+                          String frontendAsynchronousServiceName,String frontendSynchronousServiceName,String dbServiceName) {
+    this.db1ServiceName = db1ServiceName;
+    this.db2ServiceName = db2ServiceName;
+    this.frontend1ServiceName = frontend1ServiceName;
+    this.frontend2ServiceName = frontend2ServiceName;
     this.frontendAsynchronousServiceName = frontendAsynchronousServiceName;
+    this.frontendSynchronousServiceName = frontendSynchronousServiceName;
+    this.dbServiceName = dbServiceName;
     this.messageSystem = messageSystem;
     this.socketPort = socketPort;
     executorServer.execute(this::run);
@@ -54,18 +63,30 @@ public class SocketServerImpl implements SocketServer {
 
   private boolean clientRegistrations(String clientName,Socket clientSocket) {
     logger.info("clientReg clientName:{}",clientName);
-    if (clientName.equals(dbServiceName)) {
-        DatabaseService databaseService = new DatabaseService(messageSystem);
+    if (clientName.equals(db1ServiceName)) {
+        DatabaseService databaseService = new DatabaseService(messageSystem,db1ServiceName);
         databaseService.setSocketClient(clientSocket);
         databaseService.init();
         return true;
       }
-    if (clientName.equals(frontendSynchronousServiceName) || clientName.equals(frontendAsynchronousServiceName)) {
-        Frontend frontendService = new Frontend(messageSystem);
+    if (clientName.equals(db2ServiceName)) {
+      DatabaseService databaseService = new DatabaseService(messageSystem,db2ServiceName);
+      databaseService.setSocketClient(clientSocket);
+      databaseService.init();
+      return true;
+    }
+    if (clientName.equals(frontend1ServiceName)) {
+        Frontend frontendService = new Frontend(messageSystem,frontend1ServiceName);
         frontendService.setSocketClient(clientSocket);
         frontendService.init();
         return true;
       }
+     if (clientName.equals(frontend2ServiceName)) {
+      Frontend frontendService = new Frontend(messageSystem,frontend2ServiceName);
+      frontendService.setSocketClient(clientSocket);
+      frontendService.init();
+      return true;
+    }
     return false;
   }
 
@@ -75,8 +96,10 @@ public class SocketServerImpl implements SocketServer {
     ) {
       String inputLine;
       while ((inputLine = in.readLine()) != null) {
-        logger.debug("in json: {} ", inputLine);
-        if (inputLine.equals(dbServiceName) || inputLine.equals(frontendSynchronousServiceName) || inputLine.equals(frontendAsynchronousServiceName)) {
+        logger.debug("input message: {} ", inputLine);
+
+        if (inputLine.equals(db1ServiceName) || inputLine.equals(db2ServiceName) ||
+                inputLine.equals(frontend1ServiceName) || inputLine.equals(frontend2ServiceName)) {
           boolean registered = clientRegistrations(inputLine, clientSocket);
           String responseReg = String.format("Client %s registration: %s", inputLine,registered);
           logger.info(responseReg);
@@ -89,7 +112,7 @@ public class SocketServerImpl implements SocketServer {
             Message message = messageSystem.createMessageForDatabase(messageTransport);
             messageSystem.sendMessage(message);
           }
-          if (messageTransport.getTo().equals(frontendSynchronousServiceName)|| messageTransport.getTo().equals(frontendAsynchronousServiceName)) {
+          if (messageTransport.getTo().equals(frontendAsynchronousServiceName)|| messageTransport.getTo().equals(frontendSynchronousServiceName)) {
             Message message = messageSystem.createMessageForFrontend(messageTransport);
             messageSystem.sendMessage(message);
           }

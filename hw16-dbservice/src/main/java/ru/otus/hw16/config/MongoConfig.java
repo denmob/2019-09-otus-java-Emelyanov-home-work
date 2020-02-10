@@ -3,27 +3,35 @@ package ru.otus.hw16.config;
 import com.github.cloudyrock.mongock.Mongock;
 import com.github.cloudyrock.mongock.SpringMongockBuilder;
 import com.mongodb.MongoClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 
 @Configuration
+@ConfigurationProperties(prefix="db")
+@PropertySource("settings.yml")
 public class MongoConfig extends AbstractMongoConfiguration {
 
-    private static final String MONGO_BD_HOST = "127.0.0.1";
-    private static final String MONGO_BD_DB_NAME = "hw16";
+    @Value("${mongoDBHost}")
+    private String mongoDBHost;
+
+    @Value("${mongoDBName}")
+    private String mongoDBName;
 
     @Override
     public String getDatabaseName() {
-        return MONGO_BD_DB_NAME;
+        return mongoDBName;
     }
 
     @Override
     @Bean
     public MongoClient mongoClient() {
-        return new MongoClient(MONGO_BD_HOST);
+        return new MongoClient(mongoDBHost);
     }
 
     @Bean("mongock-spring-boot")

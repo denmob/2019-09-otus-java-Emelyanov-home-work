@@ -7,8 +7,9 @@
         </encoder>
     </appender>
 
-    <root level="info">
-        <appender-ref ref="console" />
-    </root>
+
+    <logger name="ru.otus.hw16"  level="INFO,DEBUG,ERROR" >
+        <appender-ref ref="console"/>
+    </logger>
 
 </configuration>

@@ -29,17 +29,35 @@ public class MSConfig {
     @Value("${socketPort}")
     private int socketPort;
 
-    @Value("${frontendStartCommand}")
-    private String frontendStartCommand;
+    @Value("${frontend1StartCommand}")
+    private String frontend1StartCommand;
 
-    @Value("${dbServiceStartCommand}")
-    private String dbServiceStartCommand;
+    @Value("${dbService1StartCommand}")
+    private String dbService1StartCommand;
+
+    @Value("${frontend2StartCommand}")
+    private String frontend2StartCommand;
+
+    @Value("${dbService2StartCommand}")
+    private String dbService2StartCommand;
 
     @Value("${clientsNumber}")
     private int clientsNumber;
 
     @Value("${clientStartDelaySec}")
     private int clientStartDelaySec;
+
+    @Value("${frontend1ServiceName}")
+    private String frontend1ServiceName;
+
+    @Value("${frontend2ServiceName}")
+    private String frontend2ServiceName;
+
+    @Value("${db1ServiceName}")
+    private String db1ServiceName;
+
+    @Value("${db2ServiceName}")
+    private String db2ServiceName;
 
     @Value("${frontendAsynchronousServiceName}")
     private String frontendAsynchronousServiceName;
@@ -59,23 +77,21 @@ public class MSConfig {
 
     @Bean
     public SocketServer socketServer(MessageSystem messageSystem) {
-        SocketServerImpl server = new SocketServerImpl(messageSystem,socketPort,dbServiceName,frontendSynchronousServiceName,frontendAsynchronousServiceName);
+        SocketServerImpl server = new SocketServerImpl(messageSystem,
+                socketPort,db1ServiceName,db2ServiceName,frontend1ServiceName,frontend2ServiceName,
+                frontendAsynchronousServiceName,frontendSynchronousServiceName,dbServiceName);
         server.start();
         return server;
     }
 
     @Bean
     public void runClients() {
-        String frontEndPathJar = System.getenv("FRONTEND_CLIENT_PATH_JAR");
-        if (frontEndPathJar == null)   throw new IllegalArgumentException("System environment FRONTEND_CLIENT_PATH_JAR is null!");
 
-        String backEndPathJar = System.getenv("BACKEND_CLIENT_PATH_JAR");
-        if (backEndPathJar == null)   throw new IllegalArgumentException("System environment BACKEND_CLIENT_PATH_JAR is null!");
+        logger.debug("frontend1StartCommand: {}", frontend1StartCommand);
+        logger.debug("frontend2StartCommand: {}", frontend2StartCommand);
 
-        frontendStartCommand = "java -jar " + frontEndPathJar;
-        dbServiceStartCommand = "java -jar " + backEndPathJar;
-        logger.debug("FRONTEND_START_COMMAND: {}", frontendStartCommand);
-        logger.debug("BACKEND_START_COMMAND: {}", dbServiceStartCommand);
+        logger.debug("dbService1StartCommand: {}", dbService1StartCommand);
+        logger.debug("dbService2StartCommand: {}", dbService2StartCommand);
 
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(clientsNumber);
         startClient(executorService, getCommands());
@@ -85,10 +101,13 @@ public class MSConfig {
     private void startClient(ScheduledExecutorService executorService, List<String> commands) {
         for (String command : commands) {
             executorService.schedule(() -> {
-                try {
-                    new ProcessRunnerImpl().start(command);
-                } catch (IOException e) {
-                    logger.error(e.getMessage(),e);
+                if (!command.isEmpty()) {
+                    try {
+                        new ProcessRunnerImpl().start(command);
+                        logger.debug("run command: {}",command);
+                    } catch (IOException e) {
+                        logger.error(e.getMessage(), e);
+                    }
                 }
             }, clientStartDelaySec, TimeUnit.SECONDS);
         }
@@ -96,8 +115,10 @@ public class MSConfig {
 
     private  List<String> getCommands() {
         List<String> commands = new ArrayList<>();
-        commands.add(frontendStartCommand);
-        commands.add(dbServiceStartCommand);
+        commands.add(frontend1StartCommand);
+        commands.add(frontend2StartCommand);
+        commands.add(dbService1StartCommand);
+        commands.add(dbService2StartCommand);
         return commands;
     }
 

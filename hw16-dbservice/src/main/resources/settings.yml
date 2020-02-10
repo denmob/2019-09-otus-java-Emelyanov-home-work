@@ -2,5 +2,8 @@ client:
   dbServiceName: databaseService
   hostMS: localhost
   portMS: 8000
+  socketName: db1Service
 
-  socketName: databaseService
+db:
+  mongoDBHost: 127.0.0.1
+  mongoDBName: hw16

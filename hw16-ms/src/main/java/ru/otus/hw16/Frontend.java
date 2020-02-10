@@ -22,8 +22,16 @@ public class Frontend implements MessageClient {
     private Socket socketClient;
     private final MessageSystem ms;
 
-    public Frontend(MessageSystem ms) {
+    private final String name;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public Frontend(MessageSystem ms, String name) {
         this.ms = ms;
+        this.name = name;
     }
 
     @Override

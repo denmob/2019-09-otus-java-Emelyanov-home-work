@@ -6,4 +6,4 @@ client:
     hostMS: localhost
     portMS: 8000
 
-    socketName: frontendSynchronousServiceName
+    socketName: frontend1Service

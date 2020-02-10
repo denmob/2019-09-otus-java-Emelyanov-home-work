@@ -11,16 +11,19 @@ import java.util.concurrent.Executors;
 public class MessageSystem {
     private static Logger logger = LoggerFactory.getLogger(MessageSystem.class);
 
+//    private final Map<String, MessageClient> frontendClients = new ConcurrentHashMap<>();
+//    private final Map<String, MessageClient> databaseServiceClients = new ConcurrentHashMap<>();
     private MessageClient frontend;
     private MessageClient databaseService;
+
 
     private final ArrayBlockingQueue<Message> queueInbox = new ArrayBlockingQueue<>(10);
     private final ArrayBlockingQueue<Message> forFrontend = new ArrayBlockingQueue<>(10);
     private final ArrayBlockingQueue<Message> forDatabase = new ArrayBlockingQueue<>(10);
 
     private final ExecutorService executorInbox = Executors.newSingleThreadExecutor();
-    private final ExecutorService executorFrontend = Executors.newSingleThreadExecutor();
-    private final ExecutorService executorDatabase = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorFrontend =  Executors.newScheduledThreadPool(2);
+    private final ExecutorService executorDatabase =  Executors.newScheduledThreadPool(2);
 
     public MessageSystem() {
     }
@@ -74,6 +77,10 @@ public class MessageSystem {
 
     public void setFrontend(MessageClient frontend) {
         if (frontend != null) {
+//            if (frontendClients.containsKey(frontend.getName())) {
+//                throw new IllegalArgumentException("Error. client: " + frontend.getName() + " already exists");
+//            }
+//            frontendClients.put(frontend.getName(), frontend);
             this.frontend = frontend;
             executorFrontend.execute(() -> this.processMsgOutbox(forFrontend, frontend));
             executorFrontend.shutdown();
@@ -82,9 +89,14 @@ public class MessageSystem {
 
     public void setDatabaseService(MessageClient databaseService) {
         if (databaseService != null) {
+//            if (databaseServiceClients.containsKey(databaseService.getName())) {
+//                throw new IllegalArgumentException("Error. client: " + databaseService.getName() + " already exists");
+//            }
+//            databaseServiceClients.put(databaseService.getName(), databaseService);
             this.databaseService = databaseService;
             executorDatabase.execute(() -> this.processMsgOutbox(forDatabase, databaseService));
             executorDatabase.shutdown();
         }
+
     }
 }

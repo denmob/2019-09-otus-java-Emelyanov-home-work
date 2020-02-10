@@ -21,9 +21,16 @@ public class DatabaseService implements MessageClient {
     }
 
     private Socket socketClient;
+    private final String name;
 
-    public DatabaseService(MessageSystem ms) {
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public DatabaseService(MessageSystem ms, String name) {
         this.ms = ms;
+        this.name = name;
     }
 
     @Override
