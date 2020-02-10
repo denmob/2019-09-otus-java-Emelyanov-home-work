@@ -70,7 +70,7 @@ public class SocketClientImpl implements SocketClient {
         logger.info("message for ms: {}", messageOut);
         String json =  new Gson().toJson(messageOut);
         out.println(json);
-        fromMS.put(messageOut);
+      //  fromMS.put(messageOut);
       }
     } catch (Exception ex) {
       logger.error(ex.getMessage(), ex);

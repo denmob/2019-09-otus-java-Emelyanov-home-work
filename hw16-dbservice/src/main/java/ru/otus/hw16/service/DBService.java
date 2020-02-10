@@ -4,10 +4,11 @@ import ru.otus.hw16.domain.ChatMessage;
 import ru.otus.hw16.domain.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DBService {
 
-    User findByUserLogin(String value);
+    Optional<User> findByUserLogin(String value);
 
     List<User> getAllUsers();
 

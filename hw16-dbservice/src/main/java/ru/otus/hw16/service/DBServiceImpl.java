@@ -10,6 +10,7 @@ import ru.otus.hw16.domain.ChatMessage;
 import ru.otus.hw16.domain.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DBServiceImpl implements DBService {
@@ -23,9 +24,9 @@ public class DBServiceImpl implements DBService {
     }
 
     @Override
-    public User findByUserLogin(String value) {
+    public Optional<User> findByUserLogin(String value) {
         Query searchUserLogin = new Query(Criteria.where("login").is(value));
-        return  mongoOperation.findOne(searchUserLogin, User.class);
+        return Optional.ofNullable(mongoOperation.findOne(searchUserLogin, User.class));
     }
 
     @Override
@@ -58,8 +59,8 @@ public class DBServiceImpl implements DBService {
     }
 
     private boolean checkUserData(User user) {
-        User foundUser = findByUserLogin(user.getLogin());
-        return foundUser==null;
+        Optional<User> foundUser = findByUserLogin(user.getLogin());
+        return foundUser.isEmpty();
     }
 
 }

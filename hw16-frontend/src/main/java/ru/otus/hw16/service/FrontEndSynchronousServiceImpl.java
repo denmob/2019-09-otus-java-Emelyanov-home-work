@@ -1,6 +1,7 @@
 package ru.otus.hw16.service;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw16.domain.User;
@@ -8,10 +9,8 @@ import ru.otus.hw16.mesages.CommandType;
 import ru.otus.hw16.mesages.Message;
 import ru.otus.hw16.msclient.MsClient;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
@@ -84,6 +83,7 @@ public class FrontEndSynchronousServiceImpl implements FrontEndSynchronousServic
     }
 
     public boolean saveUser(User user) {
+
         var ref = new Object() {
             Object result = null;
         };
@@ -93,7 +93,7 @@ public class FrontEndSynchronousServiceImpl implements FrontEndSynchronousServic
             countDownLatch.countDown();
         });
         Thread thread = new Thread(() -> {
-        Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.SAVE_USER, user);
+        Message outMsg = msClient.produceMessage(databaseServiceClientName, CommandType.SAVE_USER, new Gson().toJson(user));
         consumerMap.put(outMsg.getId(), dataConsumer);
         msClient.sendMessage(outMsg);
         });
@@ -104,7 +104,7 @@ public class FrontEndSynchronousServiceImpl implements FrontEndSynchronousServic
         } catch (InterruptedException e) {
             logger.error(e.getMessage(),e);
         }
-        return (boolean)(ref.result);
+        return  new Gson().fromJson((String) ref.result,boolean.class);
     }
 
 
@@ -121,22 +121,17 @@ public class FrontEndSynchronousServiceImpl implements FrontEndSynchronousServic
 
     private Optional<User> validateResultObjectWithUser(Object result) {
         if (result != null) {
-                User user = new Gson().fromJson((String) result,User.class);
-                return Optional.of(user);
+            Type optionalType = new TypeToken<Optional<User>>(){}.getType();
+            return new Gson().fromJson((String) result, optionalType);
         }
         return Optional.empty();
     }
 
     private List<User> validateResultObjectWithUserList(Object result) {
-        if (result instanceof List) {
-            List users = (List) result;
-            if (!users.isEmpty()) {
-                if (users.get(0) instanceof User) {
-                    return (List<User>) users;
-                }
-            }
+        if (result != null) {
+            Type listType = new TypeToken<ArrayList<User>>(){}.getType();
+            return new Gson().fromJson((String) result, listType);
         }
-        return null;
+        return new ArrayList<>();
     }
-
 }
