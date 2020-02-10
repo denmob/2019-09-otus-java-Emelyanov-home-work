@@ -4,3 +4,7 @@ server:
   dbServiceStartCommand:
   clientsNumber: 2
   clientStartDelaySec: 5
+
+client:
+  frontendServiceName: frontendServiceName
+  dbServiceName: databaseService

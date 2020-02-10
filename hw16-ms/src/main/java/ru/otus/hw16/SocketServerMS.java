@@ -8,9 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @SpringBootApplication
 public class SocketServerMS {
-
     public static void main(String[] args) {
         SpringApplication.run(SocketServerMS.class, args);
     }
-
 }

@@ -23,14 +23,13 @@ import ru.otus.hw16.sockets.SocketManagerImpl;
 public class MSConfig {
     private static final Logger logger = LoggerFactory.getLogger(MSConfig.class);
 
-    @Value("${frontEndAsyncName}")
-    private String frontEndAsyncName;
 
-    @Value("${frontEndSyncName}")
-    private String frontEndSyncName;
 
-    @Value("${backEndDBServiceName}")
-    private String backEndDBServiceName;
+    @Value("${frontendServiceName}")
+    private String frontendServiceName;
+
+    @Value("${dbServiceName}")
+    private String dbServiceName;
 
     @Value("${hostMS}")
     private String hostMS;
@@ -47,7 +46,7 @@ public class MSConfig {
 
     @Bean
     public SocketClient socketClient() {
-        SocketClient socketClient = new SocketClientImpl(frontEndSyncName,hostMS,portMS);
+        SocketClient socketClient = new SocketClientImpl(frontendServiceName,hostMS,portMS);
         socketClient.start();
         return socketClient;
     }
@@ -65,9 +64,9 @@ public class MSConfig {
 
     @Bean
     public FrontEndSynchronousService frontEndSynchronousService(SocketManager socketManager, SocketClient socketClient) {
-        logger.debug("create frontEndSynchronousService with frontEndSyncName:{} backEndDBServiceName:{}",frontEndSyncName,backEndDBServiceName);
-        MsClient frontendMsClient = new MsClientImpl(frontEndSyncName, socketManager);
-        FrontEndSynchronousService frontEndSynchronousService = new FrontEndSynchronousServiceImpl(frontendMsClient, backEndDBServiceName);
+        logger.debug("create frontEndSynchronousService with frontEndSyncName:{} backEndDBServiceName:{}",frontendServiceName,dbServiceName);
+        MsClient frontendMsClient = new MsClientImpl(frontendServiceName, socketManager);
+        FrontEndSynchronousService frontEndSynchronousService = new FrontEndSynchronousServiceImpl(frontendMsClient, dbServiceName);
         frontendMsClient.addHandler(new GetSynchronousDataResponseHandler(frontEndSynchronousService));
         socketManager.addMsClient(frontendMsClient);
         socketManager.addSocketClient(socketClient);

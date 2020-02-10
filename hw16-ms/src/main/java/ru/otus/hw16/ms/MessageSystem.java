@@ -27,12 +27,7 @@ public class MessageSystem {
 
     public void init() {
         executorInbox.execute(this::processMsgInbox);
-        executorFrontend.execute(() -> this.processMsgOutbox(forFrontend, frontend));
-        executorDatabase.execute(() -> this.processMsgOutbox(forDatabase, databaseService));
-
         executorInbox.shutdown();
-        executorFrontend.shutdown();
-        executorDatabase.shutdown();
     }
 
     public void sendMessage(Message msg) throws InterruptedException {
@@ -65,23 +60,31 @@ public class MessageSystem {
         }
     }
 
-   public Message createMessageForDatabase(String data) {
-       Message msg = new MsgFromFrontend(data);
+   public Message createMessageForDatabase(MessageTransport messageTransport) {
+       Message msg = new MsgFromFrontend(messageTransport);
         msg.setQueueTo(forDatabase);
         return msg;
     }
 
-    public Message createMessageForFrontend(String data) {
-        Message msg = new MsgFromDatabase(data);
+    public Message createMessageForFrontend(MessageTransport messageTransport) {
+        Message msg = new MsgFromDatabase(messageTransport);
         msg.setQueueTo(forFrontend);
         return msg;
     }
 
     public void setFrontend(MessageClient frontend) {
-        this.frontend = frontend;
+        if (frontend != null) {
+            this.frontend = frontend;
+            executorFrontend.execute(() -> this.processMsgOutbox(forFrontend, frontend));
+            executorFrontend.shutdown();
+        }
     }
 
     public void setDatabaseService(MessageClient databaseService) {
-        this.databaseService = databaseService;
+        if (databaseService != null) {
+            this.databaseService = databaseService;
+            executorDatabase.execute(() -> this.processMsgOutbox(forDatabase, databaseService));
+            executorDatabase.shutdown();
+        }
     }
 }

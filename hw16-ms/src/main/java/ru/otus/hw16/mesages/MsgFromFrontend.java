@@ -2,21 +2,21 @@ package ru.otus.hw16.mesages;
 
 public class MsgFromFrontend extends Message {
 
-    private final String data;
+    private final MessageTransport messageTransport;
 
-    public MsgFromFrontend(String data) {
-        this.data = data;
+    public MsgFromFrontend(MessageTransport messageTransport) {
+        this.messageTransport = messageTransport;
     }
 
     @Override
-    public String process() {
-        return data;
+    public MessageTransport process() {
+        return messageTransport;
     }
 
     @Override
     public String toString() {
         return "MsgFromFrontend{" +
-                "data='" + data + '\'' +
+                "messageTransport='" + messageTransport + '\'' +
                 '}';
     }
 }

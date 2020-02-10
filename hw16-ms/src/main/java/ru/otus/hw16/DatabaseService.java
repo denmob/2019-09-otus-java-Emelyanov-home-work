@@ -1,21 +1,20 @@
 package ru.otus.hw16;
 
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw16.mesages.Message;
 import ru.otus.hw16.mesages.MessageClient;
+import ru.otus.hw16.mesages.MessageTransport;
 import ru.otus.hw16.ms.MessageSystem;
 
+import java.io.PrintWriter;
 import java.net.Socket;
 
 
 public class DatabaseService implements MessageClient {
     private static Logger logger = LoggerFactory.getLogger(DatabaseService.class);
     private final MessageSystem ms;
-
-    public Socket getSocketClient() {
-        return socketClient;
-    }
 
     public void setSocketClient(Socket socketClient) {
         this.socketClient = socketClient;
@@ -33,15 +32,22 @@ public class DatabaseService implements MessageClient {
     }
 
     @Override
-    public void accept(Message msg) throws InterruptedException {
-        String dataFromUI = msg.process();
+    public void accept(Message msg) {
+        MessageTransport messageTransport = msg.process();
+        sendMessage(messageTransport);
+    }
 
-        logger.info("message from UI: {}", dataFromUI);
-        String messageForUI = dataFromUI.toUpperCase() + "+DB";
+    private void sendMessage(MessageTransport messageTransport) {
+        try {
+            if (socketClient.isConnected()) {
+                PrintWriter out = new PrintWriter(socketClient.getOutputStream(), true);
 
-        Thread.sleep(10_000);
-
-        Message msgForFE = ms.createMessageForFrontend(messageForUI);
-        ms.sendMessage(msgForFE);
+                String json =  new Gson().toJson(messageTransport);
+                logger.info("sending to dbService {}",json);
+                out.println(json);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
 }

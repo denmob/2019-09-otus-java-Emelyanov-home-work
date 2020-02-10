@@ -1,20 +1,19 @@
 package ru.otus.hw16;
 
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw16.mesages.Message;
 import ru.otus.hw16.mesages.MessageClient;
+import ru.otus.hw16.mesages.MessageTransport;
 import ru.otus.hw16.ms.MessageSystem;
 
+import java.io.PrintWriter;
 import java.net.Socket;
 
 
 public class Frontend implements MessageClient {
     private static Logger logger = LoggerFactory.getLogger(Frontend.class);
-
-    public Socket getSocketClient() {
-        return socketClient;
-    }
 
     public void setSocketClient(Socket socketClient) {
         this.socketClient = socketClient;
@@ -32,13 +31,24 @@ public class Frontend implements MessageClient {
         this.ms.setFrontend(this);
     }
 
-    void createUser(String userName) throws InterruptedException {
-        ms.sendMessage(ms.createMessageForDatabase(userName));
-    }
 
     @Override
     public void accept(Message msg) {
-        String dataFromDataBase = msg.process();
-        logger.info("message from database: {}", dataFromDataBase);
+        MessageTransport messageTransport = msg.process();
+        sendMessage(messageTransport);
+    }
+
+    private void sendMessage(MessageTransport messageTransport) {
+        try {
+            if (socketClient.isConnected()) {
+                PrintWriter out = new PrintWriter(socketClient.getOutputStream(), true);
+
+                String json =  new Gson().toJson(messageTransport);
+                logger.info("sending to frontendService {}",json);
+                out.println(json);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
 }

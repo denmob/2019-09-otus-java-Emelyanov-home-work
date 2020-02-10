@@ -23,14 +23,11 @@ import ru.otus.hw16.sockets.SocketManagerImpl;
 public class MSConfig {
     private static final Logger logger = LoggerFactory.getLogger(MSConfig.class);
 
-    @Value("${backEndDBServiceName}")
-    private String backEndDBServiceName;
+    @Value("${frontendServiceName}")
+    private String frontendServiceName;
 
-    @Value("${frontEndAsyncName}")
-    private String frontEndAsyncName;
-
-    @Value("${frontEndSyncName}")
-    private String frontEndSyncName;
+    @Value("${dbServiceName}")
+    private String dbServiceName;
 
     @Value("${hostMS}")
     private String hostMS;
@@ -47,15 +44,15 @@ public class MSConfig {
 
     @Bean
     public SocketClient socketClient() {
-        SocketClient socketClient = new SocketClientImpl(backEndDBServiceName,hostMS,portMS);
+        SocketClient socketClient = new SocketClientImpl(dbServiceName,hostMS,portMS);
         socketClient.start();
         return socketClient;
     }
 
     @Bean
     public MsClient msDataBaseClientImpl(SocketManager socketManager, DBService repository, SocketClient socketClient) {
-        logger.debug("create msDataBaseClientImpl with backEndDBServiceName:{}",backEndDBServiceName);
-        MsClient databaseMsClient = new MsClientImpl(backEndDBServiceName, socketManager);
+        logger.debug("create msDataBaseClientImpl with backEndDBServiceName:{}",dbServiceName);
+        MsClient databaseMsClient = new MsClientImpl(dbServiceName, socketManager);
         databaseMsClient.addHandler(new GetDataRequestHandler(repository));
         socketManager.addMsClient(databaseMsClient);
         socketManager.addSocketClient(socketClient);

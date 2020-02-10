@@ -14,5 +14,5 @@ public abstract class Message {
         return queue;
     }
 
-    public abstract String process();
+    public abstract MessageTransport process();
 }
