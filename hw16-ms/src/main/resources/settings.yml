@@ -1,7 +1,7 @@
 server:
   socketPort: 8000
-  frontend1StartCommand: java -jar F:\\Documents\\java\\2019-09-otus-java-Emelyanov\\hw16-frontend\\target\\hw16-frontEnd-2019-09-SNAPSHOT.jar --server.port=8080 --socketName=frontend1Service
-  dbService1StartCommand: java -jar F:\\Documents\\java\\2019-09-otus-java-Emelyanov\\hw16-dbservice\\target\\hw16-dbService-2019-09-SNAPSHOT.jar --socketName=db1Service --mongoDBName=hw16a
+  frontend1StartCommand: java -jar C:\\Users\\d.yemelianov\\Documents\\java\\2019-09-otus-java-Emelyanov\\hw16-frontend\\target\\hw16-frontEnd-2019-09-SNAPSHOT.jar --server.port=8080 --socketName=frontend1Service
+  dbService1StartCommand: java -jar C:\\Users\\d.yemelianov\\Documents\\java\\2019-09-otus-java-Emelyanov\\hw16-dbservice\\target\\hw16-dbService-2019-09-SNAPSHOT.jar --socketName=db1Service --mongoDBName=hw16a
 #  frontend1StartCommand:
 #  dbService1StartCommand:
   frontend2StartCommand:
