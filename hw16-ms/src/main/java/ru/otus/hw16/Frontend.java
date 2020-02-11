@@ -10,28 +10,21 @@ import ru.otus.hw16.ms.MessageSystem;
 
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Map;
 
 
 public class Frontend implements MessageClient {
     private static Logger logger = LoggerFactory.getLogger(Frontend.class);
 
-    public void setSocketClient(Socket socketClient) {
-        this.socketClient = socketClient;
+    public void setSocketClients(Map<String,Socket> socketClients) {
+        this.socketClients = socketClients;
     }
+    private Map<String,Socket> socketClients;
 
-    private Socket socketClient;
     private final MessageSystem ms;
 
-    private final String name;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public Frontend(MessageSystem ms, String name) {
+    public Frontend(MessageSystem ms) {
         this.ms = ms;
-        this.name = name;
     }
 
     @Override
@@ -47,16 +40,18 @@ public class Frontend implements MessageClient {
     }
 
     private void sendMessage(MessageTransport messageTransport) {
-        try {
-            if (socketClient.isConnected()) {
-                PrintWriter out = new PrintWriter(socketClient.getOutputStream(), true);
-
-                String json =  new Gson().toJson(messageTransport);
-                logger.info("sending to frontendService {}",json);
-                out.println(json);
+        Socket socketClient = socketClients.get(messageTransport.getTo());
+        if (socketClient != null) {
+            try {
+                if (socketClient.isConnected()) {
+                    PrintWriter out = new PrintWriter(socketClient.getOutputStream(), true);
+                    String json = new Gson().toJson(messageTransport);
+                    logger.info("sending to frontendService {}", json);
+                    out.println(json);
+                }
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(), ex);
             }
-        } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex);
-        }
+        } else logger.error("Socket client not registered");
     }
 }

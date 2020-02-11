@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,11 +28,16 @@ public class SocketClientImpl implements SocketClient {
 
   private final ExecutorService executorServer = Executors.newScheduledThreadPool(4);
 
-  private String name;
+  private  String dbServiceName;
+  private  String frontendAsynchronousServiceName;
+  private  String frontendSynchronousServiceName;
 
-  public SocketClientImpl(String name, String host, int port) {
+  public SocketClientImpl(String dbServiceName,String frontendAsynchronousServiceName,String frontendSynchronousServiceName,
+                          String host, int port) {
     try {
-      this.name = name;
+      this.dbServiceName = dbServiceName;
+      this.frontendAsynchronousServiceName = frontendAsynchronousServiceName;
+      this.frontendSynchronousServiceName = frontendSynchronousServiceName;
       clientSocket = new Socket(host, port);
     } catch (IOException e) {
       logger.error(e.getMessage(),e);
@@ -42,8 +49,14 @@ public class SocketClientImpl implements SocketClient {
       if (clientSocket.isConnected()) {
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        logger.info("send to MS name: {}",name);
-        out.println(name);
+        List<String> paramsToReg = new ArrayList<>();
+//        paramsToReg.add(dbServiceName);
+        paramsToReg.add(frontendAsynchronousServiceName);
+        paramsToReg.add(frontendSynchronousServiceName);
+        String jsonParam = new Gson().toJson(paramsToReg);
+
+        logger.info("send to MS name: {}",jsonParam);
+        out.println(jsonParam);
         boolean answerMs = Boolean.parseBoolean(in.readLine());
         if (answerMs) {
           executorServer.execute(this::run);
@@ -64,7 +77,6 @@ public class SocketClientImpl implements SocketClient {
         String json =  new Gson().toJson(msg);
         logger.info("sending to server {}",json);
         out.println(json);
-        sleep();
         String resp = in.readLine();
         logger.info("server response: {}", resp);
         Message messageOut = new Gson().fromJson(resp,Message.class);
@@ -72,14 +84,6 @@ public class SocketClientImpl implements SocketClient {
       }
     } catch (Exception ex) {
       logger.error(ex.getMessage(), ex);
-    }
-  }
-
-  private static void sleep() {
-    try {
-      Thread.sleep(TimeUnit.SECONDS.toMillis(3));
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
     }
   }
 

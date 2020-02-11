@@ -30,6 +30,11 @@ public class MessageSystem {
 
     public void init() {
         executorInbox.execute(this::processMsgInbox);
+        executorDatabase.execute(() -> this.processMsgOutbox(forDatabase, databaseService));
+        executorFrontend.execute(() -> this.processMsgOutbox(forFrontend, frontend));
+
+        executorFrontend.shutdown();
+        executorDatabase.shutdown();
         executorInbox.shutdown();
     }
 
@@ -82,8 +87,6 @@ public class MessageSystem {
 //            }
 //            frontendClients.put(frontend.getName(), frontend);
             this.frontend = frontend;
-            executorFrontend.execute(() -> this.processMsgOutbox(forFrontend, frontend));
-            executorFrontend.shutdown();
         }
     }
 
@@ -94,8 +97,7 @@ public class MessageSystem {
 //            }
 //            databaseServiceClients.put(databaseService.getName(), databaseService);
             this.databaseService = databaseService;
-            executorDatabase.execute(() -> this.processMsgOutbox(forDatabase, databaseService));
-            executorDatabase.shutdown();
+
         }
 
     }

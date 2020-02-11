@@ -1,9 +1,7 @@
 client:
-    frontendAsynchronousServiceName: frontendAsynchronousServiceName
-    frontendSynchronousServiceName: frontendSynchronousServiceName
-    dbServiceName: databaseService
+    frontendAsynchronousServiceName: frontend1AsynchronousService
+    frontendSynchronousServiceName: frontend1SynchronousService
+    dbServiceName: db1Service
 
     hostMS: localhost
     portMS: 8000
-
-    socketName: frontend1Service

@@ -23,9 +23,6 @@ import ru.otus.hw16.sockets.SocketManagerImpl;
 public class MSConfig {
     private static final Logger logger = LoggerFactory.getLogger(MSConfig.class);
 
-    @Value("${socketName}")
-    private String socketName;
-
     @Value("${dbServiceName}")
     private String dbServiceName;
 
@@ -44,7 +41,7 @@ public class MSConfig {
 
     @Bean
     public SocketClient socketClient() {
-        SocketClient socketClient = new SocketClientImpl(socketName,hostMS,portMS);
+        SocketClient socketClient = new SocketClientImpl(dbServiceName,hostMS,portMS);
         socketClient.start();
         return socketClient;
     }

@@ -10,27 +10,20 @@ import ru.otus.hw16.ms.MessageSystem;
 
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Map;
 
 
 public class DatabaseService implements MessageClient {
     private static Logger logger = LoggerFactory.getLogger(DatabaseService.class);
     private final MessageSystem ms;
 
-    public void setSocketClient(Socket socketClient) {
-        this.socketClient = socketClient;
+    public void setSocketClients(Map<String,Socket> socketClients) {
+        this.socketClients = socketClients;
     }
+    private Map<String,Socket> socketClients;
 
-    private Socket socketClient;
-    private final String name;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public DatabaseService(MessageSystem ms, String name) {
+    public DatabaseService(MessageSystem ms) {
         this.ms = ms;
-        this.name = name;
     }
 
     @Override
@@ -45,16 +38,19 @@ public class DatabaseService implements MessageClient {
     }
 
     private void sendMessage(MessageTransport messageTransport) {
-        try {
-            if (socketClient.isConnected()) {
-                PrintWriter out = new PrintWriter(socketClient.getOutputStream(), true);
+        Socket socketClient = socketClients.get(messageTransport.getTo());
+        if (socketClient != null) {
+            try {
+                if (socketClient.isConnected()) {
+                    PrintWriter out = new PrintWriter(socketClient.getOutputStream(), true);
 
-                String json =  new Gson().toJson(messageTransport);
-                logger.info("sending to dbService {}",json);
-                out.println(json);
+                    String json = new Gson().toJson(messageTransport);
+                    logger.info("sending to dbService {}", json);
+                    out.println(json);
+                }
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(), ex);
             }
-        } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex);
-        }
+        } else logger.error("Socket client not registered");
     }
 }

@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,11 +21,11 @@ import java.util.concurrent.TimeUnit;
 public class SocketClientImpl implements SocketClient {
   private static Logger logger = LoggerFactory.getLogger(SocketClientImpl.class);
 
-  private String name;
+  private String dbServiceName;
 
-  public SocketClientImpl(String name, String host, int port) {
+  public SocketClientImpl(String dbServiceName, String host, int port) {
     try {
-      this.name = name;
+      this.dbServiceName = dbServiceName;
       clientSocket = new Socket(host, port);
     } catch (IOException e) {
       logger.error(e.getMessage(),e);
@@ -42,8 +44,11 @@ public class SocketClientImpl implements SocketClient {
       if (clientSocket.isConnected()) {
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        logger.info("send to MS name: {}",name);
-        out.println(name);
+        List<String> paramsToReg = new ArrayList<>();
+        paramsToReg.add(dbServiceName);
+        String jsonParam = new Gson().toJson(paramsToReg);
+        logger.info("send to MS name: {}",jsonParam);
+        out.println(jsonParam);
         boolean answerMs = Boolean.parseBoolean(in.readLine());
         if (answerMs) {
           executorServer.execute(this::run);
@@ -70,18 +75,10 @@ public class SocketClientImpl implements SocketClient {
         logger.info("message for ms: {}", messageOut);
         String json =  new Gson().toJson(messageOut);
         out.println(json);
-      //  fromMS.put(messageOut);
+
       }
     } catch (Exception ex) {
       logger.error(ex.getMessage(), ex);
-    }
-  }
-
-  private static void sleep() {
-    try {
-      Thread.sleep(TimeUnit.SECONDS.toMillis(3));
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
     }
   }
 

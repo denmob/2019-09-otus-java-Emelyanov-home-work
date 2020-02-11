@@ -12,4 +12,9 @@
         <appender-ref ref="console"/>
     </logger>
 
+    <root level="info">
+        <appender-ref ref="console"/>
+    </root>
+
+
 </configuration>

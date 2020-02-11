@@ -47,52 +47,24 @@ public class MSConfig {
     @Value("${clientStartDelaySec}")
     private int clientStartDelaySec;
 
-    @Value("${frontend1ServiceName}")
-    private String frontend1ServiceName;
-
-    @Value("${frontend2ServiceName}")
-    private String frontend2ServiceName;
-
-    @Value("${db1ServiceName}")
-    private String db1ServiceName;
-
-    @Value("${db2ServiceName}")
-    private String db2ServiceName;
-
-    @Value("${frontendAsynchronousServiceName}")
-    private String frontendAsynchronousServiceName;
-
-    @Value("${frontendSynchronousServiceName}")
-    private String frontendSynchronousServiceName;
-
-    @Value("${dbServiceName}")
-    private String dbServiceName;
-
     @Bean
     public MessageSystem messageSystem() {
-        MessageSystem ms = new MessageSystem();
-        ms.init();
-        return ms;
+        return new MessageSystem();
     }
 
     @Bean
     public SocketServer socketServer(MessageSystem messageSystem) {
-        SocketServerImpl server = new SocketServerImpl(messageSystem,
-                socketPort,db1ServiceName,db2ServiceName,frontend1ServiceName,frontend2ServiceName,
-                frontendAsynchronousServiceName,frontendSynchronousServiceName,dbServiceName);
+        SocketServerImpl server = new SocketServerImpl(messageSystem, socketPort);
         server.start();
         return server;
     }
 
     @Bean
     public void runClients() {
-
         logger.debug("frontend1StartCommand: {}", frontend1StartCommand);
         logger.debug("frontend2StartCommand: {}", frontend2StartCommand);
-
         logger.debug("dbService1StartCommand: {}", dbService1StartCommand);
         logger.debug("dbService2StartCommand: {}", dbService2StartCommand);
-
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(clientsNumber);
         startClient(executorService, getCommands());
         executorService.shutdown();
@@ -121,6 +93,5 @@ public class MSConfig {
         commands.add(dbService2StartCommand);
         return commands;
     }
-
 
 }
