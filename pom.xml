@@ -32,9 +32,8 @@
         <module>hw13-DI</module>
         <module>hw14-jmm</module>
         <module>hw15-MS</module>
-        <module>hw16-ms</module>
-        <module>hw16-dbService</module>
-        <module>hw16-frontEnd</module>
+        <module>hw16-MessageServer</module>
+
     </modules>
 
     <dependencyManagement>
