@@ -19,5 +19,5 @@
 * hw12-webServer/
 * hw14-JMM/
 * hw15-MS/
-* hw16-ms/ hw16-frontend/ hw16-dbservice/ 
+* hw16-MessageServer/
 

@@ -1,6 +1,3 @@
-• Frontend
-
-
 MessageServer
 Cервер из предыдущего ДЗ про MessageSystem разделить на три приложения:
 • MessageServer

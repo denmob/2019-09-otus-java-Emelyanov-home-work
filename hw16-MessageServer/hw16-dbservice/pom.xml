@@ -24,10 +24,6 @@
 
     <dependencies>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>otus-hw16</groupId>
 			<artifactId>hw16-library</artifactId>
 			<version>${hw16-library.version}</version>
