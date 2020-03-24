@@ -1,47 +1,45 @@
 package ru.otus.hw03;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-public class GCWorkLog {
+class GCWorkLog {
 
-    private Long YoungQuantity = 0L;
-    private Long YoungDuration = 0L;
-    private Long OldQuantity = 0L;
-    private Long OldDuration = 0L;
+    private Long youngQuantity = 0L;
+    private Long youngDuration = 0L;
+    private Long oldQuantity = 0L;
+    private Long oldDuration = 0L;
 
 
-    public Long getYoungQuantity() {
-        return YoungQuantity;
+    Long getYoungQuantity() {
+        return youngQuantity;
     }
 
     void setYoungQuantity(Long youngQuantity) {
-        YoungQuantity = youngQuantity;
+        this.youngQuantity = youngQuantity;
     }
 
     Long getYoungDuration() {
-        return YoungDuration;
+        return youngDuration;
     }
 
     void setYoungDuration(Long youngDuration) {
-        YoungDuration = youngDuration;
+        this.youngDuration = youngDuration;
     }
 
     Long getOldQuantity() {
-        return OldQuantity;
+        return oldQuantity;
     }
 
     void setOldQuantity(Long oldQuantity) {
-        OldQuantity = oldQuantity;
+        this.oldQuantity = oldQuantity;
     }
 
     Long getOldDuration() {
-        return OldDuration;
+        return oldDuration;
     }
 
     void setOldDuration(Long oldDuration) {
-        OldDuration = oldDuration;
+        this.oldDuration = oldDuration;
     }
 
     void printLogWorGC() {
@@ -49,10 +47,10 @@ public class GCWorkLog {
         LocalDateTime ldt =  LocalDateTime.now();
         System.out.println( ldt.toLocalTime());
 
-        System.out.println("Young Quantity = " + this.YoungQuantity);
-        System.out.println("Young Duration = " + this.YoungDuration +" ms");
-        System.out.println("Old Quantity = " + this.OldQuantity);
-        System.out.println("Old Duration = " + this.OldDuration +" ms");
+        System.out.println("Young Quantity = " + this.youngQuantity);
+        System.out.println("Young Duration = " + this.youngDuration +" ms");
+        System.out.println("Old Quantity = " + this.oldQuantity);
+        System.out.println("Old Duration = " + this.oldDuration +" ms");
 
     }
 

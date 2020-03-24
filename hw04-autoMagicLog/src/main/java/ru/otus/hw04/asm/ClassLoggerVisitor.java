@@ -28,7 +28,7 @@ public class ClassLoggerVisitor extends ClassVisitor{
 
         @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible){
-            if (desc.equals("Lru/otus/hw04/LogAnnotation/LogMethodParam;")) {
+            if (desc.equals("Lru/otus/hw04/logAnnotation/LogMethodParam;")) {
                 doLogging = true;
             }
             return mv.visitAnnotation(desc, visible);

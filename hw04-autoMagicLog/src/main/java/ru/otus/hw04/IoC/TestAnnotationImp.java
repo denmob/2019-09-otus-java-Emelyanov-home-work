@@ -1,6 +1,6 @@
 package ru.otus.hw04.IoC;
 
-import ru.otus.hw04.LogAnnotation.LogMethodParam;
+import ru.otus.hw04.logAnnotation.LogMethodParam;
 
 public class TestAnnotationImp implements TestAnnotationInterface {
 

@@ -1,12 +1,10 @@
 package ru.otus.hw04.IoC;
 
-import ru.otus.hw04.LogAnnotation.LogMethodParam;
+import ru.otus.hw04.logAnnotation.LogMethodParam;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 class MyIoC {
 

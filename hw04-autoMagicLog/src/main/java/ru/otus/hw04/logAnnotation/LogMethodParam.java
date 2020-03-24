@@ -1,4 +1,4 @@
-package ru.otus.hw04.LogAnnotation;
+package ru.otus.hw04.logAnnotation;
 
 import java.lang.annotation.*;
 

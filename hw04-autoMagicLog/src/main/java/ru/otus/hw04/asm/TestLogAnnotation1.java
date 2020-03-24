@@ -1,19 +1,20 @@
 package ru.otus.hw04.asm;
 
-import ru.otus.hw04.LogAnnotation.LogMethodParam;
+import ru.otus.hw04.logAnnotation.LogMethodParam;
 
-public class TestLogAnnotation1 {
+class TestLogAnnotation1 {
 
-    public TestLogAnnotation1() {
+    TestLogAnnotation1() {
     }
 
     @LogMethodParam
-    public void calculation(Integer integer, String s) {
-        System.out.println("invoking method calculation");
+    void calculation(Integer integer, String s) {
+        String s1 = String.format("invoking method calculation with params: %s %s",integer,s);
+        System.out.println(s1);
     }
 
 
-    void LogMethodParam(String s) {
-        System.out.println("invoking method LogMethodParam");
+    void logMethodParam(String s) {
+        System.out.println("invoking method LogMethodParam" + s);
     }
 }
