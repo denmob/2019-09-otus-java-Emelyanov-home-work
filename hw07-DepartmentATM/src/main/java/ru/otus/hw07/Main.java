@@ -1,8 +1,8 @@
 package ru.otus.hw07;
 
 
-import ru.otus.hw07.ATM.ATMImp;
-import ru.otus.hw07.DepartmentATM.DepartmentATM;
+import ru.otus.hw07.atm.ATMImp;
+import ru.otus.hw07.department.DepartmentATM;
 
 public class Main {
 

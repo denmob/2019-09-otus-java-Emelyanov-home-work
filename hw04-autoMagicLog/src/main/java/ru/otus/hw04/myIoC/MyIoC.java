@@ -1,4 +1,4 @@
-package ru.otus.hw04.IoC;
+package ru.otus.hw04.myIoC;
 
 import ru.otus.hw04.logAnnotation.LogMethodParam;
 

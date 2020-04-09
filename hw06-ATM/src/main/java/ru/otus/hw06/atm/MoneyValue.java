@@ -1,4 +1,4 @@
-package ru.otus.hw06.ATM;
+package ru.otus.hw06.atm;
 
 public enum MoneyValue {
         unit10{ public String toString() { return "10"; }},

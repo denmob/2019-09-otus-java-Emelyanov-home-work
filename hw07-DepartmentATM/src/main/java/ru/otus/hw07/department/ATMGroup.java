@@ -1,6 +1,6 @@
-package ru.otus.hw07.DepartmentATM;
+package ru.otus.hw07.department;
 
-import ru.otus.hw07.ATM.MoneyValue;
+import ru.otus.hw07.atm.MoneyValue;
 
 import java.util.Map;
 

@@ -1,7 +1,7 @@
-package ru.otus.hw07.DepartmentATM;
+package ru.otus.hw07.department;
 
-import ru.otus.hw07.ATM.ATMImp;
-import ru.otus.hw07.ATM.MoneyValue;
+import ru.otus.hw07.atm.ATMImp;
+import ru.otus.hw07.atm.MoneyValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +38,7 @@ public class DepartmentATM implements ATMGroup {
             for  (MoneyValue moneyValue: MoneyValue.values()) {
                 int moneyValueCount =  moneyValueIntegerMap.get(moneyValue);
                 sum = sum + moneyValueCount* moneyValue.getMoneyValue();
-                System.out.println(String.format("Количество купюр номиналом %s - " + moneyValueCount,moneyValue.toString()));
+                System.out.println(String.format("Количество купюр %s номиналом %s - ",moneyValueCount,moneyValue.toString()));
             }
             if (sum > 0) {
                 System.out.println("Общая сумма = " + sum);

@@ -1,4 +1,4 @@
-package ru.otus.hw07.ATM;
+package ru.otus.hw07.atm;
 
 
 public interface ATM {

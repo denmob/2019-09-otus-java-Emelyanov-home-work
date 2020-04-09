@@ -1,6 +1,6 @@
-package ru.otus.hw06.ATM.MoneyWithdraw;
+package ru.otus.hw06.atm.moneywithdraw;
 
-import ru.otus.hw06.ATM.MoneyValue;
+import ru.otus.hw06.atm.MoneyValue;
 
 public interface MoneyWithdrawInterface {
 

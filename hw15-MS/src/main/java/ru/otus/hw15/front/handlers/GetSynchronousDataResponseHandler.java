@@ -2,7 +2,6 @@ package ru.otus.hw15.front.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw15.front.FrontEndAsynchronousService;
 import ru.otus.hw15.front.FrontEndSynchronousService;
 import ru.otus.hw15.messagesystem.Message;
 import ru.otus.hw15.messagesystem.RequestHandler;
@@ -11,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class GetSynchronousDataResponseHandler implements RequestHandler {
-    private static final Logger logger = LoggerFactory.getLogger(GetAsynchronousDataResponseHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(GetSynchronousDataResponseHandler.class);
 
     private final FrontEndSynchronousService frontendService;
 

@@ -1,4 +1,4 @@
-package ru.otus.hw04.IoC;
+package ru.otus.hw04.myIoC;
 
 
 public class Demo {

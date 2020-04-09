@@ -1,14 +1,16 @@
-package ru.otus.hw06.ATM.MoneyCell;
+package ru.otus.hw07.atm.moneycell;
 
+import ru.otus.hw07.atm.MoneyValue;
+import java.util.Map;
 
-import ru.otus.hw06.ATM.MoneyValue;
-
-public interface MoneyCellInterface {
+public interface MoneyCell {
 
     void putMoney(MoneyValue moneyValue, Integer count);
 
     void getMoney(MoneyValue moneyValue, Integer count);
 
     int getMoneyValueCount(MoneyValue unitMoneyValue);
+
+    Map<MoneyValue,Integer> getAllMoney();
 
 }

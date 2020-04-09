@@ -1,7 +1,7 @@
-package ru.otus.hw06.ATM.MoneyWithdraw;
+package ru.otus.hw06.atm.moneywithdraw;
 
-import ru.otus.hw06.ATM.MoneyCell.MoneyCellImp;
-import ru.otus.hw06.ATM.MoneyValue;
+import ru.otus.hw06.atm.moneycell.MoneyCellImp;
+import ru.otus.hw06.atm.MoneyValue;
 import java.util.HashMap;
 import java.util.Map;
 

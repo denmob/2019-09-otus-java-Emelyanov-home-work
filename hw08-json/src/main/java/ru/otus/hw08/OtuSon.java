@@ -1,11 +1,16 @@
 package ru.otus.hw08;
 
 import org.slf4j.LoggerFactory;
-import java.lang.reflect.*;
-import java.util.Arrays;
+
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.stream.IntStream;
-import javax.json.*;
 
 class OtuSon {
 
