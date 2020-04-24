@@ -2,37 +2,43 @@ package ru.otus.hw05;
 
 class TestResult {
 
-    private int failedTest;
+  private int failedTest;
 
-    private int succeedTest;
-    private int countTest;
+  private int succeedTest;
+  private int countTest;
 
-    private StringBuilder exceptionDesc = new StringBuilder().append("\n");
+  private StringBuilder exceptionDesc = new StringBuilder().append("\n");
 
-    int getFailedTest() {
-        return failedTest;
-    }
-    int getSucceedTest() {
-        return succeedTest;
-    }
-    int getCountTest() {
-        return countTest;
-    }
+  int getFailedTest() {
+    return failedTest;
+  }
 
-    StringBuilder getExceptionDescription() {
-        return exceptionDesc;
-    }
+  int getSucceedTest() {
+    return succeedTest;
+  }
 
-    void addExceptionDescription(String exceptionDescription) {
-        this.exceptionDesc.append(exceptionDescription);
-    }
+  int getCountTest() {
+    return countTest;
+  }
 
-    void increaseFailedTest() {
-        this.failedTest++;
-    }
-    void increaseCountTest() {
-        this.countTest++;
-    }
-    void increaseSucceededTests() { this.succeedTest++; }
+  StringBuilder getExceptionDescription() {
+    return exceptionDesc;
+  }
+
+  void addExceptionDescription(String exceptionDescription) {
+    this.exceptionDesc.append(exceptionDescription);
+  }
+
+  void increaseFailedTest() {
+    this.failedTest++;
+  }
+
+  void increaseCountTest() {
+    this.countTest++;
+  }
+
+  void increaseSucceededTests() {
+    this.succeedTest++;
+  }
 
 }
