@@ -4,8 +4,7 @@ import ru.otus.hw06.atm.MoneyValue;
 
 public interface MoneyWithdrawInterface {
 
-    boolean validateMoneyToWithdraw();
+  boolean validateMoneyToWithdraw();
 
-    int getMoneyValueCount(MoneyValue unitMoneyValue);
-
+  int getMoneyValueCount(MoneyValue unitMoneyValue);
 }

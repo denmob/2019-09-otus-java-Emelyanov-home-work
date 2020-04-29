@@ -16,7 +16,7 @@ public class ATMImp implements ATMInterface {
     @Override
     public void withdrawMoney(int value) {
         System.out.println("Необходимо выдать сумму: "+value);
-        MoneyWithdrawImp moneyWithdraw = new MoneyWithdrawImp(value,moneyCellImp.clone());
+        MoneyWithdrawImp moneyWithdraw = new MoneyWithdrawImp(value,moneyCellImp.copy());
 
         if (moneyWithdraw.validateMoneyToWithdraw()) {
             for  (MoneyValue moneyValue: MoneyValue.values())
@@ -25,11 +25,10 @@ public class ATMImp implements ATMInterface {
     }
 
     @Override
-    public String depositMoney(MoneyValue moneyValue, Integer count) {
+    public void depositMoney(MoneyValue moneyValue, Integer count) {
         if (count>0) {
             moneyCellImp.putMoney(moneyValue, count);
-            return "Средства успешно внесены.";
-        } else return "Количество купюр должно быть больше 0.";
+        }
     }
 
     @Override
@@ -49,12 +48,12 @@ public class ATMImp implements ATMInterface {
         Map<MoneyValue,Integer> mapMoney = new HashMap<>();
         public Builder() { }
         private Map<MoneyValue, Integer> getMapMoney() { return mapMoney; }
-        public Builder addMoneyValue10 (int amount) { mapMoney.put(MoneyValue.unit10,amount); return this; }
-        public Builder addMoneyValue20 (int amount) { mapMoney.put(MoneyValue.unit20,amount); return this; }
-        public Builder addMoneyValue50 (int amount) { mapMoney.put(MoneyValue.unit50,amount); return this; }
-        public Builder addMoneyValue100 (int amount) { mapMoney.put(MoneyValue.unit100,amount); return this; }
-        public Builder addMoneyValue200 (int amount) { mapMoney.put(MoneyValue.unit200,amount); return this; }
-        public Builder addMoneyValue500 (int amount) { mapMoney.put(MoneyValue.unit500,amount); return this; }
+        public Builder addMoneyValue10 (int amount) { mapMoney.put(MoneyValue.UNIT_10,amount); return this; }
+        public Builder addMoneyValue20 (int amount) { mapMoney.put(MoneyValue.UNIT_20,amount); return this; }
+        public Builder addMoneyValue50 (int amount) { mapMoney.put(MoneyValue.UNIT_50,amount); return this; }
+        public Builder addMoneyValue100 (int amount) { mapMoney.put(MoneyValue.UNIT_100,amount); return this; }
+        public Builder addMoneyValue200 (int amount) { mapMoney.put(MoneyValue.UNIT_200,amount); return this; }
+        public Builder addMoneyValue500 (int amount) { mapMoney.put(MoneyValue.UNIT_500,amount); return this; }
         public ATMImp build() {
             for  (MoneyValue moneyValue: MoneyValue.values()){
                 mapMoney.putIfAbsent(moneyValue, 0);

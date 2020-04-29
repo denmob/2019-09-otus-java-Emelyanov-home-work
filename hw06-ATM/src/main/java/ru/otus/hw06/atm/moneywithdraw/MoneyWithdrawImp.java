@@ -1,7 +1,8 @@
 package ru.otus.hw06.atm.moneywithdraw;
 
-import ru.otus.hw06.atm.moneycell.MoneyCellImp;
 import ru.otus.hw06.atm.MoneyValue;
+import ru.otus.hw06.atm.moneycell.MoneyCellImp;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class MoneyWithdrawImp implements  MoneyWithdrawInterface{
         for  (MoneyValue moneyValue: MoneyValue.values()){
             int moneyValueCount =  moneyCellImp.getMoneyValueCount(moneyValue);
             sum = sum + moneyValueCount* Integer.parseInt(moneyValue.toString());
-            System.out.println(String.format("Будет выдано количество купюр номиналом %s - " + moneyValueCount,moneyValue.toString()));
+            System.out.println(String.format("Будет выдано %s количество купюр номиналом %s  ", moneyValueCount,moneyValue.toString()));
         }
         if (sum > 0) {
             System.out.println("Общая сумма денежных стредств для выдачи = " + sum);
@@ -43,12 +44,12 @@ public class MoneyWithdrawImp implements  MoneyWithdrawInterface{
     @Override
     public boolean validateMoneyToWithdraw() {
         MoneyValue[] moneyValue = MoneyValue.values();
-        Integer iwithdrawingValue = withdrawingValue;
+        int copyWithdrawingValue = this.withdrawingValue;
         for (int i=moneyValue.length-1;i>=0;i--) {
-            iwithdrawingValue = createMoneyWithdraw(iwithdrawingValue,  moneyValue[i]);
+            copyWithdrawingValue = createMoneyWithdraw(copyWithdrawingValue,  moneyValue[i]);
         }
-        if (iwithdrawingValue >0) {
-            System.out.println("Не хватает купюр для выдачи суммы: " + iwithdrawingValue);
+        if (copyWithdrawingValue >0) {
+            System.out.println("Не хватает купюр для выдачи суммы: " + copyWithdrawingValue);
             return false;
         } else {
             printMoneyUnitForWithdraw();
