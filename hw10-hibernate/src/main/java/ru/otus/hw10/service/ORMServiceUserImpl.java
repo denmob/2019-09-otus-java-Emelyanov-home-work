@@ -2,9 +2,11 @@ package ru.otus.hw10.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw10.dao.UserDao;
-import ru.otus.hw10.model.User;
-import ru.otus.hw10.sessionmanager.SessionManager;
+import ru.otus.hw10.api.dao.UserDao;
+import ru.otus.hw10.api.service.ORMServiceException;
+import ru.otus.hw10.api.service.ORMServiceUser;
+import ru.otus.hw10.api.model.User;
+import ru.otus.hw10.api.sessionmanager.SessionManager;
 
 import java.util.Optional;
 

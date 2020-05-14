@@ -37,7 +37,7 @@ public class ATMImp implements ATMInterface {
         for  (MoneyValue moneyValue: MoneyValue.values()){
             int moneyValueCount =  moneyCellImp.getMoneyValueCount(moneyValue);
             sum = sum + moneyValueCount* Integer.parseInt(moneyValue.toString());
-            System.out.println(String.format("Количество купюр номиналом %s - " + moneyValueCount,moneyValue.toString()));
+            System.out.println(String.format("Количество купюр  %s номиналом %s ", moneyValueCount,moneyValue.toString()));
         }
         if (sum > 0) {
             System.out.println("Общая сумма денежных стредств в ATM = " + sum);

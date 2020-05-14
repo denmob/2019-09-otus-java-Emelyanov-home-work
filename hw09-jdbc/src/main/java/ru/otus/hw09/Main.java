@@ -1,14 +1,14 @@
 package ru.otus.hw09;
 
 
+
 import org.slf4j.LoggerFactory;
-import ru.otus.hw09.jdbc.JDBCTemplate;
+import ru.otus.hw09.api.model.*;
+import ru.otus.hw09.api.jdbc.JDBCTemplate;
+import ru.otus.hw09.api.service.DbExecutor;
+import ru.otus.hw09.api.sessionmanager.SessionManager;
 import ru.otus.hw09.jdbc.JDBCTemplateImp;
-import ru.otus.hw09.model.Account;
-import ru.otus.hw09.model.User;
-import ru.otus.hw09.service.DbExecutor;
 import ru.otus.hw09.service.DbExecutorImp;
-import ru.otus.hw09.sessionmanager.SessionManager;
 import ru.otus.hw09.sessionmanager.SessionManagerImp;
 
 import java.math.BigDecimal;

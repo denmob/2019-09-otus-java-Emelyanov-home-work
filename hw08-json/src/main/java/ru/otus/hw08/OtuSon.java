@@ -64,6 +64,7 @@ class OtuSon {
                     logger.debug(" fieldName {} modifier {}",field.getName(), modifiers);
                     if (isNotStaticOrTransient(modifiers)) {
                         JsonValue jsonValue = toJsonValue(field.get(object));
+                        logger.info("field.Name:{} jsonValue:{}",field.getName(),jsonValue);
                         jsonObjectBuilder.add(field.getName(), jsonValue);
                     }
                 } catch (Exception e) {

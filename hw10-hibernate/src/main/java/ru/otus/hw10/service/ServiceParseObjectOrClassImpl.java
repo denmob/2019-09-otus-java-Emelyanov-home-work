@@ -1,18 +1,17 @@
-package ru.otus.hw09.service;
+package ru.otus.hw10.service;
 
 import org.slf4j.LoggerFactory;
-import ru.otus.hw09.api.model.Id;
-import ru.otus.hw09.api.service.ParseObjectOrClass;
-import ru.otus.hw09.api.service.ParseObjectOrClassException;
+import ru.otus.hw10.api.service.ParseObjectOrClass;
+import ru.otus.hw10.api.service.ParseObjectOrClassException;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ParseObjectOrClassImp implements ParseObjectOrClass {
+public class ServiceParseObjectOrClassImpl implements ParseObjectOrClass {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ParseObjectOrClassImp.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ServiceParseObjectOrClassImpl.class);
 
     private Object object;
     private Class<?> clazz;
@@ -34,7 +33,7 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
     private Map<Integer,Object> insertValues;
     private Map<Integer,Object> updateValues;
 
-    public ParseObjectOrClassImp(Object object) {
+    public ServiceParseObjectOrClassImpl(Object object) {
 
         if (object != null) {
             this.object = object;
@@ -48,7 +47,7 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
         }
     }
 
-    public ParseObjectOrClassImp(Class<?> clazz) {
+    public ServiceParseObjectOrClassImpl(Class<?> clazz) {
 
         if (clazz != null) {
             this.clazz = clazz;
@@ -96,6 +95,7 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
         for (Field field : getFields(clazz)) {
             String name = field.getName();
             if (!Objects.equals(field, getIdField(clazz))) {
+                if (checkImplementsType(field))
                 joiner.add(name);
             }
         }
@@ -106,7 +106,7 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
         if (!clazz.isPrimitive()) {
             for (Field field : fields) {
                 field.setAccessible(true);
-                if (field.getDeclaredAnnotation(Id.class) != null) {
+                if (field.getDeclaredAnnotation(javax.persistence.Id.class) != null) {
                     return field;
                 }
             }
@@ -118,6 +118,7 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
         List<Field> list = new ArrayList<>();
         for (Field x : clazz.getDeclaredFields()) {
             if (!x.equals(getIdField(clazz))) {
+                if (checkImplementsType(x))
                 list.add(x);
             }
         }
@@ -207,21 +208,30 @@ public class ParseObjectOrClassImp implements ParseObjectOrClass {
                  if (((int.class.equals(fields[i].getType())) ||  (Integer.class.equals(fields[i].getType()))
                      || (short.class.equals(fields[i].getType())) || (Short.class.equals(fields[i].getType()))
                      || (byte.class.equals(fields[i].getType())) || (Byte.class.equals(fields[i].getType()) )))  {
-                     sResult.append(fields[i].getName()).append(" int (3) ");
+                     sResult.append(fields[i].getName()).append(" int (3),");
                 } else if ((long.class.equals(fields[i].getType())) || (Long.class.equals(fields[i].getType()))) {
-                     sResult.append(fields[i].getName()).append(" bigint (20) NOT NULL auto_increment ");
+                     sResult.append(fields[i].getName()).append(" bigint (20) NOT NULL auto_increment,");
                  }else if ((String.class.equals(fields[i].getType())) || (Character.class.equals(fields[i].getType()))) {
-                     sResult.append(fields[i].getName()).append(" varchar(255) ");
+                     sResult.append(fields[i].getName()).append(" varchar(255),");
                  } else if (BigDecimal.class.equals(fields[i].getType())) {
-                     sResult.append(fields[i].getName()).append(" number ");
+                     sResult.append(fields[i].getName()).append(" number,");
                  } else {
                      logger.error("Is not implemented. Type not supported! fieldName = {}, filedType={}",
                              fields[i].getName(), fields[i].getType());
-                     throw new ParseObjectOrClassException("Is not implemented. Type not supported!");
                  }
-                 if  (fields.length -1 != i)
-                     sResult.append(",");
         }
+            sResult.deleteCharAt(sResult.length()-1);
         return  sResult.toString();
+    }
+
+    @Override
+   public boolean checkImplementsType(Field clazz)  {
+        return Byte.class.equals(clazz.getType()) || byte.class.equals(clazz.getType())
+                || Short.class.equals(clazz.getType()) || short.class.equals(clazz.getType())
+                || Integer.class.equals(clazz.getType()) || int.class.equals(clazz.getType())
+                || Long.class.equals(clazz.getType()) || long.class.equals(clazz.getType())
+                || BigDecimal.class.equals(clazz.getType())
+                || String.class.equals(clazz.getType())
+                || Character.class.equals(clazz.getType());
     }
 }

@@ -3,7 +3,7 @@ package hw10.model;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw10.model.User;
+import ru.otus.hw10.api.model.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

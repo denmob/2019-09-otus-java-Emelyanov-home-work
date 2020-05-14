@@ -2,6 +2,8 @@ package ru.otus.hw09.sessionmanager;
 
 
 import org.slf4j.LoggerFactory;
+import ru.otus.hw09.api.sessionmanager.SessionManager;
+import ru.otus.hw09.api.sessionmanager.SessionManagerException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

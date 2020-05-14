@@ -1,10 +1,10 @@
-package ru.otus.hw09.service;
+package ru.otus.hw10.service;
 
 
 import org.slf4j.LoggerFactory;
-import ru.otus.hw09.api.service.DbExecutor;
-import ru.otus.hw09.api.service.DbExecutorException;
-import ru.otus.hw09.api.service.ParseObjectOrClass;
+import ru.otus.hw10.api.service.DbExecutor;
+import ru.otus.hw10.api.service.DbExecutorException;
+import ru.otus.hw10.api.service.ParseObjectOrClass;
 
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -17,14 +17,19 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(DbExecutorImp.class);
 
 
+    public DbExecutorImp(Connection connection) {
+        this.connection = connection;
+    }
+
+    private final Connection connection;
+
 
     @Override
-    public boolean createTable(Connection connection, Class<?> clazz) {
-        if (connection == null) throw new IllegalArgumentException("connection is null");
+    public boolean createTable(Class<?> clazz) {
         if (clazz == null) throw new IllegalArgumentException("clazz is null");
 
         try{
-            parseObjectOrClass = new ParseObjectOrClassImp(clazz);
+            parseObjectOrClass = new ServiceParseObjectOrClassImpl(clazz);
             try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getCreateCommand())) {
                 pst.execute();
                 connection.commit();
@@ -36,12 +41,12 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
     }
 
     @Override
-    public T insert(Connection connection, T object) throws SQLException {
-        if (connection == null) throw new IllegalArgumentException("connection is null");
+    public T insert(T object) throws SQLException {
         if (object == null) throw new IllegalArgumentException("object is null");
+
         Savepoint savePoint = connection.setSavepoint(savePointName);
         try{
-            parseObjectOrClass = new ParseObjectOrClassImp(object);
+            parseObjectOrClass = new ServiceParseObjectOrClassImpl(object);
             try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getInsertCommand(), Statement.RETURN_GENERATED_KEYS)) {
                 insertMapValuesToPrepareStatement(pst, parseObjectOrClass.getInsertValues());
                 pst.executeUpdate();
@@ -66,15 +71,14 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
     }
 
     @Override
-    public T select(Connection connection, long id, Class<?> clazz) throws SQLException {
-        if (connection == null) throw new IllegalArgumentException("connection is null");
+    public T select(long id, Class<?> clazz) throws SQLException {
         if (clazz == null) throw new IllegalArgumentException("clazz is null");
         if (id<1) throw new IllegalArgumentException("id < 1 ");
 
         Savepoint savePoint = connection.setSavepoint(savePointName);
         T obj = null;
         try{
-            parseObjectOrClass = new ParseObjectOrClassImp(clazz);
+            parseObjectOrClass = new ServiceParseObjectOrClassImpl(clazz);
             try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getSelectCommand())) {
 
                 pst.setObject(1, id);
@@ -85,13 +89,15 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
                         Field[] fields = clazz.getDeclaredFields();
                         for (Field field : fields) {
                             field.setAccessible(true);
-                            String fieldName = field.getName();
-                            String fieldName1 = parseObjectOrClass.getFieldId().getName();
-                            if  (!fieldName.equals(fieldName1)) {
-                                Object value = rs.getObject(fieldName);
-                                field.set(obj, value);
-                            } else {
-                                field.set(obj, id);
+                            if (parseObjectOrClass.checkImplementsType(field)) {
+                                String fieldName = field.getName();
+                                String fieldName1 = parseObjectOrClass.getFieldId().getName();
+                                if (!fieldName.equals(fieldName1)) {
+                                    Object value = rs.getObject(fieldName);
+                                    field.set(obj, value);
+                                } else {
+                                    field.set(obj, id);
+                                }
                             }
                         }
                     }
@@ -105,14 +111,13 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
     }
 
     @Override
-    public T update(Connection connection, T object) throws SQLException {
-        if (connection == null) throw new IllegalArgumentException("connection is null");
+    public T update(T object) throws SQLException {
         if (object == null) throw new IllegalArgumentException("object is null");
 
         Savepoint savePoint = connection.setSavepoint(savePointName);
 
         try{
-            parseObjectOrClass = new ParseObjectOrClassImp(object);
+            parseObjectOrClass = new ServiceParseObjectOrClassImpl(object);
             try (PreparedStatement pst = connection.prepareStatement(parseObjectOrClass.getUpdateCommand())) {
                 int count = insertMapValuesToPrepareStatement(pst, parseObjectOrClass.getUpdateValues());
                 pst.setObject(++count, parseObjectOrClass.getFieldId().get(object));
@@ -128,13 +133,18 @@ public class DbExecutorImp<T> implements DbExecutor<T> {
     }
 
     @Override
-    public T insertOrUpdate(Connection connection, T object) {
-        ParseObjectOrClassImp parseObject = new ParseObjectOrClassImp(object);
+    public T insertOrUpdate(T object) {
+        ServiceParseObjectOrClassImpl parseObject = new ServiceParseObjectOrClassImpl(object);
         try{
-            if (parseObject.getFieldId().get(object) == null) {
-                return insert(connection, object);
+           Long value = (Long) parseObject.getFieldId().get(object);
+            if (value == 0) {
+                //можно добавить проверку на наличие таблицы в connection.getMetaData(),
+                //в случае с h2 это не подходит, время жизни состояния БД и сессии короткое.
+                //нужно отдельно вызывать разово, тут для работоспособности
+                createTable(object.getClass());
+                return insert(object);
             } else {
-               return update(connection, object);
+               return update(object);
             }
         }catch (Exception e) {
             throw new DbExecutorException(e);
