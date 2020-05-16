@@ -20,7 +20,7 @@
         <appender-ref ref="console"/>
     </logger>
 
-    <logger name="ru.otus.hw11.cachehw"  level="INFO,DEBUG,ERROR" >
+    <logger name="ru.otus.hw11.hw10.impl.cachehw" level="INFO,DEBUG,ERROR" >
         <appender-ref ref="console"/>
     </logger>
 

@@ -5,17 +5,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw11.cachehw.HwCache;
-import ru.otus.hw11.cachehw.HwCacheImpl;
-import ru.otus.hw11.cachehw.HwListener;
-import ru.otus.hw11.hw10.dao.UserDao;
-import ru.otus.hw11.hw10.dao.UserDaoJdbc;
-import ru.otus.hw11.hw10.model.User;
-import ru.otus.hw11.hw10.service.ORMServiceUser;
-import ru.otus.hw11.hw10.service.ORMServiceUserWithCacheImpl;
-import ru.otus.hw11.hw10.service.ORMServiceUserWithoutCacheImpl;
-import ru.otus.hw11.hw10.sessionmanager.SessionManager;
-import ru.otus.hw11.hw10.sessionmanager.SessionManagerJdbc;
+import ru.otus.hw11.hw10.api.cachehw.HwCache;
+import ru.otus.hw11.hw10.impl.cachehw.HwCacheImpl;
+import ru.otus.hw11.hw10.api.cachehw.HwListener;
+import ru.otus.hw11.hw10.api.dao.UserDao;
+import ru.otus.hw11.hw10.impl.jdbc.UserDaoJdbc;
+import ru.otus.hw11.hw10.api.model.User;
+import ru.otus.hw11.hw10.api.service.ORMServiceUser;
+import ru.otus.hw11.hw10.impl.service.ORMServiceUserWithCacheImpl;
+import ru.otus.hw11.hw10.impl.service.ORMServiceUserWithoutCacheImpl;
+import ru.otus.hw11.hw10.api.sessionmanager.SessionManager;
+import ru.otus.hw11.hw10.impl.sessionmanager.SessionManagerJdbc;
 
 import java.util.Optional;
 
@@ -30,7 +30,7 @@ class JdbcServiceUserTest {
     private ORMServiceUser ormServiceUserWithCache;
     private ORMServiceUser ormServiceUserWithoutCache;
     private HwCache<Long, User> cache;
-    private HwListener<Long, User> listener;
+    private HwListener listener;
 
     @BeforeEach
     void setUp() {
