@@ -14,39 +14,39 @@ import java.io.IOException;
 
 class Demo {
 
-    private static final int WEB_SERVER_PORT = 8080;
-    private static final String TEMPLATES_DIR = "/templates/";
+  private static final int WEB_SERVER_PORT = 8080;
+  private static final String TEMPLATES_DIR = "/templates/";
 
-    private UsersWebServer usersWebServer;
-    private final UserDao userDao;
+  private UsersWebServer usersWebServer;
+  private final UserDao userDao;
 
-    Demo() throws IOException {
-        MongoDatabase mongoDatabase = new DBManagerImpl().getMongoDatabase();
-        userDao = new UserDaoImpl(mongoDatabase.getCollection("user",User.class));
+  Demo() throws IOException {
+    MongoDatabase mongoDatabase = new DBManagerImpl().getMongoDatabase();
+    userDao = new UserDaoImpl(mongoDatabase.getCollection("user", User.class));
 
-        userDao.saveUser(createAdminUser());
-        createWebServer();
-    }
+    userDao.saveUser(createAdminUser());
+    createWebServer();
+  }
 
 
-    private User createAdminUser() {
-        User user = new User();
-        user.setName("Otus");
-        user.setLogin("admin");
-        user.setPassword("123");
-       return user;
-    }
+  private User createAdminUser() {
+    User user = new User();
+    user.setName("Otus");
+    user.setLogin("admin");
+    user.setPassword("123");
+    return user;
+  }
 
-    private void createWebServer() throws IOException {
-        UserAuthService userAuthServiceForFilterBasedSecurity = new UserAuthServiceImpl(userDao);
-        TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
-         usersWebServer = new UsersWebServerImpl(WEB_SERVER_PORT,
-                userAuthServiceForFilterBasedSecurity,
-                 userDao,
-                templateProcessor);
-    }
+  private void createWebServer() {
+    UserAuthService userAuthServiceForFilterBasedSecurity = new UserAuthServiceImpl(userDao);
+    TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
+    usersWebServer = new UsersWebServerImpl(WEB_SERVER_PORT,
+        userAuthServiceForFilterBasedSecurity,
+        userDao,
+        templateProcessor);
+  }
 
-    void start() throws Exception {
-        usersWebServer.start();
-    }
+  void start() throws Exception {
+    usersWebServer.start();
+  }
 }

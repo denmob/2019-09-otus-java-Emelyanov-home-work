@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    Optional<User> findByUserLogin(String  login);
+  Optional<User> findByUserLogin(String login);
 
-    List<User> getAllUsers();
+  List<User> getAllUsers();
 
-    void saveUser(User userDao);
+  void saveUser(User userDao);
 }

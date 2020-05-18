@@ -15,41 +15,41 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 public class LoginServlet extends HttpServlet {
 
-    private static final String PARAM_LOGIN = "login";
-    private static final String PARAM_PW = "password";
-    private static final int MAX_INACTIVE_INTERVAL = 30;
-    private static final String LOGIN_PAGE_TEMPLATE = "login.html";
+  private static final String PARAM_LOGIN = "login";
+  private static final String PARAM_PW = "password";
+  private static final int MAX_INACTIVE_INTERVAL = 30;
+  private static final String LOGIN_PAGE_TEMPLATE = "login.html";
 
 
-    private final TemplateProcessor templateProcessor;
-    private final UserAuthService userAuthService;
+  private final TemplateProcessor templateProcessor;
+  private final UserAuthService userAuthService;
 
-    public LoginServlet(TemplateProcessor templateProcessor, UserAuthService userAuthService) {
-        this.userAuthService = userAuthService;
-        this.templateProcessor = templateProcessor;
+  public LoginServlet(TemplateProcessor templateProcessor, UserAuthService userAuthService) {
+    this.userAuthService = userAuthService;
+    this.templateProcessor = templateProcessor;
+  }
+
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("text/html");
+    response.getWriter().println(templateProcessor.getPage(LOGIN_PAGE_TEMPLATE, Collections.emptyMap()));
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    String name = request.getParameter(PARAM_LOGIN);
+    String password = request.getParameter(PARAM_PW);
+
+    if (userAuthService.authenticate(name, password)) {
+      HttpSession session = request.getSession();
+      session.setMaxInactiveInterval(MAX_INACTIVE_INTERVAL);
+      session.setAttribute("name", name);
+      response.sendRedirect("/admin");
+    } else {
+      response.setStatus(SC_UNAUTHORIZED);
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
-        response.getWriter().println(templateProcessor.getPage(LOGIN_PAGE_TEMPLATE, Collections.emptyMap()));
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        String name = request.getParameter(PARAM_LOGIN);
-        String password = request.getParameter(PARAM_PW);
-
-        if (userAuthService.authenticate(name, password)) {
-            HttpSession session = request.getSession();
-            session.setMaxInactiveInterval(MAX_INACTIVE_INTERVAL);
-            session.setAttribute("name", name);
-            response.sendRedirect("/admin");
-        } else {
-            response.setStatus(SC_UNAUTHORIZED);
-        }
-
-    }
+  }
 
 }

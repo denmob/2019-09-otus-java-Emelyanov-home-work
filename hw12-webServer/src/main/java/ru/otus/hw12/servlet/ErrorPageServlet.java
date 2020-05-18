@@ -24,5 +24,4 @@ public class ErrorPageServlet extends HttpServlet {
         response.setContentType("text/html");
         response.getWriter().println(templateProcessor.getPage(ERROR_PAGE_TEMPLATE, paramsMap));
     }
-
 }

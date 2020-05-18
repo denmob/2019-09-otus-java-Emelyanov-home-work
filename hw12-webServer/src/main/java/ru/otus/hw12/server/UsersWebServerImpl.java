@@ -88,7 +88,7 @@ public class UsersWebServerImpl implements UsersWebServer {
     }
 
     private Handler applySecurity(ServletContextHandler servletContextHandler) {
-        applyFilterBasedSecurity(servletContextHandler, "/admin");
+        applyFilterBasedSecurity(servletContextHandler, "/admin/*");
         return servletContextHandler;
     }
 
