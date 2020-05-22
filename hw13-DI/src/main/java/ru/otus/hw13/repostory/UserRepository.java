@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-    Optional<User> findByUserLogin(String value);
+  Optional<User> findByUserLogin(String value);
 
-    List<User> getAllUsers();
+  List<User> getAllUsers();
 
-    void saveUser(User userDao);
+  void saveUser(User userDao);
 }
