@@ -13,7 +13,7 @@
 		<hw16-library.version>1.0</hw16-library.version>
 		<spring-data-mongodb.version>2.0.5.RELEASE</spring-data-mongodb.version>
 		<mongock-spring.version>3.2.2.BETA</mongock-spring.version>
-		<mongo-java-driver.version>3.12.1</mongo-java-driver.version>
+		<mongo-java-driver.version>3.12.8</mongo-java-driver.version>
 	</properties>
 
 	<parent>
