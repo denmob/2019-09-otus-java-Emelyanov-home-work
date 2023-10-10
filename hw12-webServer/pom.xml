@@ -13,7 +13,7 @@
 	<name>hw12-webServer</name>
 
     <properties>
-        <jetty.version>9.4.26.v20200117</jetty.version>
+        <jetty.version>9.4.51.v20230217</jetty.version>
         <freemarker.version>2.3.28</freemarker.version>
         <mongo.version>3.12.0</mongo.version>
     </properties>
